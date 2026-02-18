@@ -1,0 +1,52 @@
+spring:
+  application:
+    name: FinFrases
+
+  threads:
+    virtual:
+      enabled: true
+
+  # --- CONFIGURAÇÃO MONGODB ---
+  data:
+    mongodb:
+      # Formato: mongodb://user:pass@host:port/database?authSource=admin
+      auto-index-creation: true
+
+  # --- CONFIGURAÇÃO CACHE (CAFFEINE) ---
+  cache:
+    type: caffeine
+    cache-names:
+      - categories
+      - authors
+    caffeine:
+      spec: maximumSize=500,expireAfterWrite=60m
+
+  # --- FORMATAÇÃO JSON ---
+  jackson:
+    serialization:
+      indent_output: true
+    default-property-inclusion: non_null
+  web:
+    error:
+      include-message: always
+  mongodb:
+    uri: ${MONGO_URI:mongodb://root:password123@localhost:27017/finfrases?authSource=admin}
+
+# --- CONFIGURAÇÃO SERVIDOR ---
+server:
+  port: 8080
+
+# --- DOCUMENTAÇÃO (SCALAR) ---
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+
+scalar:
+  path: /docs          # A UI ficará disponível em localhost:8080/docs
+  open-api:
+    url: /v3/api-docs
+
+# --- SEGURANÇA (ADMIN) ---
+api:
+  security:
+    admin-key: ${ADMIN_KEY:chave-secreta-padrao-dev} # Chave para POST/PUT
