@@ -1,5 +1,6 @@
 package br.com.github.williiansilva51.finfrases.controller;
 
+import br.com.github.williiansilva51.finfrases.domain.enums.CategoryQuote;
 import br.com.github.williiansilva51.finfrases.dto.request.CreateQuoteRequest;
 import br.com.github.williiansilva51.finfrases.dto.response.PaginatedResponse;
 import br.com.github.williiansilva51.finfrases.dto.response.QuoteResponse;
@@ -58,5 +59,12 @@ public class QuoteController {
     public ResponseEntity<PaginatedResponse<QuoteResponse>> getQuotesByAuthor(@PathVariable String author, @PageableDefault(sort = "content") Pageable pageable)
     {
         return ResponseEntity.ok(quoteService.getQuotesByAuthor(author, pageable));
+    }
+
+    @GetMapping("/tag/{tag}")
+    @Operation(summary = "Retorna todas as frases de uma tag", description = "Retorna todas as frases de uma tag ordenadas pelo autor")
+    @ApiResponse(responseCode = "200", description = "Lista de frases retornada com sucesso")
+    public ResponseEntity<PaginatedResponse<QuoteResponse>> getQuotesByTag(@PathVariable CategoryQuote tag, @PageableDefault(sort = "content") Pageable pageable) {
+        return ResponseEntity.ok(quoteService.getQuotesByTagsContainingAndVerifiedTrue(tag,pageable));
     }
 }

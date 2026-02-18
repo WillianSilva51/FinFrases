@@ -8,6 +8,6 @@ public enum CategoryQuote {
     EDUCACAO,      // Educação Financeira Básica
     EMPREENDEDORISMO,
     ACAO,
-    FIIS;          // Fundos Imobiliários
+    FIIS          // Fundos Imobiliários
 
 }
