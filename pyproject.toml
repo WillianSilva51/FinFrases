@@ -1,0 +1,14 @@
+[project]
+name = "finfrases"
+version = "0.1.0"
+description = "Uma API aberta e gratuita para frases de mentalidade financeira, investimentos e educação financeira, totalmente em português (PT-BR)."
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "beanie>=2.0.1",
+    "fastapi[standard]>=0.135.2",
+    "pymongo>=4.16.0",
+    "requests>=2.33.0",
+    "streamlit>=1.55.0",
+    "uvicorn>=0.42.0",
+]
