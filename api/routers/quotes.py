@@ -40,5 +40,8 @@ async def get_all_quotes(
     source: str | None = Query(
         default=None, description="Fonte para filtrar as citações."
     ),
+    limit: int | None = Query(
+        default=None, description="Número máximo de citações a serem retornadas."
+    ),
 ) -> list[QuoteResponse]:
-    return await get_all(author, tags, source)
+    return await get_all(author, tags, source, limit)

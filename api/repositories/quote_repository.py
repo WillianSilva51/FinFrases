@@ -9,10 +9,7 @@ class QuoteRepository:
 
         return new_quote
 
-    async def get_all(
-        self,
-        params: dict,
-    ) -> list[Quote]:
-        quotes = Quote.find_many(params)
+    async def get_all(self, params: dict, limit: int | None) -> list[Quote]:
+        quotes = Quote.find_many(params, limit=limit)
 
         return await quotes.to_list()

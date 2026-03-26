@@ -1,0 +1,48 @@
+info:
+  name: Create Quote
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{baseUrl}}/{{versionApi}}/quotes"
+  body:
+    type: json
+    data: |-
+      {
+        "content": "content of quote",
+        "author": "author of quote",
+        "tags": [
+          "GERAL"
+        ],
+        "source": "source of quote",
+        "verified": false
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: before-request
+      code: |-
+        let random = Math.floor(Math.random() * 100)
+        let categories = [
+            "GERAL", "INVESTIMENTOS", "POUPANCA", "PSICOLOGIA", "DIVIDENDOS", "EDUCACAO", "EMPREENDEDORISMO", "ACAO", "FIIS"
+          ]
+
+        req.setBody({
+          "content": "quote test " + random,
+          "author": "author of quote " + random,
+          "tags": [categories[Math.floor(Math.random() * categories.length)]],
+          "source": "source of quote " + random,
+          "verified": [true, false][Math.floor(Math.random() * 2)]
+        });
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "201"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

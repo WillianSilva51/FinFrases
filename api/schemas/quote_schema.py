@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import Annotated
 
+from beanie import PydanticObjectId
 from models.enums import CategoryQuote
 from models.quote import Quote
 from pydantic import BaseModel, Field
@@ -21,6 +22,7 @@ class CreateQuoteRequest(BaseModel):
 
 
 class QuoteResponse(BaseModel):
+    id: PydanticObjectId
     content: str
     author: str
     tags: list[CategoryQuote]
@@ -30,7 +32,7 @@ class QuoteResponse(BaseModel):
 
 
 def to_response(model: Quote) -> QuoteResponse:
-    return QuoteResponse.model_validate(model.model_dump(exclude={"id"}))
+    return QuoteResponse.model_validate(model.model_dump())
 
 
 def to_model(request: CreateQuoteRequest) -> Quote:

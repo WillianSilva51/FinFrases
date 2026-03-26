@@ -47,4 +47,4 @@ Totalmente em português (PT-BR).
     lifespan=lifespan,
 )
 
-app.include_router(quotes_router)
+app.include_router(quotes_router, prefix="/api")

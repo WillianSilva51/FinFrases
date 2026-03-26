@@ -16,14 +16,17 @@ async def create_quote(quote: CreateQuoteRequest) -> QuoteResponse:
 
 
 async def get_all(
-    author: str | None, tags: list[CategoryQuote] | None, source: str | None
+    author: str | None,
+    tags: list[CategoryQuote] | None,
+    source: str | None,
+    limit: int | None,
 ) -> list[QuoteResponse]:
     filters = {
         k: v
         for k, v in {"author": author, "tags": tags, "source": source}.items()
         if v is not None
     }
-    quotes = await quote_repo.get_all(filters)
+    quotes = await quote_repo.get_all(filters, limit)
     quotes_response = [to_response(quote) for quote in quotes]
 
     return quotes_response
