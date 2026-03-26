@@ -2,8 +2,8 @@ from datetime import datetime
 from typing import Annotated
 
 from models.enums import CategoryQuote
-from pydantic import BaseModel, Field
 from models.quote import Quote
+from pydantic import BaseModel, Field
 
 
 class CreateQuoteRequest(BaseModel):
@@ -29,9 +29,9 @@ class QuoteResponse(BaseModel):
     created_at: datetime
 
 
-async def to_response(model: Quote) -> QuoteResponse:
+def to_response(model: Quote) -> QuoteResponse:
     return QuoteResponse.model_validate(model.model_dump(exclude={"id"}))
 
 
-async def to_model(request: CreateQuoteRequest) -> Quote:
+def to_model(request: CreateQuoteRequest) -> Quote:
     return Quote(**request.model_dump())

@@ -9,10 +9,6 @@ tags_metadata = [
         "name": "Frases",
         "description": "Operações relacionadas a frases financeiras.",
     },
-    {
-        "name": "Categorias",
-        "description": "Categorias como investimentos, mindset, etc.",
-    },
 ]
 
 
