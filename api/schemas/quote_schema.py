@@ -1,7 +1,8 @@
-from pydantic import BaseModel, Field
-from typing import Annotated
-from models.enums import CategoryQuote
 from datetime import datetime
+from typing import Annotated
+
+from models.enums import CategoryQuote
+from pydantic import BaseModel, Field
 
 
 class CreateQuoteRequest(BaseModel):
