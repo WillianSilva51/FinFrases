@@ -1,10 +1,8 @@
-import os
-
 from beanie import init_beanie
 from models.quote import Quote
 from pymongo import AsyncMongoClient
 
-MONGO_URI = os.getenv("MONGO_URI")
+from core.config import settings
 
 client: AsyncMongoClient | None = None
 
@@ -13,7 +11,7 @@ async def get_db():
     global client
 
     if client is None:
-        client = AsyncMongoClient(MONGO_URI)
+        client = AsyncMongoClient(settings.MONGO_URI)
 
     return client["finfrases"]
 

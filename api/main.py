@@ -1,4 +1,8 @@
+from contextlib import asynccontextmanager
+
+from core.database import init_db
 from fastapi import FastAPI
+from routers.quotes import api_router as quotes_router
 
 tags_metadata = [
     {
@@ -10,6 +14,13 @@ tags_metadata = [
         "description": "Categorias como investimentos, mindset, etc.",
     },
 ]
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await init_db()
+    yield
+
 
 app = FastAPI(
     title="FinFrases API",
@@ -37,4 +48,7 @@ Totalmente em português (PT-BR).
     },
     docs_url="/api/docs",
     redoc_url="/api/redoc",
+    lifespan=lifespan,
 )
+
+app.include_router(quotes_router)

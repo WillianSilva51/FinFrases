@@ -3,11 +3,12 @@ from typing import Annotated
 
 from models.enums import CategoryQuote
 from pydantic import BaseModel, Field
+from models.quote import Quote
 
 
 class CreateQuoteRequest(BaseModel):
     content: Annotated[
-        str, Field(min_length=30, max_length=500, description="O texto da citação")
+        str, Field(min_length=10, max_length=500, description="O texto da citação")
     ]
 
     author: Annotated[str, Field(min_length=3, max_length=100)]
@@ -26,3 +27,11 @@ class QuoteResponse(BaseModel):
     source: str | None
     verified: bool
     created_at: datetime
+
+
+async def to_response(model: Quote) -> QuoteResponse:
+    return QuoteResponse.model_validate(model.model_dump(exclude={"id"}))
+
+
+async def to_model(request: CreateQuoteRequest) -> Quote:
+    return Quote(**request.model_dump())

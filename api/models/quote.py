@@ -2,8 +2,9 @@ from datetime import datetime, timezone
 from typing import Annotated
 
 from beanie import Document, Indexed
-from enums import CategoryQuote
 from pydantic import Field
+
+from .enums import CategoryQuote
 
 
 class Quote(Document):

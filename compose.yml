@@ -6,24 +6,24 @@ services:
     ports:
       - "27017:27017"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${mongo-user:-root}
-      MONGO_INITDB_ROOT_PASSWORD: ${mongo_password:-password123}
+      MONGO_INITDB_ROOT_USERNAME: user
+      MONGO_INITDB_ROOT_PASSWORD: password123
       MONGO_INITDB_DATABASE: finfrases
 
-    redis:
-      image: docker.io/library/redis:8.4-alpine
-      container_name: finfrases-redis
-      restart: always
-      ports:
-        - "6379:6379" 
-      volumes:
-        - redis_data:/data:Z
-      healthcheck:
-        test: [ "CMD", "redis-cli", "ping" ]
-        interval: 10s
-        timeout: 5s
-        retries: 3
-        start_period: 5s
+  redis:
+    image: docker.io/library/redis:8.4-alpine
+    container_name: finfrases-redis
+    restart: always
+    ports:
+      - "6379:6379" 
+#   volumes:
+#    - redis_data:/data:Z
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
 
-volumes:
-  redis_data:
+#volumes:
+#  redis_data:
