@@ -3,8 +3,7 @@ from typing import Annotated
 
 from beanie import PydanticObjectId
 from models.enums import CategoryQuote
-from models.quote import Quote
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class CreateQuoteRequest(BaseModel):
@@ -22,7 +21,7 @@ class CreateQuoteRequest(BaseModel):
 
 
 class QuoteResponse(BaseModel):
-    id: PydanticObjectId
+    id: PydanticObjectId = Field(alias="_id")
     content: str
     author: str
     tags: list[CategoryQuote]
@@ -30,10 +29,4 @@ class QuoteResponse(BaseModel):
     verified: bool
     created_at: datetime
 
-
-def to_response(model: Quote) -> QuoteResponse:
-    return QuoteResponse.model_validate(model.model_dump())
-
-
-def to_model(request: CreateQuoteRequest) -> Quote:
-    return Quote(**request.model_dump())
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)

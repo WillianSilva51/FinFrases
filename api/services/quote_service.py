@@ -1,32 +1,40 @@
+from fastapi import Depends
 from models.enums import CategoryQuote
+from models.quote import Quote
 from repositories.quote_repository import QuoteRepository
 from schemas.quote_schema import (
     CreateQuoteRequest,
-    QuoteResponse,
-    to_response,
 )
 
-quote_repo = QuoteRepository()
 
+class QuoteService:
+    def __init__(self, repo: QuoteRepository = Depends()) -> None:
+        self.repo = repo
 
-async def create_quote(quote: CreateQuoteRequest) -> QuoteResponse:
-    new_quote = await quote_repo.create(quote)
+    async def create_quote(self, quote: CreateQuoteRequest) -> Quote:
+        new_quote = await self.repo.create(quote)
 
-    return to_response(new_quote)
+        return new_quote
 
+    async def get_all(
+        self,
+        author: str | None,
+        tags: list[CategoryQuote] | None,
+        source: str | None,
+        verified: bool,
+        limit: int | None,
+        skip: int,
+    ) -> list[Quote]:
+        filters = {}
+        filters["verified"] = verified
 
-async def get_all(
-    author: str | None,
-    tags: list[CategoryQuote] | None,
-    source: str | None,
-    limit: int | None,
-) -> list[QuoteResponse]:
-    filters = {
-        k: v
-        for k, v in {"author": author, "tags": tags, "source": source}.items()
-        if v is not None
-    }
-    quotes = await quote_repo.get_all(filters, limit)
-    quotes_response = [to_response(quote) for quote in quotes]
+        if author:
+            filters["author"] = author
+        if source:
+            filters["source"] = source
+        if tags:
+            filters = {"$in": tags}
 
-    return quotes_response
+        quotes = await self.repo.get_all(filters, limit, skip)
+
+        return quotes

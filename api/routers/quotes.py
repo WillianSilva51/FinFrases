@@ -1,9 +1,10 @@
 from http import HTTPStatus
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Depends, Query
 from models.enums import CategoryQuote
 from schemas.quote_schema import CreateQuoteRequest, QuoteResponse
-from services.quote_service import create_quote, get_all
+from services.quote_service import QuoteService
+from models.quote import Quote
 
 api_router = APIRouter(prefix="/v1/quotes", tags=["frases"])
 
@@ -17,8 +18,10 @@ api_router = APIRouter(prefix="/v1/quotes", tags=["frases"])
     description="Cria uma nova citação com base nos dados fornecidos.",
     response_description="A citação criada com sucesso.",
 )
-async def post_quote(new_quote: CreateQuoteRequest) -> QuoteResponse:
-    return await create_quote(new_quote)
+async def post_quote(
+    new_quote: CreateQuoteRequest, service: QuoteService = Depends()
+) -> Quote:
+    return await service.create_quote(new_quote)
 
 
 @api_router.get(
@@ -40,8 +43,22 @@ async def get_all_quotes(
     source: str | None = Query(
         default=None, description="Fonte para filtrar as citações."
     ),
+    verified: bool = Query(
+        default=True, description="Filtrar apenas citações verificadas."
+    ),
     limit: int | None = Query(
         default=None, description="Número máximo de citações a serem retornadas."
     ),
-) -> list[QuoteResponse]:
-    return await get_all(author, tags, source, limit)
+    skip: int = Query(
+        default=0, description="Número de citações a serem ignoradas para paginação."
+    ),
+    service: QuoteService = Depends(),
+) -> list[Quote]:
+    return await service.get_all(
+        author=author,
+        tags=tags,
+        source=source,
+        verified=verified,
+        limit=limit,
+        skip=skip,
+    )

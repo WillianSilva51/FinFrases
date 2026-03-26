@@ -5,7 +5,7 @@ info:
 
 http:
   method: GET
-  url: "{{baseUrl}}/{{versionApi}}/quotes?author=&tags=&source=&limit="
+  url: "{{baseUrl}}/{{versionApi}}/quotes?author=&tags=&source=&verified=&limit=&skip="
   params:
     - name: author
       value: ""
@@ -16,7 +16,13 @@ http:
     - name: source
       value: ""
       type: query
+    - name: verified
+      value: ""
+      type: query
     - name: limit
+      value: ""
+      type: query
+    - name: skip
       value: ""
       type: query
   auth: inherit
