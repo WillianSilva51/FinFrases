@@ -1,12 +1,16 @@
 from http import HTTPStatus
 
+from core.cache import RedisCache
 from fastapi import APIRouter, Depends, Query
 from models.enums import CategoryQuote
+from models.quote import Quote
+from repositories.quote_repository import QuoteRepository
 from schemas.quote_schema import CreateQuoteRequest, QuoteResponse
 from services.quote_service import QuoteService
-from models.quote import Quote
+from utils.utils import expiration_midnight
 
 api_router = APIRouter(prefix="/v1/quotes", tags=["frases"])
+cache = RedisCache()
 
 
 @api_router.post(
@@ -19,9 +23,11 @@ api_router = APIRouter(prefix="/v1/quotes", tags=["frases"])
     response_description="A citação criada com sucesso.",
 )
 async def post_quote(
-    new_quote: CreateQuoteRequest, service: QuoteService = Depends()
+    new_quote: CreateQuoteRequest,
+    service: QuoteService = Depends(),
+    repo: QuoteRepository = Depends(),
 ) -> Quote:
-    return await service.create_quote(new_quote)
+    return await service.create_quote(quote=new_quote, repo=repo)
 
 
 @api_router.get(
@@ -54,6 +60,7 @@ async def get_all_quotes(
         default=0, description="Número de citações a serem ignoradas para paginação."
     ),
     service: QuoteService = Depends(),
+    repo: QuoteRepository = Depends(),
 ) -> list[Quote]:
     return await service.get_all(
         author=author,
@@ -62,6 +69,7 @@ async def get_all_quotes(
         verified=verified,
         limit=limit,
         skip=skip,
+        repo=repo,
     )
 
 
@@ -79,5 +87,22 @@ async def get_random_quote(
         default=1, description="Número de citações aleatórias a serem retornadas."
     ),
     service: QuoteService = Depends(),
+    repo: QuoteRepository = Depends(),
 ) -> list[Quote]:
-    return await service.get_random_quote(size=size)
+    return await service.get_random_quote(size=size, repo=repo)
+
+
+@api_router.get(
+    path="/today",
+    response_model=list[QuoteResponse],
+    status_code=HTTPStatus.OK,
+    name="get_today_quote",
+    summary="Obter a citação do dia",
+    description="Retorna uma citação aleatória verificada para o dia.",
+    response_description="Citação do dia.",
+)
+@cache.cacheable(expire=expiration_midnight())
+async def get_today_quote(
+    service: QuoteService = Depends(), repo: QuoteRepository = Depends()
+) -> list[Quote]:
+    return await service.get_today_quote(repo=repo)
