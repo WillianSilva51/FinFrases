@@ -1,16 +1,10 @@
-import logging
 from functools import wraps
 from json import dumps, loads
+from typing import Callable
 
+from loguru import logger
 from redis import ConnectionError
 from redis.asyncio import Redis
-
-logging.basicConfig(
-    level=logging.ERROR,
-    format="%(asctime)s [%(levelname)s] %(name)s - %(message)s",
-)
-
-logger = logging.getLogger("Redis")
 
 
 class RedisCache:
@@ -20,7 +14,7 @@ class RedisCache:
         except ConnectionError as e:
             logger.error(e)
 
-    async def ping(self):
+    def ping(self):
         try:
             return self.client.ping()
         except ConnectionError as e:
@@ -40,18 +34,31 @@ class RedisCache:
 
     async def delete(self, keys):
         try:
-            await self.client.delete(keys)
+            if isinstance(keys, (list, tuple, set)):
+                return await self.client.delete(*keys)
+            else:
+                return await self.client.delete(keys)
         except ConnectionError as e:
             logger.error(e)
 
-    def cacheable(self, expire: int = 3600):
+    def _normalize_cache_value(self, value):
+        if isinstance(value, (str, int, float, bool, type(None))):
+            return value
+
+        if isinstance(value, (list, tuple)):
+            return [self._normalize_cache_value(v) for v in value]
+
+        if isinstance(value, dict):
+            return {k: self._normalize_cache_value(v) for k, v in value.items()}
+
+        return str(value)
+
+    def cacheable(self, expire: Callable[[], int]):
         def decorator(func):
             @wraps(func)
             async def wrapper(*args, **kwargs):
                 clean_kwargs = {
-                    k: v
-                    for k, v in kwargs.items()
-                    if isinstance(v, (str, int, float, bool, type(None)))
+                    k: self._normalize_cache_value(v) for k, v in kwargs.items()
                 }
 
                 cache_key = f"{func.__name__}:{dumps(clean_kwargs, sort_keys=True)}"
@@ -59,19 +66,23 @@ class RedisCache:
                 cache_data = await self.get(cache_key)
 
                 if cache_data:
+                    logger.info(f"Cache encontrado para a chave: {cache_key}")
+
                     return loads(cache_data.decode("utf-8"))
 
                 result = await func(*args, **kwargs)
 
                 if result:
-                    serilizable_result = [
+                    serializable_result = [
                         model.model_dump(mode="json") for model in result
                     ]
 
+                    logger.info(f"Armazenando no cache para a chave: {cache_key}")
+
                     await self.set(
                         key=cache_key,
-                        value=dumps(serilizable_result),
-                        expire=expire,
+                        value=dumps(serializable_result),
+                        expire=expire(),
                     )
 
                 return result

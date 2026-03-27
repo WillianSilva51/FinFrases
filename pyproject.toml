@@ -6,9 +6,10 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "beanie>=2.0.1",
-    "fastapi-pagination>=0.15.11",
     "fastapi[standard]>=0.135.2",
+    "loguru>=0.7.3",
     "pymongo>=4.16.0",
+    "pytest>=9.0.2",
     "python-dotenv>=1.2.2",
     "redis[hiredis]>=7.4.0",
     "requests>=2.33.0",

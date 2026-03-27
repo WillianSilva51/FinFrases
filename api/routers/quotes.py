@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, Query
 from models.enums import CategoryQuote
 from models.quote import Quote
 from repositories.quote_repository import QuoteRepository
+from schemas.pagination import PaginatedResponse
 from schemas.quote_schema import CreateQuoteRequest, QuoteResponse
 from services.quote_service import QuoteService
 from utils.utils import expiration_midnight
@@ -32,7 +33,7 @@ async def post_quote(
 
 @api_router.get(
     path="/",
-    response_model=list[QuoteResponse],
+    response_model=PaginatedResponse[QuoteResponse],
     status_code=HTTPStatus.OK,
     name="get_all_quotes",
     summary="Obter todas as citações",
@@ -61,8 +62,8 @@ async def get_all_quotes(
     ),
     service: QuoteService = Depends(),
     repo: QuoteRepository = Depends(),
-) -> list[Quote]:
-    return await service.get_all(
+) -> PaginatedResponse[Quote]:
+    quotes, total_counts = await service.get_all(
         author=author,
         tags=tags,
         source=source,
@@ -71,6 +72,8 @@ async def get_all_quotes(
         skip=skip,
         repo=repo,
     )
+
+    return PaginatedResponse(items=quotes, total=total_counts, limit=limit, skip=skip)
 
 
 @api_router.get(
@@ -101,7 +104,7 @@ async def get_random_quote(
     description="Retorna uma citação aleatória verificada para o dia.",
     response_description="Citação do dia.",
 )
-@cache.cacheable(expire=expiration_midnight())
+@cache.cacheable(expire=expiration_midnight)
 async def get_today_quote(
     service: QuoteService = Depends(), repo: QuoteRepository = Depends()
 ) -> list[Quote]:
