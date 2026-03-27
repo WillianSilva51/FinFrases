@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from fastapi import Depends
 from models.enums import CategoryQuote
 from models.quote import Quote
@@ -5,6 +7,12 @@ from repositories.quote_repository import QuoteRepository
 from schemas.quote_schema import (
     CreateQuoteRequest,
 )
+
+
+def _expiration_() -> int:
+    now = datetime.now()
+    midnight = (now + timedelta(1)).replace(hour=0, minute=0, second=0, microsecond=0)
+    return int((midnight - now).total_seconds())
 
 
 class QuoteService:
@@ -22,7 +30,7 @@ class QuoteService:
         tags: list[CategoryQuote] | None,
         source: str | None,
         verified: bool,
-        limit: int | None,
+        limit: int,
         skip: int,
     ) -> list[Quote]:
         filters = {}
@@ -38,3 +46,6 @@ class QuoteService:
         quotes = await self.repo.get_all(filters, limit, skip)
 
         return quotes
+
+    async def get_random_quote(self, size: int) -> list[Quote]:
+        return await self.repo.get_random_quote(size=size)

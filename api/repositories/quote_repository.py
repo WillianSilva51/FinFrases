@@ -8,7 +8,16 @@ class QuoteRepository:
 
         return await new_quote.insert()
 
-    async def get_all(self, params: dict, limit: int | None, skip: int) -> list[Quote]:
+    async def get_all(self, params: dict, limit: int, skip: int) -> list[Quote]:
         quotes = Quote.find(params).limit(limit).skip(skip)
 
         return await quotes.to_list()
+
+    async def get_random_quote(self, size: int) -> list[Quote]:
+        agregation = [
+            {"$match": {"verified": True}},
+            {"$sample": {"size": size}},
+        ]
+        result = await Quote.aggregate(agregation).to_list()
+
+        return [Quote.model_validate(doc) for doc in result]

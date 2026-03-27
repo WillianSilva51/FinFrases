@@ -1,6 +1,6 @@
 name: local
 variables:
-  - name: baseUrl
-    value: http://localhost:8000/api
   - name: versionApi
     value: v1
+  - name: baseUrl
+    value: http://localhost:8000/api

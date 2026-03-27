@@ -46,8 +46,9 @@ async def get_all_quotes(
     verified: bool = Query(
         default=True, description="Filtrar apenas citações verificadas."
     ),
-    limit: int | None = Query(
-        default=None, description="Número máximo de citações a serem retornadas."
+    limit: int = Query(
+        default=0,
+        description="Número máximo de citações a serem retornadas.",
     ),
     skip: int = Query(
         default=0, description="Número de citações a serem ignoradas para paginação."
@@ -62,3 +63,21 @@ async def get_all_quotes(
         limit=limit,
         skip=skip,
     )
+
+
+@api_router.get(
+    path="/random",
+    response_model=list[QuoteResponse],
+    status_code=HTTPStatus.OK,
+    name="get_random_quote",
+    summary="Obter citações aleatórias",
+    description="Retorna uma lista de citações aleatórias verificadas.",
+    response_description="Lista de citações aleatórias.",
+)
+async def get_random_quote(
+    size: int = Query(
+        default=1, description="Número de citações aleatórias a serem retornadas."
+    ),
+    service: QuoteService = Depends(),
+) -> list[Quote]:
+    return await service.get_random_quote(size=size)
