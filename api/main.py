@@ -2,7 +2,20 @@ from contextlib import asynccontextmanager
 
 from core.database import init_db
 from fastapi import FastAPI
+from fastapi.exceptions import RequestValidationError, HTTPException
 from routers.quotes import api_router as quotes_router
+
+from exceptions.custom_exceptions import (
+    DomainValidationException,
+    ResourceNotFoundException,
+)
+from exceptions.handlers import (
+    http_handler,
+    domain_validation_handler,
+    resource_not_found_handler,
+    request_validation_handler,
+    global_exception_handler,
+)
 
 tags_metadata = [
     {
@@ -13,7 +26,7 @@ tags_metadata = [
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(_: FastAPI):
     await init_db()
     yield
 
@@ -46,5 +59,11 @@ Totalmente em português (PT-BR).
     redoc_url="/api/redoc",
     lifespan=lifespan,
 )
+
+app.add_exception_handler(HTTPException, http_handler)  # type: ignore
+app.add_exception_handler(DomainValidationException, domain_validation_handler)  # type: ignore
+app.add_exception_handler(ResourceNotFoundException, resource_not_found_handler)  # type: ignore
+app.add_exception_handler(RequestValidationError, request_validation_handler)  # type: ignore
+app.add_exception_handler(Exception, global_exception_handler)
 
 app.include_router(quotes_router, prefix="/api")
