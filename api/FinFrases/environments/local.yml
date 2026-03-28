@@ -4,3 +4,5 @@ variables:
     value: v1
   - name: baseUrl
     value: http://localhost:8000/api
+  - secret: true
+    name: API_KEY
