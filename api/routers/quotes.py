@@ -1,6 +1,7 @@
 from http import HTTPStatus
 
 from core.cache import RedisCache
+from core.security import verify_api_key
 from fastapi import APIRouter, Depends, Query
 from models.enums import CategoryQuote
 from models.quote import Quote
@@ -27,6 +28,7 @@ async def post_quote(
     new_quote: CreateQuoteRequest,
     service: QuoteService = Depends(),
     repo: QuoteRepository = Depends(),
+    _: str = Depends(verify_api_key),
 ) -> Quote:
     return await service.create_quote(quote=new_quote, repo=repo)
 
