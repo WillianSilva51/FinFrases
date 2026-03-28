@@ -57,10 +57,15 @@ async def get_all_quotes(
     ),
     limit: int = Query(
         default=0,
+        ge=1,
+        le=100,
         description="Número máximo de citações a serem retornadas.",
     ),
     skip: int = Query(
-        default=0, description="Número de citações a serem ignoradas para paginação."
+        default=0,
+        ge=0,
+        le=1000,
+        description="Número de citações a serem ignoradas para paginação.",
     ),
     service: QuoteService = Depends(),
     repo: QuoteRepository = Depends(),
@@ -89,7 +94,10 @@ async def get_all_quotes(
 )
 async def get_random_quote(
     size: int = Query(
-        default=1, description="Número de citações aleatórias a serem retornadas."
+        default=1,
+        ge=1,
+        le=100,
+        description="Número de citações aleatórias a serem retornadas.",
     ),
     service: QuoteService = Depends(),
     repo: QuoteRepository = Depends(),
