@@ -53,7 +53,7 @@ class RedisCache:
 
         return str(value)
 
-    def cacheable(self, expire: Callable[[], int]):
+    def cacheable(self, expire: Callable[[], int] | int = 3600):
         def decorator(func):
             @wraps(func)
             async def wrapper(*args, **kwargs):
@@ -82,7 +82,7 @@ class RedisCache:
                     await self.set(
                         key=cache_key,
                         value=dumps(serializable_result),
-                        expire=expire(),
+                        expire=expire() if callable(expire) else expire,
                     )
 
                 return result
