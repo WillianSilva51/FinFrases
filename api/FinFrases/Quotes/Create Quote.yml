@@ -18,7 +18,11 @@ http:
         "source": "source of quote",
         "verified": false
       }
-  auth: inherit
+  auth:
+    type: apikey
+    key: X-API-Key
+    value: ampyLVT7rSby5SZtFUK7RLiwlsUt5igG3tB0cWhcIB8
+    placement: header
 
 runtime:
   scripts:

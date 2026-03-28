@@ -8,10 +8,14 @@ class QuoteRepository:
 
         return await new_quote.insert()
 
-    async def get_all(self, params: dict, limit: int, skip: int) -> list[Quote]:
+    async def get_all(
+        self, params: dict, limit: int, skip: int
+    ) -> tuple[list[Quote], int]:
+        total_count = await Quote.find(params).count()
+
         quotes = Quote.find(params).limit(limit).skip(skip)
 
-        return await quotes.to_list()
+        return await quotes.to_list(), total_count
 
     async def get_random_quote(self, size: int) -> list[Quote]:
         agregation = [
