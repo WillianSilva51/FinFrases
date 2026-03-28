@@ -28,7 +28,7 @@ async def post_quote(
     new_quote: CreateQuoteRequest,
     service: QuoteService = Depends(),
     repo: QuoteRepository = Depends(),
-    _: str | None = Depends(verify_api_key),
+    _: str = Depends(verify_api_key),
 ) -> Quote:
     return await service.create_quote(quote=new_quote, repo=repo)
 

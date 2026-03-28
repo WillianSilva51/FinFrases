@@ -5,11 +5,11 @@ from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError, HTTPException
 from routers.quotes import api_router as quotes_router
 
-from exceptions.custom_exceptions import (
+from core.exceptions.custom_exceptions import (
     DomainValidationException,
     ResourceNotFoundException,
 )
-from exceptions.handlers import (
+from core.handlers.exception_handlers import (
     http_handler,
     domain_validation_handler,
     resource_not_found_handler,
