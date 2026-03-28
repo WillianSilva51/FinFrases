@@ -28,7 +28,7 @@ async def post_quote(
     new_quote: CreateQuoteRequest,
     service: QuoteService = Depends(),
     repo: QuoteRepository = Depends(),
-    _: str = Depends(verify_api_key),
+    _: str | None = Depends(verify_api_key),
 ) -> Quote:
     return await service.create_quote(quote=new_quote, repo=repo)
 
@@ -57,7 +57,7 @@ async def get_all_quotes(
     ),
     limit: int = Query(
         default=0,
-        ge=1,
+        ge=0,
         le=100,
         description="Número máximo de citações a serem retornadas.",
     ),

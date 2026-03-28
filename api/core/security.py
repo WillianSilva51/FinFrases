@@ -14,7 +14,7 @@ api_key_header = APIKeyHeader(
 )
 
 
-def verify_api_key(api_key: str = Security(api_key_header)) -> str:
+def verify_api_key(api_key: str | None = Security(api_key_header)) -> str:
     if not api_key:
         logger.warning("Chave de API ausente.")
         raise HTTPException(
