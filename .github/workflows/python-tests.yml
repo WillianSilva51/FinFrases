@@ -27,8 +27,16 @@ jobs:
       - name: Install dependencies
         run: uv sync --frozen
 
+      - name: Check Sync
+        run: |
+          uv export --format requirements-txt --output-file temp.txt --no-hashes
+          diff requirements.txt temp.txt
+          rm temp.txt
+
       - name: Lint
-        run: uv run ruff check . --output-format=github
+        run: |
+          uv run ruff check . --output-format=github
 
       - name: Test with pytest
-        run: uv run pytest
+        run: |
+          uv run pytest
