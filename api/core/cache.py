@@ -53,12 +53,17 @@ class RedisCache:
 
         return str(value)
 
+    def _is_cacheable(self, value):
+        return isinstance(value, (str, int, float, bool, type(None), list, dict))
+
     def cacheable(self, expire: Callable[[], int] | int = 3600):
         def decorator(func):
             @wraps(func)
             async def wrapper(*args, **kwargs):
                 clean_kwargs = {
-                    k: self._normalize_cache_value(v) for k, v in kwargs.items()
+                    k: self._normalize_cache_value(v)
+                    for k, v in kwargs.items()
+                    if self._is_cacheable(v)
                 }
 
                 cache_key = f"{func.__name__}:{dumps(clean_kwargs, sort_keys=True)}"
@@ -72,7 +77,7 @@ class RedisCache:
 
                 result = await func(*args, **kwargs)
 
-                if result:
+                if result is not None:
                     serializable_result = [
                         model.model_dump(mode="json") for model in result
                     ]

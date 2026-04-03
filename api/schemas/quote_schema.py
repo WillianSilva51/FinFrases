@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Annotated
 
 from beanie import PydanticObjectId
-from models.enums import CategoryQuote
+from api.models.enums import CategoryQuote
 from pydantic import BaseModel, Field, ConfigDict
 
 

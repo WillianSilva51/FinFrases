@@ -1,15 +1,15 @@
 from http import HTTPStatus
 
-from core.cache import RedisCache
-from core.security import verify_api_key
+from api.core.cache import RedisCache
+from api.core.security import verify_api_key
 from fastapi import APIRouter, Depends, Query
-from models.enums import CategoryQuote
-from models.quote import Quote
-from repositories.quote_repository import QuoteRepository
-from schemas.pagination import PaginatedResponse
-from schemas.quote_schema import CreateQuoteRequest, QuoteResponse
-from services.quote_service import QuoteService
-from utils.utils import expiration_midnight
+from api.models.enums import CategoryQuote
+from api.models.quote import Quote
+from api.repositories.quote_repository import QuoteRepository
+from api.schemas.pagination import PaginatedResponse
+from api.schemas.quote_schema import CreateQuoteRequest, QuoteResponse
+from api.services.quote_service import QuoteService
+from api.utils.utils import expiration_midnight
 
 api_router = APIRouter(prefix="/v1/quotes", tags=["frases"])
 cache = RedisCache()
@@ -28,7 +28,7 @@ async def post_quote(
     new_quote: CreateQuoteRequest,
     service: QuoteService = Depends(),
     repo: QuoteRepository = Depends(),
-    _: str | None = Depends(verify_api_key),
+    _: str = Depends(verify_api_key),
 ) -> Quote:
     return await service.create_quote(quote=new_quote, repo=repo)
 

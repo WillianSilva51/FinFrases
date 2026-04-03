@@ -1,3 +1,3 @@
-from . import test_quote_service
+from . import conftest, test_quote_service
 
-__all__ = ["test_quote_service"]
+__all__ = ["conftest", "test_quote_service"]

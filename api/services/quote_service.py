@@ -1,7 +1,8 @@
-from models.enums import CategoryQuote
-from models.quote import Quote
-from repositories.quote_repository import QuoteRepository
-from schemas.quote_schema import (
+from api.core.exceptions.custom_exceptions import DomainValidationException
+from api.models.enums import CategoryQuote
+from api.models.quote import Quote
+from api.repositories.quote_repository import QuoteRepository
+from api.schemas.quote_schema import (
     CreateQuoteRequest,
 )
 from loguru import logger
@@ -12,6 +13,14 @@ class QuoteService:
         self, quote: CreateQuoteRequest, repo: QuoteRepository
     ) -> Quote:
         logger.info(f"Criando nova citação: {quote}")
+
+        if (
+            await repo.get_quote_by_content_and_author(quote.content, quote.author)
+            is not None
+        ):
+            raise DomainValidationException(
+                f"A frase '{quote.content}' do autor '{quote.author}' já existe"
+            )
 
         new_quote = await repo.create(quote)
 
@@ -35,7 +44,7 @@ class QuoteService:
         if source:
             filters["source"] = source
         if tags:
-            filters = {"$in": tags}
+            filters["tags"] = {"$in": tags}
 
         logger.info(
             f"Obtendo citações com filtros: {filters}, limit: {limit}, skip: {skip}"
