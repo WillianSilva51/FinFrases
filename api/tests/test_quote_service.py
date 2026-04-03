@@ -1,12 +1,12 @@
 from unittest.mock import AsyncMock
 
 import pytest
-from models.enums import CategoryQuote
-from models.quote import Quote
-from repositories.quote_repository import QuoteRepository
-from schemas.quote_schema import CreateQuoteRequest
-from services.quote_service import QuoteService
-from core.exceptions.custom_exceptions import (
+from api.models.enums import CategoryQuote
+from api.models.quote import Quote
+from api.repositories.quote_repository import QuoteRepository
+from api.schemas.quote_schema import CreateQuoteRequest
+from api.services.quote_service import QuoteService
+from api.core.exceptions.custom_exceptions import (
     DomainValidationException,
 )
 

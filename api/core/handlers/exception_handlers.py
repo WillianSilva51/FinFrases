@@ -4,9 +4,9 @@ from fastapi import Request
 from fastapi.exceptions import RequestValidationError, HTTPException
 from fastapi.responses import JSONResponse
 from loguru import logger
-from schemas.error_schema import ErrorResponse
+from api.schemas.error_schema import ErrorResponse
 
-from ..exceptions.custom_exceptions import (
+from api.core.exceptions.custom_exceptions import (
     DomainValidationException,
     ResourceNotFoundException,
 )

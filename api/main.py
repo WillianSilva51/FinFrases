@@ -1,16 +1,16 @@
 from contextlib import asynccontextmanager
 
-from core.database import init_db
+from api.core.database import init_db
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from routers.quotes import api_router as quotes_router
+from api.routers.quotes import api_router as quotes_router
 
-from core.exceptions.custom_exceptions import (
+from api.core.exceptions.custom_exceptions import (
     DomainValidationException,
     ResourceNotFoundException,
 )
-from core.handlers.exception_handlers import (
+from api.core.handlers.exception_handlers import (
     http_handler,
     domain_validation_handler,
     resource_not_found_handler,

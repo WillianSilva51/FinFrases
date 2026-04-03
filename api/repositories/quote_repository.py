@@ -1,5 +1,5 @@
-from models.quote import Quote
-from schemas.quote_schema import CreateQuoteRequest
+from api.models.quote import Quote
+from api.schemas.quote_schema import CreateQuoteRequest
 
 
 class QuoteRepository:

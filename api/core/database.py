@@ -1,8 +1,8 @@
 from beanie import init_beanie
-from models.quote import Quote
+from api.models.quote import Quote
 from pymongo import AsyncMongoClient
 
-from core.config import settings
+from api.core.config import settings
 
 client: AsyncMongoClient | None = None
 

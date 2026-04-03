@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   test-lint:
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v6
@@ -32,6 +32,5 @@ jobs:
           uv run ruff check . --output-format=github
 
       - name: Test with pytest
-        working-directory: api
         run: |
           uv run pytest

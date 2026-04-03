@@ -1,8 +1,8 @@
-from core.exceptions.custom_exceptions import DomainValidationException
-from models.enums import CategoryQuote
-from models.quote import Quote
-from repositories.quote_repository import QuoteRepository
-from schemas.quote_schema import (
+from api.core.exceptions.custom_exceptions import DomainValidationException
+from api.models.enums import CategoryQuote
+from api.models.quote import Quote
+from api.repositories.quote_repository import QuoteRepository
+from api.schemas.quote_schema import (
     CreateQuoteRequest,
 )
 from loguru import logger
