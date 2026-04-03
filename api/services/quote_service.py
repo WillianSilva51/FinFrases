@@ -44,7 +44,7 @@ class QuoteService:
         if source:
             filters["source"] = source
         if tags:
-            filters = {"$in": tags}
+            filters["tags"] = {"$in": tags}
 
         logger.info(
             f"Obtendo citações com filtros: {filters}, limit: {limit}, skip: {skip}"

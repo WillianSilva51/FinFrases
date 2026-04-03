@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from core.database import init_db
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from routers.quotes import api_router as quotes_router
 
 from core.exceptions.custom_exceptions import (
@@ -58,6 +59,14 @@ Totalmente em português (PT-BR).
     docs_url="/api/docs",
     redoc_url="/api/redoc",
     lifespan=lifespan,
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.add_exception_handler(HTTPException, http_handler)  # type: ignore
