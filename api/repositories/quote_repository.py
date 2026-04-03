@@ -4,7 +4,7 @@ from schemas.quote_schema import CreateQuoteRequest
 
 class QuoteRepository:
     async def create(self, quote_data: CreateQuoteRequest) -> Quote:
-        new_quote = Quote(**quote_data.model_dump())
+        new_quote = Quote.model_validate(quote_data.model_dump())
 
         return await new_quote.insert()
 
@@ -25,3 +25,8 @@ class QuoteRepository:
         result = await Quote.aggregate(agregation).to_list()
 
         return [Quote.model_validate(doc) for doc in result]
+
+    async def get_quote_by_content_and_author(
+        self, content: str, author: str
+    ) -> Quote | None:
+        return await Quote.find_one({"content": content, "author": author})

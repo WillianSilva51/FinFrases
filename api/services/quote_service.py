@@ -1,3 +1,4 @@
+from core.exceptions.custom_exceptions import DomainValidationException
 from models.enums import CategoryQuote
 from models.quote import Quote
 from repositories.quote_repository import QuoteRepository
@@ -12,6 +13,14 @@ class QuoteService:
         self, quote: CreateQuoteRequest, repo: QuoteRepository
     ) -> Quote:
         logger.info(f"Criando nova citação: {quote}")
+
+        if (
+            await repo.get_quote_by_content_and_author(quote.content, quote.author)
+            is not None
+        ):
+            raise DomainValidationException(
+                f"A frase '{quote.content}' do autor '{quote.author}' já existe"
+            )
 
         new_quote = await repo.create(quote)
 
