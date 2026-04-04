@@ -57,6 +57,16 @@ class QuoteService:
 
         return quotes
 
+    async def get_quote_by_id(self, id: str, repo: QuoteRepository) -> Quote:
+        logger.info(f"Obtendo citação com id: {id}")
+
+        quote = await repo.get_quote_by_id(id)
+
+        if quote is None:
+            raise ResourceNotFoundException(f"Citação com id '{id}' não encontrada")
+
+        return quote
+
     async def get_random_quote(self, size: int, repo: QuoteRepository) -> list[Quote]:
         logger.info(f"Obtendo {size} citações aleatórias.")
 
@@ -64,7 +74,12 @@ class QuoteService:
 
     async def get_today_quote(self, repo: QuoteRepository) -> list[Quote]:
         logger.info("Obtendo a citação do dia.")
-        return await self.get_random_quote(size=1, repo=repo)
+        quote = await self.get_random_quote(size=1, repo=repo)
+
+        if not quote:
+            raise ResourceNotFoundException("Nenhuma citação verificada encontrada")
+
+        return quote
 
     async def delete_quote_by_id(self, id: str, repo: QuoteRepository) -> None:
         logger.info(f"Deletando citação com id: {id}")

@@ -121,6 +121,24 @@ async def get_today_quote(
     return await service.get_today_quote(repo=repo)
 
 
+@api_router.get(
+    path="/{id}",
+    response_model=QuoteResponse,
+    status_code=HTTPStatus.OK,
+    name="get_quote_by_id",
+    summary="Obter uma citação por ID",
+    description="Retorna uma citação específica com base no ID fornecido.",
+    response_description="Citação encontrada com sucesso.",
+)
+@cache.cacheable(expire=3600)
+async def get_quote_by_id(
+    id: str,
+    service: QuoteService = Depends(),
+    repo: QuoteRepository = Depends(),
+) -> Quote:
+    return await service.get_quote_by_id(id=id, repo=repo)
+
+
 @api_router.delete(
     path="/{id}",
     status_code=HTTPStatus.NO_CONTENT,
