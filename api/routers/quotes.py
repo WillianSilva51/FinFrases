@@ -119,3 +119,20 @@ async def get_today_quote(
     service: QuoteService = Depends(), repo: QuoteRepository = Depends()
 ) -> list[Quote]:
     return await service.get_today_quote(repo=repo)
+
+
+@api_router.delete(
+    path="/{id}",
+    status_code=HTTPStatus.NO_CONTENT,
+    name="delete_quote",
+    summary="Deletar uma citação por ID",
+    description="Deleta uma citação existente com base no ID fornecido.",
+    response_description="Citação deletada com sucesso.",
+)
+async def delete_quote(
+    id: str,
+    service: QuoteService = Depends(),
+    repo: QuoteRepository = Depends(),
+    _: str = Depends(verify_api_key),
+) -> None:
+    await service.delete_quote_by_id(id=id, repo=repo)

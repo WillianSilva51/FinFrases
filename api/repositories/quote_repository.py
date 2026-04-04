@@ -1,5 +1,6 @@
 from api.models.quote import Quote
 from api.schemas.quote_schema import CreateQuoteRequest
+from beanie import PydanticObjectId
 
 
 class QuoteRepository:
@@ -30,3 +31,9 @@ class QuoteRepository:
         self, content: str, author: str
     ) -> Quote | None:
         return await Quote.find_one({"content": content, "author": author})
+
+    async def get_quote_by_id(self, id: str) -> Quote | None:
+        return await Quote.get(PydanticObjectId(id))
+
+    async def delete_quote_by_id(self, id: str) -> None:
+        await Quote.find_one({"_id": PydanticObjectId(id)}).delete()

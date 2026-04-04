@@ -1,4 +1,7 @@
-from api.core.exceptions.custom_exceptions import DomainValidationException
+from api.core.exceptions.custom_exceptions import (
+    DomainValidationException,
+    ResourceNotFoundException,
+)
 from api.models.enums import CategoryQuote
 from api.models.quote import Quote
 from api.repositories.quote_repository import QuoteRepository
@@ -62,3 +65,11 @@ class QuoteService:
     async def get_today_quote(self, repo: QuoteRepository) -> list[Quote]:
         logger.info("Obtendo a citação do dia.")
         return await self.get_random_quote(size=1, repo=repo)
+
+    async def delete_quote_by_id(self, id: str, repo: QuoteRepository) -> None:
+        logger.info(f"Deletando citação com id: {id}")
+
+        if await repo.get_quote_by_id(id) is None:
+            raise ResourceNotFoundException(f"Citação com id '{id}' não encontrada")
+
+        await repo.delete_quote_by_id(id)
