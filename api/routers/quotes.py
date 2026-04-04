@@ -1,10 +1,10 @@
 from http import HTTPStatus
 
+from fastapi import APIRouter, Depends, Query
+
 from api.core.cache import RedisCache
 from api.core.security import verify_api_key
-from fastapi import APIRouter, Depends, Query
 from api.models.enums import CategoryQuote
-from api.models.quote import Quote
 from api.repositories.quote_repository import QuoteRepository
 from api.schemas.pagination import PaginatedResponse
 from api.schemas.quote_schema import CreateQuoteRequest, QuoteResponse
@@ -29,8 +29,10 @@ async def post_quote(
     service: QuoteService = Depends(),
     repo: QuoteRepository = Depends(),
     _: str = Depends(verify_api_key),
-) -> Quote:
-    return await service.create_quote(quote=new_quote, repo=repo)
+) -> QuoteResponse:
+    quote = await service.create_quote(quote=new_quote, repo=repo)
+
+    return QuoteResponse.model_validate(quote.model_dump())
 
 
 @api_router.get(
@@ -69,7 +71,7 @@ async def get_all_quotes(
     ),
     service: QuoteService = Depends(),
     repo: QuoteRepository = Depends(),
-) -> PaginatedResponse[Quote]:
+) -> PaginatedResponse[QuoteResponse]:
     quotes, total_counts = await service.get_all(
         author=author,
         tags=tags,
@@ -79,6 +81,8 @@ async def get_all_quotes(
         skip=skip,
         repo=repo,
     )
+
+    quotes = [QuoteResponse.model_validate(quote.model_dump()) for quote in quotes]
 
     return PaginatedResponse(items=quotes, total=total_counts, limit=limit, skip=skip)
 
@@ -101,8 +105,10 @@ async def get_random_quote(
     ),
     service: QuoteService = Depends(),
     repo: QuoteRepository = Depends(),
-) -> list[Quote]:
-    return await service.get_random_quote(size=size, repo=repo)
+) -> list[QuoteResponse]:
+    quotes = await service.get_random_quote(size=size, repo=repo)
+
+    return [QuoteResponse.model_validate(quote.model_dump()) for quote in quotes]
 
 
 @api_router.get(
@@ -117,5 +123,42 @@ async def get_random_quote(
 @cache.cacheable(expire=expiration_midnight)
 async def get_today_quote(
     service: QuoteService = Depends(), repo: QuoteRepository = Depends()
-) -> list[Quote]:
-    return await service.get_today_quote(repo=repo)
+) -> list[QuoteResponse]:
+    quotes = await service.get_today_quote(repo=repo)
+    return [QuoteResponse.model_validate(quote.model_dump()) for quote in quotes]
+
+
+@api_router.get(
+    path="/{id}",
+    response_model=QuoteResponse,
+    status_code=HTTPStatus.OK,
+    name="get_quote_by_id",
+    summary="Obter uma citação por ID",
+    description="Retorna uma citação específica com base no ID fornecido.",
+    response_description="Citação encontrada com sucesso.",
+)
+@cache.cacheable(expire=3600)
+async def get_quote_by_id(
+    id: str,
+    service: QuoteService = Depends(),
+    repo: QuoteRepository = Depends(),
+) -> QuoteResponse:
+    quote = await service.get_quote_by_id(id=id, repo=repo)
+    return QuoteResponse.model_validate(quote.model_dump())
+
+
+@api_router.delete(
+    path="/{id}",
+    status_code=HTTPStatus.NO_CONTENT,
+    name="delete_quote",
+    summary="Deletar uma citação por ID",
+    description="Deleta uma citação existente com base no ID fornecido.",
+    response_description="Citação deletada com sucesso.",
+)
+async def delete_quote(
+    id: str,
+    service: QuoteService = Depends(),
+    repo: QuoteRepository = Depends(),
+    _: str = Depends(verify_api_key),
+) -> None:
+    await service.delete_quote_by_id(id=id, repo=repo)

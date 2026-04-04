@@ -1,0 +1,24 @@
+info:
+  name: Delete Quote By ID
+  type: http
+  seq: 5
+
+http:
+  method: DELETE
+  url: "{{baseUrl}}/{{versionApi}}/quotes/{{quote_ID}}"
+  auth:
+    type: apikey
+    key: X-API-Key
+    value: "{{API_KEY}}"
+    placement: header
+
+runtime:
+  variables:
+    - name: quote_ID
+      value: 69c6ab48eacecd834f6311a2
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,20 @@
+info:
+  name: Get Quote By ID
+  type: http
+  seq: 6
+
+http:
+  method: GET
+  url: "{{baseUrl}}/{{versionApi}}/quotes/{{quote_ID}}"
+  auth: inherit
+
+runtime:
+  variables:
+    - name: quote_ID
+      value: 69c6ab47eacecd834f6311a1
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

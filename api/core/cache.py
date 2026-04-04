@@ -78,9 +78,17 @@ class RedisCache:
                 result = await func(*args, **kwargs)
 
                 if result is not None:
-                    serializable_result = [
-                        model.model_dump(mode="json") for model in result
-                    ]
+                    if isinstance(result, list):
+                        serializable_result = [
+                            self._normalize_cache_value(model.model_dump(mode="json"))
+                            for model in result
+                        ]
+                    elif hasattr(result, "model_dump"):
+                        serializable_result = self._normalize_cache_value(
+                            result.model_dump(mode="json")
+                        )
+                    else:
+                        serializable_result = self._normalize_cache_value(result)
 
                     logger.info(f"Armazenando no cache para a chave: {cache_key}")
 
