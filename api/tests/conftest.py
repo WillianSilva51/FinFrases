@@ -1,4 +1,5 @@
 import os
+
 import pytest
 
 os.environ["MONGO_URI"] = "mongodb://localhost:27017/testdb"

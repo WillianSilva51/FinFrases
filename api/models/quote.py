@@ -14,6 +14,7 @@ class Quote(Document):
     source: str | None
     verified: bool = False
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime | None = None
 
     class Settings:
         name = "quotes"

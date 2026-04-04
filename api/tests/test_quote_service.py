@@ -1,15 +1,16 @@
 from unittest.mock import AsyncMock
 
 import pytest
+
+from api.core.exceptions.custom_exceptions import (
+    DomainValidationException,
+    ResourceNotFoundException,
+)
 from api.models.enums import CategoryQuote
 from api.models.quote import Quote
 from api.repositories.quote_repository import QuoteRepository
 from api.schemas.quote_schema import CreateQuoteRequest
 from api.services.quote_service import QuoteService
-from api.core.exceptions.custom_exceptions import (
-    DomainValidationException,
-    ResourceNotFoundException,
-)
 
 
 @pytest.fixture
@@ -220,4 +221,6 @@ class TestGetQuoteById:
 
 
 class TestUpdateQuoteById:
-    pass
+    @pytest.mark.asyncio
+    async def test_update_quote_by_id_sucess(self, service, mock_repo, quote):
+        pass

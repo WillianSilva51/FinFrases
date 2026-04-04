@@ -1,3 +1,5 @@
+from loguru import logger
+
 from api.core.exceptions.custom_exceptions import (
     DomainValidationException,
     ResourceNotFoundException,
@@ -8,7 +10,6 @@ from api.repositories.quote_repository import QuoteRepository
 from api.schemas.quote_schema import (
     CreateQuoteRequest,
 )
-from loguru import logger
 
 
 class QuoteService:

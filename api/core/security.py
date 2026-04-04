@@ -2,9 +2,9 @@ import secrets
 
 from fastapi import HTTPException, Security, status
 from fastapi.security import APIKeyHeader
+from loguru import logger
 
 from .config import settings
-from loguru import logger
 
 api_key_header = APIKeyHeader(
     name="X-API-Key",
