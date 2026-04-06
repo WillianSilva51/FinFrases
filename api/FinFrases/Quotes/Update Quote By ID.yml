@@ -1,0 +1,32 @@
+info:
+  name: Update Quote By ID
+  type: http
+  seq: 7
+
+http:
+  method: PUT
+  url: "{{baseUrl}}/{{versionApi}}/quotes/{{quote_id}}"
+  body:
+    type: json
+    data: |-
+      {
+        "content": "stringstri",
+        "author": "string",
+        "tags": [
+          "GERAL"
+        ],
+        "source": "stringstri",
+        "verified": true
+      }
+  auth: inherit
+
+runtime:
+  variables:
+    - name: quote_id
+      value: ""
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

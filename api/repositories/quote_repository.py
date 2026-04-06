@@ -1,8 +1,7 @@
 from beanie import PydanticObjectId
 
-from api.core.exceptions.custom_exceptions import ResourceNotFoundException
 from api.models.quote import Quote
-from api.schemas.quote_schema import CreateQuoteRequest, UpdateQuoteRequest
+from api.schemas.quote_schema import CreateQuoteRequest
 
 
 class QuoteRepository:
