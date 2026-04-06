@@ -1,5 +1,6 @@
 from beanie import PydanticObjectId
 
+from api.core.exceptions.custom_exceptions import ResourceNotFoundException
 from api.models.quote import Quote
 from api.schemas.quote_schema import CreateQuoteRequest, UpdateQuoteRequest
 
@@ -36,10 +37,13 @@ class QuoteRepository:
     async def get_quote_by_id(self, id: str) -> Quote | None:
         return await Quote.get(PydanticObjectId(id))
 
-    async def update_quote(
-        self, id: str, quote_data: UpdateQuoteRequest
-    ) -> Quote | None:
-        pass
+    async def update_quote(self, id: str, quote_data: dict) -> Quote:
+        quote = await Quote.get(PydanticObjectId(id))
+
+        update_query = {"$set": quote_data}
+        quote = await quote.update(update_query)
+
+        return quote
 
     async def delete_quote_by_id(self, id: str) -> None:
         await Quote.find_one({"_id": PydanticObjectId(id)}).delete()

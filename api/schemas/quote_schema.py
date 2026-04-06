@@ -73,11 +73,6 @@ class UpdateQuoteRequest(BaseModel):
         default=None, description="Indica se a citação foi verificada ou não"
     )
 
-    updated_at: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc),
-        description="A data e hora da última atualização da citação",
-    )
-
     @field_validator("content", "author", "source")
     @classmethod
     def validate_fields(cls, v):
