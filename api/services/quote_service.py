@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from loguru import logger
 
 from api.core.exceptions.custom_exceptions import (
@@ -7,9 +9,7 @@ from api.core.exceptions.custom_exceptions import (
 from api.models.enums import CategoryQuote
 from api.models.quote import Quote
 from api.repositories.quote_repository import QuoteRepository
-from api.schemas.quote_schema import (
-    CreateQuoteRequest,
-)
+from api.schemas.quote_schema import CreateQuoteRequest, UpdateQuoteRequest
 
 
 class QuoteService:
@@ -65,7 +65,6 @@ class QuoteService:
 
         if quote is None:
             raise ResourceNotFoundException(f"Citação com id '{id}' não encontrada")
-
         return quote
 
     async def get_random_quote(self, size: int, repo: QuoteRepository) -> list[Quote]:
@@ -82,10 +81,30 @@ class QuoteService:
 
         return quote
 
+    async def update_quote_by_id(
+        self, id: str, quote_data: UpdateQuoteRequest, repo: QuoteRepository
+    ) -> Quote:
+        logger.info(f"Atualizando citação com id: {id}, dados: {quote_data}")
+
+        await self.get_quote_by_id(id, repo)
+
+        if quote_data.author and quote_data.content:
+            existing_quote = await repo.get_quote_by_content_and_author(
+                quote_data.content, quote_data.author
+            )
+            if existing_quote and existing_quote.id != id:
+                raise DomainValidationException(
+                    f"A frase '{quote_data.content}' do autor '{quote_data.author}' já existe"
+                )
+
+        quote_data_dict = quote_data.model_dump(exclude_unset=True)
+        quote_data_dict["updated_at"] = datetime.now(timezone.utc)
+
+        return await repo.update_quote(id, quote_data_dict)
+
     async def delete_quote_by_id(self, id: str, repo: QuoteRepository) -> None:
         logger.info(f"Deletando citação com id: {id}")
 
-        if await repo.get_quote_by_id(id) is None:
-            raise ResourceNotFoundException(f"Citação com id '{id}' não encontrada")
+        await self.get_quote_by_id(id, repo)
 
         await repo.delete_quote_by_id(id)

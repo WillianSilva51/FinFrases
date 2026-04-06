@@ -7,7 +7,11 @@ from api.core.security import verify_api_key
 from api.models.enums import CategoryQuote
 from api.repositories.quote_repository import QuoteRepository
 from api.schemas.pagination import PaginatedResponse
-from api.schemas.quote_schema import CreateQuoteRequest, QuoteResponse
+from api.schemas.quote_schema import (
+    CreateQuoteRequest,
+    UpdateQuoteRequest,
+    QuoteResponse,
+)
 from api.services.quote_service import QuoteService
 from api.utils.utils import expiration_midnight
 
@@ -144,6 +148,27 @@ async def get_quote_by_id(
     repo: QuoteRepository = Depends(),
 ) -> QuoteResponse:
     quote = await service.get_quote_by_id(id=id, repo=repo)
+    return QuoteResponse.model_validate(quote.model_dump())
+
+
+@api_router.put(
+    path="/{id}",
+    response_model=QuoteResponse,
+    status_code=HTTPStatus.OK,
+    name="update_quote",
+    summary="Atualizar uma citação por ID",
+    description="Atualiza uma citação existente com base no ID fornecido e nos dados atualizados.",
+    response_description="Citação atualizada com sucesso.",
+)
+async def update_quote(
+    id: str,
+    quote_data: UpdateQuoteRequest,
+    service: QuoteService = Depends(),
+    repo: QuoteRepository = Depends(),
+    _: str = Depends(verify_api_key),
+) -> QuoteResponse:
+    quote = await service.update_quote_by_id(id=id, quote_data=quote_data, repo=repo)
+
     return QuoteResponse.model_validate(quote.model_dump())
 
 

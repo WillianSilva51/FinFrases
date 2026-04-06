@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import Annotated
 
 from beanie import PydanticObjectId
@@ -71,11 +71,6 @@ class UpdateQuoteRequest(BaseModel):
 
     verified: bool | None = Field(
         default=None, description="Indica se a citação foi verificada ou não"
-    )
-
-    updated_at: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc),
-        description="A data e hora da última atualização da citação",
     )
 
     @field_validator("content", "author", "source")
