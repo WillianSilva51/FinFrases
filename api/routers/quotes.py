@@ -6,7 +6,7 @@ from api.core.cache import RedisCache
 from api.core.security import verify_api_key
 from api.models.enums import CategoryQuote
 from api.repositories.quote_repository import QuoteRepository
-from api.schemas.pagination import PaginatedResponse
+from api.schemas.pagination import Params, PaginatedResponse
 from api.schemas.quote_schema import (
     CreateQuoteRequest,
     UpdateQuoteRequest,
@@ -30,8 +30,8 @@ cache = RedisCache()
 )
 async def post_quote(
     new_quote: CreateQuoteRequest,
-    service: QuoteService = Depends(),
-    repo: QuoteRepository = Depends(),
+    service: QuoteService = Depends(QuoteService),
+    repo: QuoteRepository = Depends(QuoteRepository),
     _: str = Depends(verify_api_key),
 ) -> QuoteResponse:
     quote = await service.create_quote(quote=new_quote, repo=repo)
@@ -61,34 +61,29 @@ async def get_all_quotes(
     verified: bool = Query(
         default=True, description="Filtrar apenas citações verificadas."
     ),
-    limit: int = Query(
-        default=0,
-        ge=0,
-        le=100,
-        description="Número máximo de citações a serem retornadas.",
-    ),
-    skip: int = Query(
-        default=0,
-        ge=0,
-        le=1000,
-        description="Número de citações a serem ignoradas para paginação.",
-    ),
-    service: QuoteService = Depends(),
-    repo: QuoteRepository = Depends(),
+    params: Params = Depends(Params),
+    service: QuoteService = Depends(QuoteService),
+    repo: QuoteRepository = Depends(QuoteRepository),
 ) -> PaginatedResponse[QuoteResponse]:
-    quotes, total_counts = await service.get_all(
+    quotes, total_counts, pages = await service.get_all(
         author=author,
         tags=tags,
         source=source,
         verified=verified,
-        limit=limit,
-        skip=skip,
+        limit=params.get_limit(),
+        skip=params.get_offset(),
         repo=repo,
     )
 
     quotes = [QuoteResponse.model_validate(quote.model_dump()) for quote in quotes]
 
-    return PaginatedResponse(items=quotes, total=total_counts, limit=limit, skip=skip)
+    return PaginatedResponse(
+        items=quotes,
+        total=total_counts,
+        page=params.page,
+        size=params.size,
+        pages=pages,
+    )
 
 
 @api_router.get(
@@ -107,8 +102,8 @@ async def get_random_quote(
         le=100,
         description="Número de citações aleatórias a serem retornadas.",
     ),
-    service: QuoteService = Depends(),
-    repo: QuoteRepository = Depends(),
+    service: QuoteService = Depends(QuoteService),
+    repo: QuoteRepository = Depends(QuoteRepository),
 ) -> list[QuoteResponse]:
     quotes = await service.get_random_quote(size=size, repo=repo)
 
@@ -126,7 +121,8 @@ async def get_random_quote(
 )
 @cache.cacheable(expire=expiration_midnight)
 async def get_today_quote(
-    service: QuoteService = Depends(), repo: QuoteRepository = Depends()
+    service: QuoteService = Depends(QuoteService),
+    repo: QuoteRepository = Depends(QuoteRepository),
 ) -> list[QuoteResponse]:
     quotes = await service.get_today_quote(repo=repo)
     return [QuoteResponse.model_validate(quote.model_dump()) for quote in quotes]
@@ -144,8 +140,8 @@ async def get_today_quote(
 @cache.cacheable(expire=3600)
 async def get_quote_by_id(
     id: str,
-    service: QuoteService = Depends(),
-    repo: QuoteRepository = Depends(),
+    service: QuoteService = Depends(QuoteService),
+    repo: QuoteRepository = Depends(QuoteRepository),
 ) -> QuoteResponse:
     quote = await service.get_quote_by_id(id=id, repo=repo)
     return QuoteResponse.model_validate(quote.model_dump())
@@ -163,8 +159,8 @@ async def get_quote_by_id(
 async def update_quote(
     id: str,
     quote_data: UpdateQuoteRequest,
-    service: QuoteService = Depends(),
-    repo: QuoteRepository = Depends(),
+    service: QuoteService = Depends(QuoteService),
+    repo: QuoteRepository = Depends(QuoteRepository),
     _: str = Depends(verify_api_key),
 ) -> QuoteResponse:
     quote = await service.update_quote_by_id(id=id, quote_data=quote_data, repo=repo)
@@ -182,8 +178,8 @@ async def update_quote(
 )
 async def delete_quote(
     id: str,
-    service: QuoteService = Depends(),
-    repo: QuoteRepository = Depends(),
+    service: QuoteService = Depends(QuoteService),
+    repo: QuoteRepository = Depends(QuoteRepository),
     _: str = Depends(verify_api_key),
 ) -> None:
     await service.delete_quote_by_id(id=id, repo=repo)

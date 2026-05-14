@@ -39,7 +39,7 @@ class QuoteService:
         limit: int,
         skip: int,
         repo: QuoteRepository,
-    ) -> tuple[list[Quote], int]:
+    ) -> tuple[list[Quote], int, int]:
         filters = {}
         filters["verified"] = verified
 
@@ -56,7 +56,9 @@ class QuoteService:
 
         quotes = await repo.get_all(filters, limit, skip)
 
-        return quotes
+        quotes, total_counts = quotes
+
+        return quotes, total_counts, (total_counts + limit - 1) // limit
 
     async def get_quote_by_id(self, id: str, repo: QuoteRepository) -> Quote:
         logger.info(f"Obtendo citação com id: {id}")
