@@ -17,9 +17,9 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-COPY --from=builder /venv /venv
+RUN useradd -m appuser && chown appuser:appuser /app
 
-RUN useradd -m appuser
+COPY --from=builder /venv /venv
 
 COPY --chown=appuser:appuser . /app
 
@@ -27,4 +27,5 @@ USER appuser
 
 EXPOSE 8000
 
-CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+ENTRYPOINT ["uvicorn", "api.main:app", "--host", "0.0.0.0"]
+CMD [ "--port", "8000"]
