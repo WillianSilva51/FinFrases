@@ -103,7 +103,7 @@ class TestGetAllQuotes:
 
         mock_repo.get_all.return_value = ([quote, other_quote], 2)
 
-        result, total = await service.get_all(
+        result, total, pages = await service.get_all(
             author=None,
             tags=None,
             source=None,
@@ -115,6 +115,7 @@ class TestGetAllQuotes:
 
         assert result == [quote, other_quote]
         assert total == 2
+        assert pages == 1
 
         mock_repo.get_all.assert_awaited_once_with({"verified": True}, 10, 0)
 
