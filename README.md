@@ -1,4 +1,4 @@
-# 💰 FinFrases API
+# 💰 FinFrases
 
 [![Python](https://img.shields.io/badge/Python-3.13-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-Enabled-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
@@ -7,133 +7,75 @@
 ![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 [![License](https://img.shields.io/github/license/WillianSilva51/FinFrases?color=blue&style=for-the-badge)](https://github.com/WillianSilva51/FinFrases/blob/main/LICENSE)
 
-[![Logo](assets/images/logo.png)](https://github.com/WillianSilva51/FinFrases)
+[![Logo](./assets/images/logo.png)](https://github.com/WillianSilva51/FinFrases)
 
-Uma API aberta e gratuita para frases de mentalidade financeira, investimentos e educação financeira, totalmente em português (PT-BR).
+Uma plataforma aberta e gratuita de frases de mentalidade financeira, investimentos e educação, totalmente em português (PT-BR).
 
-Este projeto foi criado para preencher a lacuna de APIs brasileiras voltadas ao nicho de finanças, oferecendo conteúdo curado de grandes nomes como Luiz Barsi, Warren Buffett, Nathalia Arcuri e outros.
+Este projeto foi criado para preencher a lacuna de ecossistemas brasileiros voltados ao nicho de finanças, oferecendo conteúdo curado de grandes nomes como Luiz Barsi, Warren Buffett, Nathalia Arcuri e outros.
 
-*Inicialmente construído em Java/Spring Boot, o projeto foi refatorado para Python/FastAPI visando máxima agilidade, performance assíncrona e integração facilitada com ecossistemas de dados.*
+*Inicialmente construído em Java/Spring Boot, o sistema foi totalmente refatorado para Python visando máxima agilidade, performance assíncrona e integração facilitada com pipelines de dados.*
 
-## ✨ Funcionalidades
+---
 
-* **Banco de Dados Curado**: Frases verificadas sobre investimentos, psicologia financeira e poupança.
-* **Filtros Avançados**: Busca flexível por autor, categoria (tags) ou fonte da frase.
-* **Resultados Aleatórios**: Endpoint dedicado para obter inspiração randômica.
-* **Frase do Dia (Nova)**: Endpoint com performance otimizada utilizando padrão *Cache-Aside* para fornecer a frase diária sem sobrecarregar o banco.
-* **Documentação Automática**: Interface interativa via **Swagger/OpenAPI**.
+## 🏗️ Estrutura do Repositório
 
-## 🚀 Tecnologias
+Este é um *monorepo* que contém todos os serviços necessários para rodar o FinFrases. Para detalhes técnicos de código e arquitetura, consulte a documentação específica de cada módulo:
 
-* **Python 3.13+** e **FastAPI**: Alta performance, código limpo e requisições 100% assíncronas.
-* **MongoDB & Beanie**: Armazenamento de documentos utilizando um ODM assíncrono poderoso.
-* **Redis**: Sistema de cache em memória para endpoints de alta demanda.
-* **Pydantic**: Tipagem estática rigorosa e validação de dados automática.
-* **uv**: Gerenciador de pacotes ultra-rápido para o ecossistema Python.
-* **Docker & Podman**: Ambiente isolado e orquestração de containers (API, Mongo e Redis).
+* ⚙️ [**`/api`**](./api/README.md): Backend assíncrono desenvolvido em FastAPI. Responsável pelas regras de negócio, paginação, integração com MongoDB e cache distribuído com Redis.
+* 🖥️ **`/frontend`** *(ou o nome da sua pasta de front)*: Interface de usuário para visualização, busca e interação com as frases curadas.
 
-## 🛠️ Uso (Endpoints)
+---
 
-A documentação completa e interativa pode ser acessada localmente em: `http://localhost:8000/api/docs` ou `http://localhost:8000/api/redoc` para visualização alternativa.
+## 🚀 Quick Start (Instalação via Docker)
 
-### Listar frases (Com suporte a filtros e paginação)
+A forma mais rápida de rodar o projeto localmente é utilizando o Docker Compose, que orquestra e sobe automaticamente a API, o Frontend, o banco de dados (MongoDB) e o cache (Redis).
 
-Retorna uma lista de frases. Você pode filtrar via *Query Parameters*.
-`GET /api/v1/quotes?limit=10&skip=0`
-
-**Filtros disponíveis:** `author`, `tags`, `source`, `verified`.
-*Exemplo: `GET /api/v1/quotes?tags=INVESTIMENTOS&author=Warren Buffett`*
-
-### Frases Aleatórias
-
-Retorna uma ou mais frases aleatórias utilizando agregação nativa do MongoDB.
-`GET /api/v1/quotes/random?size=1`
-
-### Frase do Dia (Com Cache)
-
-Retorna a frase oficial do dia. O resultado é cacheado no Redis e atualizado automaticamente à meia-noite.
-`GET /api/v1/quotes/today`
-
-**Exemplo de Resposta:**
-
-```json
-[
-  {
-    "_id": "65d4f8a9e4b0a1b2c3d4e5f6",
-    "content": "O preço é o que você paga; o valor é o que você leva.",
-    "author": "Warren Buffett",
-    "tags": ["INVESTIMENTOS"],
-    "source": "Carta aos Acionistas, 2008",
-    "verified": true,
-    "created_at": "2026-03-27T10:00:00Z"
-  }
-]
-```
-
-**Categorias (Tags) disponíveis:** `GERAL`, `INVESTIMENTOS`, `POUPANCA`, `PSICOLOGIA`, `DIVIDENDOS`, `EDUCACAO`, `EMPREENDEDORISMO`, `ACAO`, `FIIS`.
-
-## 💻 Instalação e Desenvolvimento
-
-Como o projeto utiliza Docker, você pode subir o ambiente completo (API, MongoDB e Redis) rapidamente.
-
-1. **Clone o repositório:**
-
-<!-- end list -->
+**1. Clone o repositório:**
 
 ```bash
 git clone https://github.com/williiansilva51/finfrases.git
-cd finfrases/api
+cd finfrases
 ```
 
-1. **Configure as variáveis de ambiente:**
-    Faça uma cópia do arquivo `.env-example` para `.env` e preencha com as credenciais (as senhas padrão já funcionam localmente).
-
-2. **Suba os containers:**
-
-<!-- end list -->
+**2. Variáveis de Ambiente:**
+Faça uma cópia do arquivo de configuração na pasta da API e preencha com as credenciais necessárias (para desenvolvimento local, os valores padrão são suficientes).
 
 ```bash
-podman-compose up -d
-# ou
-docker-compose up -d
+cp api/.env-example api/.env
+
 ```
 
-1. **Acesse a API:**
-    A aplicação estará disponível na porta `8000`. Acesse `http://localhost:8000/api/docs` para testar os endpoints.
-
-## 🔐 Administração
-
-Para criar novas frases, é necessário enviar um `POST` para `/api/v1/quotes/` contendo o payload validado pelo Pydantic.
-
-```json
-{
-  "_id": "65d4f8a9e4b0a1b2c3d4e5f6",
-  "content": "O risco vem de não saber o que você está fazendo.",
-  "author": "Warren Buffett",
-  "tags": ["INVESTIMENTOS"],
-  "source": "Livro: O Investidor Inteligente",
-  "verified": true
-}
-```
-
-### Como criar uma API Key
-
-1. Instale em sua máquina o OpenSSL (<https://www.openssl.org/>).
-2. Execute o comando abaixo para gerar uma chave aleatória segura com 64 bytes (512 bits) de entropia e imprimi-la no terminal:
+**3. Suba os containers:**
 
 ```bash
-openssl rand -base64 64
+podman-compose up -d --build
+# ou (dependendo do seu ecossistema)
+docker compose up -d --build
+
 ```
 
-> [!IMPORTANT]
-> A saída terá aproximadamente 88 caracteres, pois está codificada em Base64.
+**4. Acesse a aplicação:**
+Com os containers rodando, os serviços estarão disponíveis em:
 
-3. Coloque a chave gerada no campo `API_KEY` do arquivo `.env` e reinicie os containers para aplicar a nova chave.
+* 🌐 **Frontend Web:** `http://localhost:8080`
+* 📚 **Documentação da API (Swagger):** `http://localhost:8000/api/docs`
+
+---
+
+## 🤝 Como Contribuir
+
+Sugestões de novas frases, correções ortográficas e melhorias no código são muito bem-vindas!
+
+1. Faça um *Fork* do projeto.
+2. Crie uma *Branch* para sua modificação (`git checkout -b feature/NovaFuncionalidade`).
+3. Faça o *Commit* das suas alterações (`git commit -m 'Add: nova funcionalidade'`).
+4. Faça o *Push* para a branch (`git push origin feature/NovaFuncionalidade`).
+5. Abra um *Pull Request*.
 
 ## 📄 Licença
 
-Este projeto está sob a licença [**MIT**](./LICENSE).
+Este projeto é de código aberto e está sob a licença **[MIT](./LICENSE)**.
 
------
+---
 
 Desenvolvido por [Willian Silva](https://github.com/WillianSilva51)

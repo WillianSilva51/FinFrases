@@ -17,11 +17,16 @@ from api.core.handlers.exception_handlers import (
     resource_not_found_handler,
 )
 from api.routers.quotes import api_router as quotes_router
+from api.routers.health import api_router as health_router
 
 tags_metadata = [
     {
         "name": "Frases",
         "description": "Operações relacionadas a frases financeiras.",
+    },
+    {
+        "name": "Health",
+        "description": "Endpoint para verificar a saúde da API.",
     },
 ]
 
@@ -76,3 +81,4 @@ app.add_exception_handler(RequestValidationError, request_validation_handler)  #
 app.add_exception_handler(Exception, global_exception_handler)
 
 app.include_router(quotes_router, prefix="/api")
+app.include_router(health_router, prefix="/api")
