@@ -150,7 +150,7 @@ python-dotenv==1.2.2
     #   finfrases
     #   pydantic-settings
     #   uvicorn
-python-multipart==0.0.22
+python-multipart==0.0.27
     # via fastapi
 pytz==2026.1.post1
     # via pandas
@@ -220,7 +220,7 @@ typing-inspection==0.4.2
     #   pydantic-settings
 tzdata==2025.3
     # via pandas
-urllib3==2.6.3
+urllib3==2.7.0
     # via
     #   requests
     #   sentry-sdk
