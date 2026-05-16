@@ -33,7 +33,7 @@ A forma mais rápida de rodar o projeto localmente é utilizando o Docker Compos
 **1. Clone o repositório:**
 
 ```bash
-git clone [https://github.com/williiansilva51/finfrases.git](https://github.com/williiansilva51/finfrases.git)
+git clone https://github.com/williiansilva51/finfrases.git
 cd finfrases
 ```
 
@@ -74,7 +74,7 @@ Sugestões de novas frases, correções ortográficas e melhorias no código sã
 
 ## 📄 Licença
 
-Este projeto é de código aberto e está sob a licença **[MIT](https://www.google.com/search?q=./LICENSE)**.
+Este projeto é de código aberto e está sob a licença **[MIT](./LICENSE)**.
 
 ---
 

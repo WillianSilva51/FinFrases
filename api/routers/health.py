@@ -2,11 +2,11 @@ from fastapi import APIRouter
 from api.core.config import settings
 
 
-api_router = APIRouter(prefix="/health", tags=["health"])
+api_router = APIRouter(prefix="v1/health", tags=["health"])
 
 
 @api_router.get(
-    path="/",
+    path="",
     status_code=200,
     name="health_check",
     summary="Health Check",

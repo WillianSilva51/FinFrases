@@ -3,12 +3,20 @@ services:
     image: docker.io/library/mongo:8.2
     container_name: finfrases-mongo
     restart: always
+    volumes:
+      - mongo_data:/data/db:Z
     ports:
       - "27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-user}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-password123}
       MONGO_INITDB_DATABASE: finfrases
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
   redis:
     image: docker.io/library/redis:8.4-alpine
@@ -16,14 +24,29 @@ services:
     restart: always
     ports:
       - "6379:6379" 
-#   volumes:
-#    - redis_data:/data:Z
+    volumes:
+      - redis_data:/data:Z
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
       interval: 10s
       timeout: 5s
       retries: 3
       start_period: 5s
+  
+  finfrases-api:
+    build:
+      context: .
+      dockerfile: ./api/Dockerfile
+    container_name: finfrases-api
+    restart: always
+    ports:
+      - "8000:8000"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
-#volumes:
-#  redis_data:
+volumes:
+  redis_data:
+  mongo_data:
