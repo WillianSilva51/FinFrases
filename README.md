@@ -7,46 +7,75 @@
 ![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 [![License](https://img.shields.io/github/license/WillianSilva51/FinFrases?color=blue&style=for-the-badge)](https://github.com/WillianSilva51/FinFrases/blob/main/LICENSE)
 
-Uma API aberta e gratuita para frases de mentalidade financeira, investimentos e educação financeira, totalmente em português (PT-BR).
+[![Logo](./assets/images/logo.png)](https://github.com/WillianSilva51/FinFrases)
 
-Este projeto foi criado para preencher a lacuna de APIs brasileiras voltadas ao nicho de finanças, oferecendo conteúdo curado de grandes nomes como Luiz Barsi, Warren Buffett, Nathalia Arcuri e outros.
+Uma plataforma aberta e gratuita de frases de mentalidade financeira, investimentos e educação, totalmente em português (PT-BR).
 
-*Inicialmente construído em Java/Spring Boot, o projeto foi refatorado para Python/FastAPI visando máxima agilidade, performance assíncrona e integração facilitada com ecossistemas de dados.*
+Este projeto foi criado para preencher a lacuna de ecossistemas brasileiros voltados ao nicho de finanças, oferecendo conteúdo curado de grandes nomes como Luiz Barsi, Warren Buffett, Nathalia Arcuri e outros.
 
-## 💻 Instalação e Desenvolvimento
+*Inicialmente construído em Java/Spring Boot, o sistema foi totalmente refatorado para Python visando máxima agilidade, performance assíncrona e integração facilitada com pipelines de dados.*
 
-Como o projeto utiliza Docker, você pode subir o ambiente completo (Frontend, API, MongoDB e Redis) rapidamente.
+---
 
-1. **Clone o repositório:**
+## 🏗️ Estrutura do Repositório
 
-<!-- end list -->
+Este é um *monorepo* que contém todos os serviços necessários para rodar o FinFrases. Para detalhes técnicos de código e arquitetura, consulte a documentação específica de cada módulo:
+
+* ⚙️ [**`/api`**](./api/README.md): Backend assíncrono desenvolvido em FastAPI. Responsável pelas regras de negócio, paginação, integração com MongoDB e cache distribuído com Redis.
+* 🖥️ **`/frontend`** *(ou o nome da sua pasta de front)*: Interface de usuário para visualização, busca e interação com as frases curadas.
+
+---
+
+## 🚀 Quick Start (Instalação via Docker)
+
+A forma mais rápida de rodar o projeto localmente é utilizando o Docker Compose, que orquestra e sobe automaticamente a API, o Frontend, o banco de dados (MongoDB) e o cache (Redis).
+
+**1. Clone o repositório:**
 
 ```bash
-git clone https://github.com/williiansilva51/finfrases.git
+git clone [https://github.com/williiansilva51/finfrases.git](https://github.com/williiansilva51/finfrases.git)
+cd finfrases
 ```
 
-1. **Configure as variáveis de ambiente:**
-    Faça uma cópia do arquivo `.env-example` para `.env` e preencha com as credenciais (as senhas padrão já funcionam localmente).
-
-2. **Suba os containers:**
-
-<!-- end list -->
+**2. Variáveis de Ambiente:**
+Faça uma cópia do arquivo de configuração na pasta da API e preencha com as credenciais necessárias (para desenvolvimento local, os valores padrão são suficientes).
 
 ```bash
-podman-compose up -d
-# ou
-docker-compose up -d
+cp api/.env-example api/.env
+
 ```
 
-3. **Acessar a aplicação:**
-    - A aplicação estará disponível na porta `8000`. Acesse `http://localhost:8000/api/docs` para testar os endpoints.
+**3. Suba os containers:**
 
-    - O frontend estará disponível em `http://localhost:8080`.
+```bash
+podman-compose up -d --build
+# ou (dependendo do seu ecossistema)
+docker compose up -d --build
+
+```
+
+**4. Acesse a aplicação:**
+Com os containers rodando, os serviços estarão disponíveis em:
+
+* 🌐 **Frontend Web:** `http://localhost:8080`
+* 📚 **Documentação da API (Swagger):** `http://localhost:8000/api/docs`
+
+---
+
+## 🤝 Como Contribuir
+
+Sugestões de novas frases, correções ortográficas e melhorias no código são muito bem-vindas!
+
+1. Faça um *Fork* do projeto.
+2. Crie uma *Branch* para sua modificação (`git checkout -b feature/NovaFuncionalidade`).
+3. Faça o *Commit* das suas alterações (`git commit -m 'Add: nova funcionalidade'`).
+4. Faça o *Push* para a branch (`git push origin feature/NovaFuncionalidade`).
+5. Abra um *Pull Request*.
 
 ## 📄 Licença
 
-Este projeto está sob a licença [**MIT**](./LICENSE).
+Este projeto é de código aberto e está sob a licença **[MIT](https://www.google.com/search?q=./LICENSE)**.
 
------
+---
 
 Desenvolvido por [Willian Silva](https://github.com/WillianSilva51)

@@ -1,4 +1,5 @@
 from http import HTTPStatus
+import json
 
 from fastapi import APIRouter, Depends, Query
 
@@ -165,6 +166,9 @@ async def update_quote(
 ) -> QuoteResponse:
     quote = await service.update_quote_by_id(id=id, quote_data=quote_data, repo=repo)
 
+    cache_key = f"get_quote_by_id:{json.dumps({'id': id}, sort_keys=True)}"
+    await cache.delete(cache_key)
+
     return QuoteResponse.model_validate(quote.model_dump())
 
 
@@ -183,3 +187,6 @@ async def delete_quote(
     _: str = Depends(verify_api_key),
 ) -> None:
     await service.delete_quote_by_id(id=id, repo=repo)
+
+    cache_key = f"get_quote_by_id:{json.dumps({'id': id}, sort_keys=True)}"
+    await cache.delete(cache_key)
