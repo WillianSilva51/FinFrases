@@ -2,7 +2,7 @@ FROM docker.io/python:3.14-slim-trixie AS builder
 
 WORKDIR /install
 
-COPY requirements.txt .
+COPY api/requirements.txt .
 
 RUN python -m venv /venv && \
     . /venv/bin/activate && \
@@ -27,5 +27,4 @@ USER appuser
 
 EXPOSE 8000
 
-ENTRYPOINT ["uvicorn", "api.main:app", "--host", "0.0.0.0"]
-CMD [ "--port", "8000"]
+ENTRYPOINT ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
