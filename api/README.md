@@ -8,7 +8,7 @@
 * **Filtros Avançados**: Busca flexível por autor, categoria (tags) ou fonte da frase.
 * **Resultados Aleatórios**: Endpoint dedicado para obter inspiração randômica.
 * **Frase do Dia (Nova)**: Endpoint com performance otimizada utilizando padrão *Cache-Aside* para fornecer a frase diária sem sobrecarregar o banco.
-* **Documentação Automática**: Interface interativa via **Swagger/OpenAPI**.
+* **Documentação Automática**: Interface interativa via **Scalar/OpenAPI**.
 
 ## 🚀 Tecnologias
 
@@ -86,4 +86,4 @@ openssl rand -base64 64
 > [!IMPORTANT]
 > A saída terá aproximadamente 88 caracteres, pois está codificada em Base64.
 
-3. Coloque a chave gerada no campo `API_KEY` do arquivo `.env` e reinicie os containers para aplicar a nova chave.
+1. Coloque a chave gerada no campo `API_KEY` do arquivo `.env` e reinicie os containers para aplicar a nova chave.

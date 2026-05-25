@@ -4,7 +4,7 @@ import pytest
 
 from api.core.exceptions.custom_exceptions import (
     DomainValidationException,
-    ResourceNotFoundException,
+    QuoteNotFoundException,
 )
 from api.models.enums import CategoryQuote
 from api.models.quote import Quote
@@ -137,7 +137,7 @@ class TestGetTodayQuote:
 
         expected_message = "Nenhuma citação verificada encontrada"
 
-        with pytest.raises(ResourceNotFoundException) as exc_info:
+        with pytest.raises(QuoteNotFoundException) as exc_info:
             await service.get_today_quote(repo=mock_repo)
 
         assert str(exc_info.value) == expected_message
@@ -185,7 +185,7 @@ class TestDeleteQuoteById:
 
         mock_repo.get_quote_by_id.return_value = None
 
-        with pytest.raises(ResourceNotFoundException) as exc_info:
+        with pytest.raises(QuoteNotFoundException) as exc_info:
             await service.delete_quote_by_id(id=quote_id, repo=mock_repo)
 
         assert str(exc_info.value) == expected_message
@@ -213,7 +213,7 @@ class TestGetQuoteById:
 
         mock_repo.get_quote_by_id.return_value = None
 
-        with pytest.raises(ResourceNotFoundException) as exc_info:
+        with pytest.raises(QuoteNotFoundException) as exc_info:
             await service.get_quote_by_id(id=quote_id, repo=mock_repo)
 
         assert str(exc_info.value) == expected_message

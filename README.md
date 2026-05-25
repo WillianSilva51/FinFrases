@@ -58,7 +58,7 @@ docker compose up -d --build
 Com os containers rodando, os serviços estarão disponíveis em:
 
 * 🌐 **Frontend Web:** `http://localhost:8080`
-* 📚 **Documentação da API (Swagger):** `http://localhost:8000/api/docs`
+* 📚 **Documentação da API (Scalar):** `http://localhost:8000/api/docs`
 
 ---
 

@@ -70,9 +70,7 @@ Totalmente em português (PT-BR).
 
 @app.get("/api/docs", include_in_schema=False)
 async def scalar_html():
-    return get_scalar_api_reference(
-        openapi_url=app.openapi_url, title=app.title, servers=[{"url": "/api"}]
-    )
+    return get_scalar_api_reference(openapi_url=app.openapi_url, title=app.title)
 
 
 app.add_middleware(
