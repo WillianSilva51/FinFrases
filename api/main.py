@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.exceptions import HTTPException, RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from scalar_fastapi import get_scalar_api_reference
 
 from api.core.database import init_db
 from api.core.exceptions.custom_exceptions import (
@@ -16,8 +17,8 @@ from api.core.handlers.exception_handlers import (
     request_validation_handler,
     resource_not_found_handler,
 )
-from api.routers.quotes import api_router as quotes_router
 from api.routers.health import api_router as health_router
+from api.routers.quotes import api_router as quotes_router
 
 tags_metadata = [
     {
@@ -50,7 +51,7 @@ API aberta e gratuita para frases de mentalidade financeira 💰
 Totalmente em português (PT-BR).
 """,
     summary="Frases de mentalidade financeira em português",
-    version="0.1.0",
+    version="1.0.0",
     tags_metadata=tags_metadata,
     contact={
         "name": "Willian Silva",
@@ -61,10 +62,18 @@ Totalmente em português (PT-BR).
         "name": "MIT",
         "url": "https://opensource.org/licenses/MIT",
     },
-    docs_url="/api/docs",
+    docs_url=None,
     redoc_url="/api/redoc",
     lifespan=lifespan,
 )
+
+
+@app.get("/api/docs", include_in_schema=False)
+async def scalar_html():
+    return get_scalar_api_reference(
+        openapi_url=app.openapi_url, title=app.title, servers=[{"url": "/api"}]
+    )
+
 
 app.add_middleware(
     CORSMiddleware,
