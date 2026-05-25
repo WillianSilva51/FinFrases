@@ -4,7 +4,7 @@ from loguru import logger
 
 from api.core.exceptions.custom_exceptions import (
     DomainValidationException,
-    ResourceNotFoundException,
+    QuoteNotFoundException,
 )
 from api.models.enums import CategoryQuote
 from api.models.quote import Quote
@@ -66,7 +66,7 @@ class QuoteService:
         quote = await repo.get_quote_by_id(id)
 
         if quote is None:
-            raise ResourceNotFoundException(f"Citação com id '{id}' não encontrada")
+            raise QuoteNotFoundException(f"Citação com id '{id}' não encontrada")
         return quote
 
     async def get_random_quote(self, size: int, repo: QuoteRepository) -> list[Quote]:
@@ -79,7 +79,7 @@ class QuoteService:
         quote = await self.get_random_quote(size=1, repo=repo)
 
         if not quote:
-            raise ResourceNotFoundException("Nenhuma citação verificada encontrada")
+            raise QuoteNotFoundException("Nenhuma citação verificada encontrada")
 
         return quote
 

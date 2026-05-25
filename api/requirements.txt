@@ -13,12 +13,12 @@ anyio==4.13.0
     #   watchfiles
 beanie==2.1.0
     # via finfrases
-certifi==2026.4.22
+certifi==2026.5.20
     # via
     #   httpcore
     #   httpx
     #   sentry-sdk
-click==8.3.3
+click==8.4.1
     # via
     #   beanie
     #   rich-toolkit
@@ -29,6 +29,8 @@ colorama==0.4.6 ; sys_platform == 'win32'
     #   click
     #   loguru
     #   uvicorn
+detect-installer==0.1.0
+    # via fastapi-cloud-cli
 dnspython==2.8.0
     # via
     #   email-validator
@@ -41,7 +43,7 @@ fastapi==0.136.1
     # via finfrases
 fastapi-cli==0.0.24
     # via fastapi
-fastapi-cloud-cli==0.17.1
+fastapi-cloud-cli==0.18.0
     # via fastapi-cli
 fastar==0.11.0
     # via
@@ -61,7 +63,7 @@ httpx==0.28.1
     # via
     #   fastapi
     #   fastapi-cloud-cli
-idna==3.15
+idna==3.16
     # via
     #   anyio
     #   email-validator
@@ -103,7 +105,7 @@ python-dotenv==1.2.2
     #   finfrases
     #   pydantic-settings
     #   uvicorn
-python-multipart==0.0.28
+python-multipart==0.0.29
     # via fastapi
 pyyaml==6.0.3
     # via uvicorn
@@ -113,17 +115,19 @@ rich==15.0.0
     # via
     #   rich-toolkit
     #   typer
-rich-toolkit==0.19.9
+rich-toolkit==0.19.10
     # via
     #   fastapi-cli
     #   fastapi-cloud-cli
 rignore==0.7.6
     # via fastapi-cloud-cli
+scalar-fastapi==1.8.2
+    # via finfrases
 sentry-sdk==2.60.0
     # via fastapi-cloud-cli
 shellingham==1.5.4
     # via typer
-starlette==1.0.0
+starlette==1.0.1
     # via fastapi
 typer==0.25.1
     # via
@@ -153,7 +157,7 @@ uvicorn==0.47.0
     #   finfrases
 uvloop==0.22.1 ; platform_python_implementation != 'PyPy' and sys_platform != 'cygwin' and sys_platform != 'win32'
     # via uvicorn
-watchfiles==1.1.1
+watchfiles==1.2.0
     # via uvicorn
 websockets==16.0
     # via uvicorn

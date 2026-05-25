@@ -8,6 +8,7 @@ from api.schemas.error_schema import ErrorResponse
 
 from api.core.exceptions.custom_exceptions import (
     DomainValidationException,
+    QuoteNotFoundException,
     ResourceNotFoundException,
 )
 
@@ -19,7 +20,7 @@ def _json_error_response(error: ErrorResponse) -> JSONResponse:
 
 
 async def resource_not_found_handler(
-    _: Request, exc: ResourceNotFoundException
+    _: Request, exc: ResourceNotFoundException | QuoteNotFoundException
 ) -> JSONResponse:
     return _json_error_response(
         ErrorResponse.from_http_status(
