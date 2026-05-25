@@ -1,4 +1,4 @@
-FROM docker.io/python:3.14-slim-trixie AS builder
+FROM docker.io/python:3.13-slim-trixie AS builder
 
 WORKDIR /install
 
@@ -9,7 +9,7 @@ RUN python -m venv /venv && \
     pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-FROM docker.io/python:3.14-slim-trixie AS final
+FROM docker.io/python:3.13-slim-trixie AS final
 
 ENV PATH="/venv/bin:$PATH"
 ENV PYTHONDONTWRITEBYTECODE=1
