@@ -34,11 +34,16 @@ services:
       start_period: 5s
   
   finfrases-api:
+    image: docker.io/williansilva51/finfrases
     build:
       context: .
       dockerfile: ./api/Dockerfile
     container_name: finfrases-api
     restart: always
+    environment:
+      - API_KEY = ${API_KEY}
+      - REDIS_URI = "redis://${REDIS_HOST:-localhost}:${REDIS_PORT:-6379}/${REDIS_DB:-0}"
+      - MONGO_URI = "mongodb://${MONGO_USER:-user}:${MONGO_PASSWORD:-password123}@mongodb:27017/finfrases?authSource=admin"
     ports:
       - "8000:8000"
     depends_on:

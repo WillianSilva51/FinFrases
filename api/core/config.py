@@ -6,6 +6,9 @@ class Settings(BaseSettings):
     VERSION: str = "1.0.0"
     MONGO_URI: str
     API_KEY: str
+    REDIS_HOST: str
+    REDIS_PORT: int
+    REDIS_DB: int
 
     model_config = SettingsConfigDict(
         env_file="api/.env", env_file_encoding="utf-8", extra="ignore"

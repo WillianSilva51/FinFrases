@@ -6,11 +6,15 @@ from loguru import logger
 from redis import ConnectionError
 from redis.asyncio import Redis
 
+from api.core.config import settings
+
 
 class RedisCache:
     def __init__(self) -> None:
         try:
-            self.client = Redis()
+            self.client = Redis(
+                host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_DB
+            )
         except ConnectionError as e:
             logger.error(e)
 
