@@ -13,7 +13,10 @@ class RedisCache:
     def __init__(self) -> None:
         try:
             self.client = Redis(
-                host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_DB
+                host=settings.REDIS_HOST,
+                port=settings.REDIS_PORT,
+                db=settings.REDIS_DB,
+                password=settings.REDIS_PASSWORD,
             )
         except ConnectionError as e:
             logger.error(e)
