@@ -1,17 +1,19 @@
-FROM docker.io/python:3.13-slim-trixie AS builder
+FROM ghcr.io/astral-sh/uv:python3.13-bookworm-slim AS builder
 
-WORKDIR /install
+WORKDIR /app
 
-COPY api/requirements.txt .
+COPY pyproject.toml uv.lock ./
 
-RUN python -m venv /venv && \
-    . /venv/bin/activate && \
-    pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+ENV UV_COMPILE_BYTECODE=1
+ENV UV_LINK_MODE=copy
 
-FROM docker.io/python:3.13-slim-trixie AS final
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv venv && \
+    uv sync --frozen --no-install-project
 
-ENV PATH="/venv/bin:$PATH"
+FROM docker.io/library/python:3.13-slim-bookworm AS final
+
+ENV PATH="/app/.venv/bin:$PATH"
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
@@ -19,9 +21,9 @@ WORKDIR /app
 
 RUN useradd -m appuser && chown appuser:appuser /app
 
-COPY --from=builder /venv /venv
-
 COPY --chown=appuser:appuser . /app
+
+COPY --from=builder --chown=appuser:appuser /app/.venv /app/.venv
 
 USER appuser
 
