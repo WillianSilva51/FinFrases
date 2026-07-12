@@ -2,6 +2,9 @@ from beanie import PydanticObjectId
 
 from api.models.quote import Quote
 from api.schemas.quote_schema import CreateQuoteRequest
+from api.core.cache import RedisCache
+
+cache = RedisCache()
 
 
 class QuoteRepository:
@@ -41,6 +44,8 @@ class QuoteRepository:
 
         update_query = {"$set": quote_data}
         quote = await quote.update(update_query)
+
+        await cache.delete(id)
 
         return quote
 

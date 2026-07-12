@@ -1,0 +1,16 @@
+localhost {
+	@backend {
+		path /api/*
+	}
+
+	handle @backend {
+		reverse_proxy finfrases-api:8000
+	}
+
+	handle {
+        root * /var/www/frontend
+        file_server
+        try_files {path} /index.html
+    }
+}
+

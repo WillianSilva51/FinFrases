@@ -4,6 +4,10 @@ import pytest
 
 os.environ["MONGO_URI"] = "mongodb://localhost:27017/testdb"
 os.environ["API_KEY"] = "fake_test_key"
+os.environ["REDIS_HOST"] = "localhost"
+os.environ["REDIS_PORT"] = "6379"
+os.environ["REDIS_DB"] = "0"
+os.environ["REDIS_PASSWORD"] = "test_password"
 
 
 @pytest.fixture(autouse=True, scope="session")
