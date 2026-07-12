@@ -57,8 +57,8 @@ docker compose up -d --build
 **4. Acesse a aplicação:**
 Com os containers rodando, os serviços estarão disponíveis em:
 
-* 🌐 **Frontend Web:** `https://localhost:8080`
-* 📚 **Documentação da API (Scalar):** `https://localhost:8000/api/docs`
+* 🌐 **Frontend Web:** `https://localhost:8443`
+* 📚 **Documentação da API (Scalar):** `https://localhost:8443/api/docs`
 
 ---
 

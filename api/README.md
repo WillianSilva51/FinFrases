@@ -45,7 +45,7 @@ O servidor web (Caddy) interceptará o tráfego e repassará para a API internam
 
 Acesse a documentação interativa em:
 
-Local: <http://localhost:8080/api/docs>
+Local: <https://localhost:8443/api/docs>
 
 Produção: <https://seu-dominio.com/api/docs>
 
