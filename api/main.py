@@ -51,7 +51,8 @@ API aberta e gratuita para frases de mentalidade financeira 💰
 Totalmente em português (PT-BR).
 """,
     summary="Frases de mentalidade financeira em português",
-    version="1.0.0",
+    version="1.0.2",
+    openapi_url="/api/openapi.json",
     tags_metadata=tags_metadata,
     contact={
         "name": "Willian Silva",
@@ -63,7 +64,6 @@ Totalmente em português (PT-BR).
         "url": "https://opensource.org/licenses/MIT",
     },
     docs_url=None,
-    redoc_url="/api/redoc",
     lifespan=lifespan,
 )
 
@@ -87,5 +87,5 @@ app.add_exception_handler(ResourceNotFoundException, resource_not_found_handler)
 app.add_exception_handler(RequestValidationError, request_validation_handler)  # type: ignore
 app.add_exception_handler(Exception, global_exception_handler)
 
-app.include_router(quotes_router, prefix="/api")
-app.include_router(health_router, prefix="/api")
+app.include_router(quotes_router, prefix="/api", tags=["Frases"])
+app.include_router(health_router, prefix="/api", tags=["Health"])

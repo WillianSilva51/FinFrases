@@ -1,6 +1,6 @@
 [project]
 name = "finfrases"
-version = "1.0.1"
+version = "1.0.2"
 description = "Uma API aberta e gratuita para frases de mentalidade financeira, investimentos e educação financeira, totalmente em português (PT-BR)."
 readme = "README.md"
 requires-python = ">=3.13"
