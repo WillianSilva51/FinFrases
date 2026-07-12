@@ -16,7 +16,7 @@ from api.schemas.quote_schema import (
 from api.services.quote_service import QuoteService
 from api.utils.utils import expiration_midnight
 
-api_router = APIRouter(prefix="/v1/quotes", tags=["frases"])
+api_router = APIRouter(prefix="/v1/quotes")
 cache = RedisCache()
 
 

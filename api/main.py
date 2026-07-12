@@ -64,6 +64,7 @@ Totalmente em português (PT-BR).
         "url": "https://opensource.org/licenses/MIT",
     },
     docs_url=None,
+    redoc_url="api/redoc",
     lifespan=lifespan,
 )
 
