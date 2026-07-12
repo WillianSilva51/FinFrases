@@ -1,3 +1,10 @@
+"""Módulo de gerenciamento de cache usando Redis.
+
+Este módulo fornece uma interface para armazenar e recuperar dados em cache
+utilizando Redis, com suporte a serialização JSON e decoradores para
+automatizar o caching de funções assíncronas.
+"""
+
 from functools import wraps
 from json import dumps, loads
 from typing import Callable
@@ -10,7 +17,23 @@ from api.core.config import settings
 
 
 class RedisCache:
+    """Gerenciador de cache com Redis assíncrono.
+
+    Fornece funcionalidades para interagir com Redis, incluindo operações
+    básicas (set, get, delete) e um decorador para cachear automaticamente
+    resultados de funções assíncronas.
+    """
+
     def __init__(self) -> None:
+        """Inicializa a conexão com o servidor Redis.
+
+        Tenta estabelecer uma conexão com o servidor Redis usando as
+        configurações definidas no módulo de configuração. Em caso de erro
+        de conexão, o erro é registrado no logger.
+
+        Levanta:
+            ConnectionError: Se houver falha na conexão com Redis.
+        """
         try:
             self.client = Redis(
                 host=settings.REDIS_HOST,
