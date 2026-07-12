@@ -17,22 +17,20 @@ from api.core.config import settings
 
 
 class RedisCache:
-    """Gerenciador de cache com Redis assíncrono.
+    """Gerenciador de cache assíncrono baseado em Redis.
 
-    Fornece funcionalidades para interagir com Redis, incluindo operações
-    básicas (set, get, delete) e um decorador para cachear automaticamente
-    resultados de funções assíncronas.
+    Esta classe centraliza a comunicação com o Redis e oferece operações
+    básicas de leitura, escrita e remoção de dados em cache. Também fornece
+    um decorador para automatizar o cache de funções assíncronas, gerando a
+    chave com base no nome da função e nos argumentos informados.
     """
 
     def __init__(self) -> None:
-        """Inicializa a conexão com o servidor Redis.
+        """Inicializa o cliente Redis com as configurações da aplicação.
 
-        Tenta estabelecer uma conexão com o servidor Redis usando as
-        configurações definidas no módulo de configuração. Em caso de erro
-        de conexão, o erro é registrado no logger.
-
-        Levanta:
-            ConnectionError: Se houver falha na conexão com Redis.
+        A instância do cliente é criada com os valores definidos em
+        ``api.core.config.settings``. Caso ocorra falha de conexão, o erro é
+        registrado no logger.
         """
         try:
             self.client = Redis(
@@ -45,24 +43,55 @@ class RedisCache:
             logger.error(e)
 
     def ping(self):
+        """Verifica se o servidor Redis está respondendo.
+
+        Returns:
+            O retorno da operação ``PING`` realizada pelo cliente Redis.
+        """
         try:
             return self.client.ping()
         except ConnectionError as e:
             logger.error(f"Erro de conexão com o Redis: {e}")
 
     async def set(self, key: str, value, expire: int):
+        """Armazena um valor no Redis com tempo de expiração.
+
+        Args:
+            key: Chave sob a qual o valor será salvo.
+            value: Conteúdo a ser armazenado no cache.
+            expire: Tempo de expiração da chave, em segundos.
+
+        Returns:
+            Resultado da operação de gravação no Redis.
+        """
         try:
             return await self.client.set(name=key, value=value, ex=expire, get=True)
         except ConnectionError as e:
             logger.error(e)
 
     async def get(self, key: str):
+        """Recupera um valor armazenado no Redis.
+
+        Args:
+            key: Chave do item a ser consultado.
+
+        Returns:
+            Valor associado à chave ou ``None`` caso ela não exista.
+        """
         try:
             return await self.client.get(name=key)
         except ConnectionError as e:
             logger.error(e)
 
     async def delete(self, keys):
+        """Remove uma ou mais chaves do Redis.
+
+        Args:
+            keys: Chave única ou coleção de chaves a serem removidas.
+
+        Returns:
+            Quantidade de chaves removidas.
+        """
         try:
             if isinstance(keys, (list, tuple, set)):
                 return await self.client.delete(*keys)
@@ -72,6 +101,18 @@ class RedisCache:
             logger.error(e)
 
     def _normalize_cache_value(self, value):
+        """Normaliza um valor para permitir serialização em JSON.
+
+        Valores primitivos são retornados sem alteração. Listas, tuplas e
+        dicionários são processados recursivamente. Tipos não suportados são
+        convertidos para ``str``.
+
+        Args:
+            value: Valor a ser normalizado.
+
+        Returns:
+            Valor compatível com serialização JSON.
+        """
         if isinstance(value, (str, int, float, bool, type(None))):
             return value
 
@@ -84,12 +125,47 @@ class RedisCache:
         return str(value)
 
     def _is_cacheable(self, value):
+        """Indica se o valor pode ser usado para compor a chave do cache.
+
+        Args:
+            value: Valor a ser avaliado.
+
+        Returns:
+            ``True`` quando o valor puder ser normalizado e serializado para
+            compor a chave; caso contrário, ``False``.
+        """
         return isinstance(value, (str, int, float, bool, type(None), list, dict))
 
     def cacheable(self, expire: Callable[[], int] | int = 3600):
+        """Cria um decorador para cache automático de funções assíncronas.
+
+        A chave de cache é construída com o nome da função e os argumentos
+        nomeados filtrados e normalizados. Se houver um valor já armazenado no
+        Redis, ele é retornado. Caso contrário, a função original é executada
+        e seu resultado é salvo no cache.
+
+        Args:
+            expire: Tempo de expiração em segundos ou uma função que retorne
+                dinamicamente esse valor.
+
+        Returns:
+            Um decorador aplicável a funções assíncronas.
+        """
+
         def decorator(func):
+            """Aplica o comportamento de cache à função informada."""
+
             @wraps(func)
             async def wrapper(*args, **kwargs):
+                """Executa a leitura e a gravação do cache ao redor da função.
+
+                Args:
+                    *args: Argumentos posicionais recebidos pela função.
+                    **kwargs: Argumentos nomeados recebidos pela função.
+
+                Returns:
+                    O resultado recuperado do cache ou calculado pela função.
+                """
                 clean_kwargs = {
                     k: self._normalize_cache_value(v)
                     for k, v in kwargs.items()
