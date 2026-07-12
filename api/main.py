@@ -51,7 +51,7 @@ API aberta e gratuita para frases de mentalidade financeira 💰
 Totalmente em português (PT-BR).
 """,
     summary="Frases de mentalidade financeira em português",
-    version="1.0.1",
+    version="1.0.2",
     openapi_url="/api/openapi.json",
     tags_metadata=tags_metadata,
     contact={
