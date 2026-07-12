@@ -51,8 +51,8 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD:-defaultpassword}
       - REDIS_DB=${REDIS_DB:-0}
       - MONGO_URI=mongodb://${MONGO_USER:-user}:${MONGO_PASSWORD:-password123}@mongodb:27017/finfrases?authSource=admin
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"
     depends_on:
       mongodb:
         condition: service_healthy
@@ -60,12 +60,36 @@ services:
         condition: service_healthy
     networks:
       - finfrases-network
+      - caddy_network
+
+  caddy:
+    image: docker.io/library/caddy:2.11.4-alpine
+    container_name: caddy-server
+    restart: always
+    ports:
+      - "80:80"
+      - "433:443"
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:Z
+      - caddy_data:/data:Z
+      - caddy_config:/config:Z
+    depends_on:
+      finfrases-api:
+        condition: service_started
+    networks:
+      - finfrases-network
+      - caddy_network
 
 volumes:
   redis_data:
   mongo_data:
+  caddy_data:
+  caddy_config:
 
 networks:
   finfrases-network:
     name: finfrases-network
+    driver: bridge
+  caddy_network:
+    name: caddy_network
     driver: bridge
