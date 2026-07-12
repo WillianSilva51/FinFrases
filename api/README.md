@@ -2,26 +2,54 @@
 
 [![Logo](../assets/images/logo.png)](https://github.com/WillianSilva51/FinFrases)
 
+A **FinFrases API** fornece um banco de dados curado e de alta performance de citações sobre investimentos, educação financeira, poupança e psicologia do dinheiro.
+
 ## ✨ Funcionalidades
 
-* **Banco de Dados Curado**: Frases verificadas sobre investimentos, psicologia financeira e poupança.
-* **Filtros Avançados**: Busca flexível por autor, categoria (tags) ou fonte da frase.
-* **Resultados Aleatórios**: Endpoint dedicado para obter inspiração randômica.
-* **Frase do Dia (Nova)**: Endpoint com performance otimizada utilizando padrão *Cache-Aside* para fornecer a frase diária sem sobrecarregar o banco.
-* **Documentação Automática**: Interface interativa via **Scalar/OpenAPI**.
+* **Banco de Dados Curado**: Frases verificadas de grandes nomes do mercado financeiro e literatura.
+* **Filtros Avançados**: Busca flexível por autor, categoria (tags), fonte ou status de verificação.
+* **Resultados Aleatórios**: Endpoint dedicado para obter inspiração randômica com agregação nativa.
+* **Frase do Dia**: Endpoint com performance otimizada utilizando padrão *Cache-Aside*, fornecendo a frase diária em milissegundos sem sobrecarregar o banco.
+* **Documentação Automática**: Interface interativa completa via **Scalar / Swagger UI**.
 
-## 🚀 Tecnologias
+## 🚀 Tecnologias e Infraestrutura
 
-* **Python 3.13+** e **FastAPI**: Alta performance, código limpo e requisições 100% assíncronas.
-* **MongoDB & Beanie**: Armazenamento de documentos utilizando um ODM assíncrono poderoso.
-* **Redis**: Sistema de cache em memória para endpoints de alta demanda.
-* **Pydantic**: Tipagem estática rigorosa e validação de dados automática.
-* **uv**: Gerenciador de pacotes ultra-rápido para o ecossistema Python.
-* **Docker & Podman**: Ambiente isolado e orquestração de containers (API, Mongo e Redis).
+* **Linguagem & Framework**: Python 3.13+ e FastAPI (100% assíncrono).
+* **Bancos de Dados**:
+  * MongoDB (via Beanie ODM) para armazenamento persistente.
+  * Redis para sistema de cache em memória.
+* **Gerenciamento**: `uv` para resolução de dependências ultra-rápida e Pydantic para validação rigorosa de dados.
+* **Deploy & Segurança**: Orquestração via `podman-compose` operando em modo rootless e proxy reverso automático com Caddy (HTTPS nativo).
+
+---
+
+## ⚙️ Configuração do Ambiente
+
+Antes de iniciar a aplicação, crie um arquivo `.env` na raiz do projeto baseado no `.env-example` fornecido:
+
+```bash
+cp .env-example .env
+```
+
+## 🛠️ Como Executar (Podman / Docker)
+
+A infraestrutura foi projetada para rodar de forma isolada e segura. Os volumes já estão configurados com o sufixo `:Z` no `compose.yml` para garantir compatibilidade nativa com as políticas do SELinux no Fedora Silverblue.
+
+Construa e suba os contêineres em segundo plano:
+
+```Bash
+podman-compose up -d
+```
+
+O servidor web (Caddy) interceptará o tráfego e repassará para a API internamente.
+
+Acesse a documentação interativa em:
+
+Local: <http://localhost:8080/api/docs>
+
+Produção: <https://seu-dominio.com/api/docs>
 
 ## 🛠️ Uso (Endpoints)
-
-A documentação completa e interativa pode ser acessada localmente em: `http://localhost:8000/api/docs` ou `http://localhost:8000/api/redoc` para visualização alternativa.
 
 ### Listar frases (Com suporte a filtros e paginação)
 
