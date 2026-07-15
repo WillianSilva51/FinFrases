@@ -14,13 +14,13 @@
     <title>FinFrases</title>
 </head>
 
-<body class="bg-slate-900 text-white">
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-white">
     <header
-        class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex flex-wrap md:justify-start md:flex-nowrap z-50 w-full">
+        class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-white/10 flex flex-wrap md:justify-start md:flex-nowrap z-50 w-full">
         <nav
             class="relative max-w-340 w-full md:flex md:items-center md:justify-between md:gap-3 mx-auto px-4 sm:px-6 lg:px-8 py-2">
             <div class="flex items-center justify-between">
-                <a class="flex-none font-semibold text-xl text-white dark:text-gray-200 focus:outline-hidden focus:opacity-80"
+                <a class="flex-none font-semibold text-xl text-slate-900 dark:text-gray-200 focus:outline-hidden focus:opacity-80 hover:animate-pulse"
                     href="#" aria-label="Brand">FinFrases</a>
 
                 <div class="md:hidden">
@@ -49,9 +49,10 @@
                 aria-labelledby="header-classic-collapse" role="region">
                 <div
                     class="overflow-hidden overflow-y-auto max-h-[75vh] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-none [&::-webkit-scrollbar-track]:bg-gray-100 dark:[&::-webkit-scrollbar-track]:bg-gray-700 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-thumb]:bg-gray-500">
-                    <div class="py-2 md:py-0 flex flex-col md:flex-row md:items-center md:justify-end gap-0.5 md:gap-1">
+                    <div
+                        class="py-2 md:py-0 flex flex-col md:flex-row md:items-center md:justify-end gap-0.5 md:gap-1 focus">
                         <a class="p-2 flex items-center text-sm text-cyan-600 dark:text-cyan-500 focus:outline-hidden"
-                            href="#" aria-current="page">
+                            href="" aria-current="page" id="today-quote-link">
                             <svg class="shrink-0 size-4 me-3 md:me-2 block md:hidden" xmlns="http://www.w3.org/2000/svg"
                                 width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -62,8 +63,8 @@
                             Diária
                         </a>
 
-                        <a class="p-2 flex items-center text-sm text-gray-800 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-hidden focus:text-gray-500 dark:focus:text-gray-400"
-                            href="#">
+                        <a class="p-2 flex items-center text-sm text-gray-800 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-hidden"
+                            href="" id="random-quote-link">
                             <svg class="shrink-0 size-4 me-3 md:me-2 block md:hidden" xmlns="http://www.w3.org/2000/svg"
                                 width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -73,8 +74,8 @@
                             Aleatória
                         </a>
 
-                        <a class="p-2 flex items-center text-sm text-gray-800 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-hidden focus:text-gray-500 dark:focus:text-gray-400"
-                            href="#">
+                        <a class="p-2 flex items-center text-sm text-gray-800 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-hidden"
+                            href="./search.html" id="search-quote-button">
                             <svg class="shrink-0 size-4 me-3 md:me-2 block md:hidden" xmlns="http://www.w3.org/2000/svg"
                                 width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -87,7 +88,7 @@
                         </a>
                         <div
                             class="relative flex flex-wrap items-center gap-x-1.5 md:ps-2.5 mt-1 md:mt-0 md:ms-1.5 before:block before:absolute before:top-1/2 before:-inset-s-px before:w-px before:h-4 before:bg-gray-200 dark:before:bg-gray-700 before:-translate-y-1/2">
-                            <a class="p-2 w-full flex items-center text-sm text-gray-800 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-hidden focus:text-gray-500 dark:focus:text-gray-400"
+                            <a class="p-2 w-full flex items-center text-sm text-gray-800 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-hidden"
                                 href="./admin.html">
                                 <svg class="shrink-0 size-4 me-3 md:me-2" xmlns="http://www.w3.org/2000/svg" width="24"
                                     height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -104,16 +105,24 @@
         </nav>
     </header>
     <main class="min-h-[calc(100vh-105px)] flex flex-col items-center justify-center">
-        <h1 class="text-3xl md:text-4xl font-bold text-center mb-8">Frase Diária</h1>
-        <div id="quote-container"
-            class="max-w-2xl w-full p-8 mx-4 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 shadow-2xl flex justify-center flex-col transition-all duration-500 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-cyan-500/20">
-            <q id="quote-text" class="text-2xl md:text-3xl text-slate-100 italic text-center font-light">Carregando
-                Frase....</q>
-            <small id="quote-author" class="text-right text-emerald-400 font-semibold mt-6" hidden>teste sadasd</small>
-        </div>
+        <h1 id="quote-title" class="text-3xl md:text-4xl font-bold text-center mb-8">Frase Diária</h1>
+        <section class="flex flex-col items-center justify-center w-full">
+            <div id="quote-container"
+                class="max-w-2xl md:w-full p-8 mx-4 bg-slate-800 dark:bg-white/5 backdrop-blur-md rounded-2xl border border-black/10 dark:border-white/10 shadow-2xl flex justify-center flex-col transition-all duration-500 hover:-translate-y-1.5 hover:shadow-2xl dark:hover:shadow-cyan-500/20 hover:shadow-cyan-900">
+                <q id="quote-text" class="text-2xl md:text-3xl text-slate-100 italic text-center font-light">Carregando
+                    Frase....</q>
+                <small id="quote-author" class="text-right text-emerald-400 font-semibold mt-6" hidden>Carregando
+                    Autor...</small>
+            </div>
+            <button id="random-quote-button"
+                class="hidden mt-8 px-6 py-3 bg-cyan-700 cursor-pointer text-white rounded-lg shadow-md hover:bg-cyan-900 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-cyan-500/20 animate-pulse"
+                aria-label="Nova Frase Aleatória" ar>
+                Nova Frase Aleatória
+            </button>
+        </section>
     </main>
-    <footer class="flex justify-center p-4 bg-slate-900 border-t border-white/10">
-        <small class="text-slate-400">&copy FinFrases 2026 — Todos os Direitos Reservados</small>
+    <footer class="flex justify-center p-4 dark:bg-gray-800 border-t dark:border-white/10 bg-slate-50 border-black/10">
+        <small class="dark:text-slate-400 text-slate-900">&copy FinFrases 2026 — Todos os Direitos Reservados</small>
     </footer>
 </body>
 

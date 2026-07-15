@@ -6,11 +6,11 @@ localhost {
 	handle @backend {
 		reverse_proxy finfrases-api:8000
 	}
+	
+	root * /usr/share/caddy/src
 
 	handle {
-        root * /var/www/frontend
-        file_server
-        try_files {path} /index.html
+		try_files {path} /html/index.html
+		file_server
     }
 }
-
