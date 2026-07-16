@@ -71,6 +71,7 @@ services:
       - "433:443"
     volumes:
       - ./caddy/Caddyfile:/etc/caddy/Caddyfile:Z
+      - ./frontend/src/:/usr/share/caddy/src:Z
       - caddy_data:/data:Z
       - caddy_config:/config:Z
     depends_on:
