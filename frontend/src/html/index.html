@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-br" class="scroll-smooth dark">
 
 <head>
     <meta charset="UTF-8">
@@ -9,6 +9,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
         rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link rel="stylesheet" href="../css/output.css">
     <script type="module" src="../js/main.js" defer></script>
     <title>FinFrases</title>
@@ -21,7 +22,7 @@
             class="relative max-w-340 w-full md:flex md:items-center md:justify-between md:gap-3 mx-auto px-4 sm:px-6 lg:px-8 py-2">
             <div class="flex items-center justify-between">
                 <a class="flex-none font-semibold text-xl text-slate-900 dark:text-gray-200 focus:outline-hidden focus:opacity-80 hover:animate-pulse"
-                    href="#" aria-label="Brand">FinFrases</a>
+                    href="#quote" aria-label="Brand">FinFrases</a>
 
                 <div class="md:hidden">
                     <button type="button"
@@ -52,7 +53,7 @@
                     <div
                         class="py-2 md:py-0 flex flex-col md:flex-row md:items-center md:justify-end gap-0.5 md:gap-1 focus">
                         <a class="p-2 flex items-center text-sm text-cyan-600 dark:text-cyan-500 focus:outline-hidden"
-                            href="" aria-current="page" id="today-quote-link">
+                            href="#quote" aria-current="page" id="today-quote-link">
                             <svg class="shrink-0 size-4 me-3 md:me-2 block md:hidden" xmlns="http://www.w3.org/2000/svg"
                                 width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -64,7 +65,7 @@
                         </a>
 
                         <a class="p-2 flex items-center text-sm text-gray-800 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-hidden"
-                            href="" id="random-quote-link">
+                            href="#quote" id="random-quote-link">
                             <svg class="shrink-0 size-4 me-3 md:me-2 block md:hidden" xmlns="http://www.w3.org/2000/svg"
                                 width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -86,16 +87,26 @@
                             </svg>
                             Pesquisar
                         </a>
+
+                        <div class="md:hidden">
+                            <hr class="my-2 border-gray-200 dark:border-gray-700" />
+                        </div>
+
+                        <div
+                            class="relative flex flex-wrap items-center gap-x-1.5 md:ps-2.5 mt-1 md:mt-0 md:ms-1.5 before:block before:absolute before:top-1/2 before:-inset-s-px before:w-px before:h-4 before:bg-gray-200 dark:before:bg-gray-700 before:-translate-y-1/2">
+                            <button id="theme-toggle"
+                                class="cursor-pointer p-2 w-full flex items-center text-sm text-gray-800 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-hidden">
+                                <i id="theme-toggle-icon"
+                                    class="material-symbols-outlined text-gray-800 dark:text-gray-200 text-[18px]! me-1.5">dark_mode</i>
+                                <span class="md:hidden">Alternar tema</span>
+                            </button>
+                        </div>
                         <div
                             class="relative flex flex-wrap items-center gap-x-1.5 md:ps-2.5 mt-1 md:mt-0 md:ms-1.5 before:block before:absolute before:top-1/2 before:-inset-s-px before:w-px before:h-4 before:bg-gray-200 dark:before:bg-gray-700 before:-translate-y-1/2">
                             <a class="p-2 w-full flex items-center text-sm text-gray-800 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-hidden"
                                 href="./admin.html">
-                                <svg class="shrink-0 size-4 me-3 md:me-2" xmlns="http://www.w3.org/2000/svg" width="24"
-                                    height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                                    <circle cx="12" cy="7" r="4" />
-                                </svg>
+                                <i
+                                    class="material-symbols-outlined text-gray-800 dark:text-gray-200 text-[18px]! me-1.5">lock_person</i>
                                 Log in
                             </a>
                         </div>
@@ -106,9 +117,9 @@
     </header>
     <main class="min-h-[calc(100vh-105px)] flex flex-col items-center justify-center">
         <h1 id="quote-title" class="text-3xl md:text-4xl font-bold text-center mb-8">Frase Diária</h1>
-        <section class="flex flex-col items-center justify-center w-full">
+        <section id="quote" class="flex flex-col items-center justify-center w-full">
             <div id="quote-container"
-                class="max-w-2xl md:w-full p-8 mx-4 bg-slate-800 dark:bg-white/5 backdrop-blur-md rounded-2xl border border-black/10 dark:border-white/10 shadow-2xl flex justify-center flex-col transition-all duration-500 hover:-translate-y-1.5 hover:shadow-2xl dark:hover:shadow-cyan-500/20 hover:shadow-cyan-900">
+                class="max-w-2xl md:w-full p-8 mx-4 bg-slate-800/95 dark:bg-white/5 backdrop-blur-md rounded-2xl border border-black/10 dark:border-white/10 shadow-2xl flex justify-center flex-col transition-all duration-500 hover:-translate-y-1.5 hover:shadow-2xl dark:hover:shadow-cyan-500/20 hover:shadow-cyan-900">
                 <q id="quote-text" class="text-2xl md:text-3xl text-slate-100 italic text-center font-light">Carregando
                     Frase....</q>
                 <small id="quote-author" class="text-right text-emerald-400 font-semibold mt-6" hidden>Carregando
