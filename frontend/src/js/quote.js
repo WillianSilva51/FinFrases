@@ -52,8 +52,6 @@ export async function getQuote(endpoint = "today", params = {}) {
             if (cached) {
                 const { data, expiresAt } = JSON.parse(cached);
 
-                console.log("Frase Diária carregada do cache.");
-                console.log("Expira em:", new Date(expiresAt).toLocaleString());
                 if (Date.now() < expiresAt) {
                     return data;
                 }
