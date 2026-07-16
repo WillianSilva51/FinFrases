@@ -1,4 +1,5 @@
 const API_URL = "https://finfrases.developer.li/api/v1/quotes/";
+// const API_URL = "https://localhost:8433/api/v1/quotes/"; localmente
 
 const todayQuoteLink = document.getElementById("today-quote-link");
 const randomQuoteLink = document.getElementById("random-quote-link");
