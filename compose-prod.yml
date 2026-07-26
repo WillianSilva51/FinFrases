@@ -5,43 +5,54 @@ services:
     restart: always
     volumes:
       - mongo_data:/data/db:Z
-    ports:
-      - "27017:27017"
+    expose:
+      - "27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-user}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-password123}
       MONGO_INITDB_DATABASE: finfrases
     healthcheck:
-      test: [ "CMD", "mongosh", "-u", "${MONGO_USER:-user}", "-p", "${MONGO_PASSWORD:-password123}", "--authenticationDatabase", "admin", "--eval", "db.adminCommand('ping')"]
+      test:
+        [
+          "CMD",
+          "mongosh",
+          "-u",
+          "${MONGO_USER:-user}",
+          "-p",
+          "${MONGO_PASSWORD:-password123}",
+          "--authenticationDatabase",
+          "admin",
+          "--eval",
+          "db.adminCommand('ping')",
+        ]
       interval: 10s
       timeout: 5s
       retries: 3
       start_period: 10s
     networks:
       - finfrases-network
+
   redis:
     image: docker.io/library/redis:8.4-alpine
     container_name: finfrases-redis
     restart: always
-    ports:
-      - "6379:6379"
+    expose:
+      - "6379"
     volumes:
       - redis_data:/data:Z
     command: redis-server --requirepass ${REDIS_PASSWORD:-defaultpassword}
     healthcheck:
-      test: [ "CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-defaultpassword}", "ping" ]
+      test:
+        ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-defaultpassword}", "ping"]
       interval: 10s
       timeout: 5s
       retries: 3
       start_period: 5s
     networks:
       - finfrases-network
-  
+
   finfrases-api:
     image: docker.io/williansilva51/finfrases
-    build:
-      context: .
-      dockerfile: ./api/Dockerfile
     container_name: finfrases-api
     restart: always
     environment:
@@ -51,8 +62,8 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD:-defaultpassword}
       - REDIS_DB=${REDIS_DB:-0}
       - MONGO_URI=mongodb://${MONGO_USER:-user}:${MONGO_PASSWORD:-password123}@mongodb:27017/finfrases?authSource=admin
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"
     depends_on:
       mongodb:
         condition: service_healthy
@@ -62,35 +73,13 @@ services:
       - finfrases-network
       - caddy-network
 
-  caddy:
-    image: docker.io/library/caddy:2.11.4-alpine
-    container_name: caddy-server
-    restart: always
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:Z
-      - ./frontend/src/:/usr/share/caddy/finfrases:Z
-      - caddy_data:/data:Z
-      - caddy_config:/config:Z
-    depends_on:
-      finfrases-api:
-        condition: service_started
-    networks:
-      - finfrases-network
-      - caddy-network
-
 volumes:
   redis_data:
   mongo_data:
-  caddy_data:
-  caddy_config:
 
 networks:
   finfrases-network:
     name: finfrases-network
     driver: bridge
   caddy-network:
-    name: caddy-network
-    driver: bridge
+    external: true
