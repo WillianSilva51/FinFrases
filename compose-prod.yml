@@ -52,7 +52,7 @@ services:
       - finfrases-network
 
   finfrases-api:
-    image: docker.io/williansilva51/finfrases
+    image: docker.io/williansilva51/fin-frases
     container_name: finfrases-api
     restart: always
     environment:

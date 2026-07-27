@@ -38,7 +38,7 @@ services:
       - finfrases-network
   
   finfrases-api:
-    image: docker.io/williansilva51/finfrases
+    image: docker.io/williansilva51/fin-frases
     build:
       context: .
       dockerfile: ./api/Dockerfile
