@@ -1,0 +1,23 @@
+services:
+  caddy:
+    image: docker.io/library/caddy:2.11.4-alpine
+    container_name: caddy-server
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:Z
+      - ../frontend/src:/usr/share/caddy/finfrases:Z
+      - caddy_data:/data:Z
+      - caddy_config:/config:Z
+    networks:
+      - caddy-network
+
+networks:
+   caddy-network:
+    external: true
+
+volumes:
+  caddy_data:
+  caddy_config:
