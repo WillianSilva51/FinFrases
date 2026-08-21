@@ -8,13 +8,13 @@ export function toggleMenu() {
         if (hamburger.getAttribute("aria-expanded") === "true") {
             hamburger.setAttribute("aria-expanded", "false");
             menu.classList.add("hidden");
-            openIcon.classList.remove("hidden");
-            closeIcon.classList.add("hidden");
+            openIcon.toggleAttribute("hidden");
+            closeIcon.toggleAttribute("hidden");
         } else {
             hamburger.setAttribute("aria-expanded", "true");
             menu.classList.remove("hidden");
-            openIcon.classList.add("hidden");
-            closeIcon.classList.remove("hidden");
+            openIcon.toggleAttribute("hidden");
+            closeIcon.toggleAttribute("hidden");
         }
     });
 }
