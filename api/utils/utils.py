@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 
 def expiration_midnight() -> int:
@@ -10,6 +10,6 @@ def expiration_midnight() -> int:
     Returns:
         int: Quantidade de segundos restantes até a próxima meia-noite.
     """
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     midnight = (now + timedelta(1)).replace(hour=0, minute=0, second=0, microsecond=0)
     return int((midnight - now).total_seconds())

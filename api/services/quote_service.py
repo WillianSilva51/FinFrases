@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from loguru import logger
 
@@ -189,7 +189,7 @@ class QuoteService:
                 )
 
         quote_data_dict = quote_data.model_dump(exclude_unset=True)
-        quote_data_dict["updated_at"] = datetime.now(timezone.utc)
+        quote_data_dict["updated_at"] = datetime.now(UTC)
 
         return await repo.update_quote(id, quote_data_dict)
 

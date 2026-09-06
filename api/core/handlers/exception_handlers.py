@@ -1,16 +1,16 @@
 from http import HTTPStatus
 
 from fastapi import Request
-from fastapi.exceptions import RequestValidationError, HTTPException
+from fastapi.exceptions import HTTPException, RequestValidationError
 from fastapi.responses import JSONResponse
 from loguru import logger
-from api.schemas.error_schema import ErrorResponse
 
 from api.core.exceptions.custom_exceptions import (
     DomainValidationException,
     QuoteNotFoundException,
     ResourceNotFoundException,
 )
+from api.schemas.error_schema import ErrorResponse
 
 
 def _json_error_response(error: ErrorResponse) -> JSONResponse:
@@ -61,7 +61,7 @@ async def http_handler(_: Request, exc: HTTPException) -> JSONResponse:
 
 
 async def global_exception_handler(request: Request, exc: Exception) -> JSONResponse:
-    logger.opt(exception=exc).error(f"Erro inesperado em {request.url}: {repr(exc)}")
+    logger.opt(exception=exc).error(f"Erro inesperado em {request.url}: {exc!r}")
 
     return _json_error_response(
         ErrorResponse.from_http_status(

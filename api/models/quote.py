@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Annotated
 
 from beanie import Document, Indexed
@@ -13,7 +13,7 @@ class Quote(Document):
     tags: list[CategoryQuote]
     source: str | None
     verified: bool = False
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     updated_at: datetime | None = None
 
     class Settings:
