@@ -1,8 +1,8 @@
 from beanie import PydanticObjectId
 
+from api.core.cache import RedisCache
 from api.models.quote import Quote
 from api.schemas.quote_schema import CreateQuoteRequest
-from api.core.cache import RedisCache
 
 cache = RedisCache()
 

@@ -17,9 +17,9 @@ A **FinFrases API** fornece um banco de dados curado e de alta performance de ci
 * **Linguagem & Framework**: Python 3.13+ e FastAPI (100% assíncrono).
 * **Bancos de Dados**:
   * MongoDB (via Beanie ODM) para armazenamento persistente.
-  * Redis para sistema de cache em memória.
+  * Redis para sistema de cache em memória e rate limiting.
 * **Gerenciamento**: `uv` para resolução de dependências ultra-rápida e Pydantic para validação rigorosa de dados.
-* **Deploy & Segurança**: Orquestração via `podman-compose` operando em modo rootless e proxy reverso automático com Caddy (HTTPS nativo).
+* **Deploy & Segurança**: Orquestração via `docker-compose` operando em modo rootless e proxy reverso automático com Caddy (HTTPS nativo).
 
 ---
 
@@ -33,23 +33,41 @@ cp .env-example .env
 
 ## 🛠️ Como Executar (Podman / Docker)
 
-A infraestrutura foi projetada para rodar de forma isolada e segura. Os volumes já estão configurados com o sufixo `:Z` no `compose.yml` para garantir compatibilidade nativa com as políticas do SELinux no Fedora Silverblue.
+A infraestrutura foi projetada para rodar de forma isolada e segura. Os volumes já estão configurados com o sufixo `:Z` no `compose.yml` para garantir compatibilidade nativa com as políticas do SELinux.
 
 Construa e suba os contêineres em segundo plano:
 
-```Bash
-podman-compose up -d
+```bash
+docker-compose up -d
 ```
 
 O servidor web (Caddy) interceptará o tráfego e repassará para a API internamente.
 
 Acesse a documentação interativa em:
 
-Local: <https://localhost:8443/api/docs>
+Local: <https://localhost:443/api/docs>
 
 Produção: <https://seu-dominio.com/api/docs>
 
 ## 🛠️ Uso (Endpoints)
+
+### Endpoints Públicos
+
+| Método | Endpoint | Descrição |
+| --- | --- | --- |
+| `GET` | `/api/v1/quotes` | Lista frases com filtros e paginação |
+| `GET` | `/api/v1/quotes/{id}` | Retorna uma frase específica pelo ID |
+| `GET` | `/api/v1/quotes/random` | Retorna frases aleatórias |
+| `GET` | `/api/v1/quotes/today` | Retorna a frase do dia |
+| `GET` | `/api/v1/health` | Verifica o status da API |
+
+### Endpoints Administrativos (Requerem API Key)
+
+| Método | Endpoint | Descrição |
+| --- | --- | --- |
+| `POST` | `/api/v1/quotes` | Cria uma nova frase |
+| `PUT` | `/api/v1/quotes/{id}` | Atualiza uma frase existente |
+| `DELETE` | `/api/v1/quotes/{id}` | Deleta uma frase existente |
 
 ### Listar frases (Com suporte a filtros e paginação)
 
@@ -89,7 +107,7 @@ Retorna a frase oficial do dia. O resultado é cacheado no Redis e atualizado au
 
 ## 🔐 Administração
 
-Para criar novas frases, é necessário enviar um `POST` para `/api/v1/quotes/` contendo o payload validado pelo Pydantic.
+Para criar novas frases, é necessário enviar um `POST` para `/api/v1/quotes` contendo o payload validado pelo Pydantic.
 
 ```json
 {
@@ -101,6 +119,8 @@ Para criar novas frases, é necessário enviar um `POST` para `/api/v1/quotes/` 
   "verified": true
 }
 ```
+
+Para atualizar ou deletar frases, utilize os endpoints `PUT /api/v1/quotes/{id}` e `DELETE /api/v1/quotes/{id}`.
 
 ### Como criar uma API Key
 
@@ -114,4 +134,4 @@ openssl rand -base64 64
 > [!IMPORTANT]
 > A saída terá aproximadamente 88 caracteres, pois está codificada em Base64.
 
-1. Coloque a chave gerada no campo `API_KEY` do arquivo `.env` e reinicie os containers para aplicar a nova chave.
+3. Coloque a chave gerada no campo `API_KEY` do arquivo `.env` e reinicie os containers para aplicar a nova chave.

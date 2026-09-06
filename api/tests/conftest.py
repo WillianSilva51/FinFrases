@@ -8,6 +8,7 @@ os.environ["REDIS_HOST"] = "localhost"
 os.environ["REDIS_PORT"] = "6379"
 os.environ["REDIS_DB"] = "0"
 os.environ["REDIS_PASSWORD"] = "test_password"
+os.environ["REDIS_URI"] = "redis://:test_password@localhost:6379/0"
 
 
 @pytest.fixture(autouse=True, scope="session")

@@ -13,16 +13,58 @@ Uma plataforma aberta e gratuita de frases de mentalidade financeira, investimen
 
 Este projeto foi criado para preencher a lacuna de ecossistemas brasileiros voltados ao nicho de finanças, oferecendo conteúdo curado de grandes nomes como Luiz Barsi, Warren Buffett, Nathalia Arcuri e outros.
 
-*Inicialmente construído em Java/Spring Boot, o sistema foi totalmente refatorado para Python visando máxima agilidade, performance assíncrona e integração facilitada com pipelines de dados.*
+*Inicialmente construído em Java/Spring Boot, o sistema foi totalmente refatorado para Python visando uma arquitetura assíncrona, maior agilidade no desenvolvimento e integração facilitada com pipelines de dados.*
 
 ---
 
-## 🏗️ Estrutura do Repositório
+## 🗂️ Estrutura do Repositório
 
-Este é um *monorepo* que contém todos os serviços necessários para rodar o FinFrases. Para detalhes técnicos de código e arquitetura, consulte a documentação específica de cada módulo:
+Este é um *monorepo* que reúne os serviços necessários para executar o FinFrases.
 
-* ⚙️ [**`/api`**](./api/README.md): Backend assíncrono desenvolvido em FastAPI. Responsável pelas regras de negócio, paginação, integração com MongoDB e cache distribuído com Redis.
-* 🖥️ **`/frontend`** *(ou o nome da sua pasta de front)*: Interface de usuário para visualização, busca e interação com as frases curadas.
+Cada módulo possui sua própria documentação técnica:
+
+- ⚙️ [**`/api`**](./api/README.md): Backend assíncrono desenvolvido em FastAPI, responsável pelas regras de negócio, paginação, integração com MongoDB e cache distribuído com Redis.
+- 🖥️ [**`/frontend`**](./frontend/README.md): Interface de usuário para visualização, busca e interação com as frases curadas.
+
+> Consulte o README de cada módulo para obter informações sobre configuração, desenvolvimento, estrutura interna e detalhes técnicos específicos.
+
+---
+
+## 🏗️ Arquitetura do Sistema
+
+```mermaid
+---
+title: Arquitetura da Aplicação FinFrases
+config:
+  architecture:
+    randomize: true
+---
+architecture-beta
+    group internet(internet)[Internet]
+        service user(internet)[User] in internet
+    
+    group frontend(cloud)[Frontend]
+        service client(cloud)[Client] in frontend
+
+    group backend(cloud)[Backend]
+        service proxy(server)[Caddy Reverse Proxy] in backend
+        service api(server)[API] in backend
+    
+    group data(server)[Data]
+        service mongodb(database)[MongoDB] in data
+        service redis(database)[Redis] in data
+
+
+    user:T --> L:client
+    user:R --> L:proxy
+
+    client:B --> T:proxy
+
+    proxy:R --> L:api
+
+    api:B --> T:mongodb
+    api:R --> L:redis
+```
 
 ---
 
@@ -57,8 +99,8 @@ docker compose up -d --build
 **4. Acesse a aplicação:**
 Com os containers rodando, os serviços estarão disponíveis em:
 
-* 🌐 **Frontend Web:** `https://localhost:8443`
-* 📚 **Documentação da API (Scalar):** `https://localhost:8443/api/docs`
+- 🌐 **Frontend Web:** `https://localhost:443`
+- 📚 **Documentação da API (Scalar):** `https://localhost:443/api/docs`
 
 ---
 

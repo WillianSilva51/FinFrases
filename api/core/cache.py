@@ -5,9 +5,9 @@ utilizando Redis, com suporte a serialização JSON e decoradores para
 automatizar o caching de funções assíncronas.
 """
 
+from collections.abc import Callable
 from functools import wraps
 from json import dumps, loads
-from typing import Callable
 
 from loguru import logger
 from redis import ConnectionError
