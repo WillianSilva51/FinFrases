@@ -1,17 +1,18 @@
-from http import HTTPStatus
 import json
+from http import HTTPStatus
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Request, Response
 
 from api.core.cache import RedisCache
+from api.core.limiter import limiter
 from api.core.security import verify_api_key
 from api.models.enums import CategoryQuote
 from api.repositories.quote_repository import QuoteRepository
-from api.schemas.pagination import Params, PaginatedResponse
+from api.schemas.pagination import PaginatedResponse, Params
 from api.schemas.quote_schema import (
     CreateQuoteRequest,
-    UpdateQuoteRequest,
     QuoteResponse,
+    UpdateQuoteRequest,
 )
 from api.services.quote_service import QuoteService
 from api.utils.utils import expiration_midnight
@@ -29,7 +30,10 @@ cache = RedisCache()
     description="Cria uma nova citação com base nos dados fornecidos.",
     response_description="A citação criada com sucesso.",
 )
+@limiter.limit("20/minute")
 async def post_quote(
+    request: Request,
+    response: Response,
     new_quote: CreateQuoteRequest,
     service: QuoteService = Depends(QuoteService),
     repo: QuoteRepository = Depends(QuoteRepository),
@@ -49,7 +53,10 @@ async def post_quote(
     description="Retorna uma lista de todas as citações disponíveis.",
     response_description="Lista de citações.",
 )
+@limiter.limit("40/minute")
 async def get_all_quotes(
+    request: Request,
+    response: Response,
     author: str | None = Query(
         default=None, description="Autor para filtrar as citações."
     ),
@@ -96,7 +103,10 @@ async def get_all_quotes(
     description="Retorna uma lista de citações aleatórias verificadas.",
     response_description="Lista de citações aleatórias.",
 )
+@limiter.limit("40/minute")
 async def get_random_quote(
+    request: Request,
+    response: Response,
     size: int = Query(
         default=1,
         ge=1,
@@ -120,12 +130,16 @@ async def get_random_quote(
     description="Retorna uma citação aleatória verificada para o dia.",
     response_description="Citação do dia.",
 )
+@limiter.limit("30/minute")
 @cache.cacheable(expire=expiration_midnight)
 async def get_today_quote(
+    request: Request,
+    response: Response,
     service: QuoteService = Depends(QuoteService),
     repo: QuoteRepository = Depends(QuoteRepository),
 ) -> list[QuoteResponse]:
     quotes = await service.get_today_quote(repo=repo)
+
     return [QuoteResponse.model_validate(quote.model_dump()) for quote in quotes]
 
 
@@ -138,9 +152,12 @@ async def get_today_quote(
     description="Retorna uma citação específica com base no ID fornecido.",
     response_description="Citação encontrada com sucesso.",
 )
+@limiter.limit("30/minute")
 @cache.cacheable(expire=3600)
 async def get_quote_by_id(
     id: str,
+    request: Request,
+    response: Response,
     service: QuoteService = Depends(QuoteService),
     repo: QuoteRepository = Depends(QuoteRepository),
 ) -> QuoteResponse:
@@ -157,9 +174,12 @@ async def get_quote_by_id(
     description="Atualiza uma citação existente com base no ID fornecido e nos dados atualizados.",
     response_description="Citação atualizada com sucesso.",
 )
+@limiter.limit("20/minute")
 async def update_quote(
     id: str,
     quote_data: UpdateQuoteRequest,
+    request: Request,
+    response: Response,
     service: QuoteService = Depends(QuoteService),
     repo: QuoteRepository = Depends(QuoteRepository),
     _: str = Depends(verify_api_key),
@@ -180,8 +200,11 @@ async def update_quote(
     description="Deleta uma citação existente com base no ID fornecido.",
     response_description="Citação deletada com sucesso.",
 )
+@limiter.limit("20/minute")
 async def delete_quote(
     id: str,
+    request: Request,
+    response: Response,
     service: QuoteService = Depends(QuoteService),
     repo: QuoteRepository = Depends(QuoteRepository),
     _: str = Depends(verify_api_key),
