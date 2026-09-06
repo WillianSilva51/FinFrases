@@ -50,6 +50,7 @@ services:
       - REDIS_PORT=${REDIS_PORT:-6379}
       - REDIS_PASSWORD=${REDIS_PASSWORD:-defaultpassword}
       - REDIS_DB=${REDIS_DB:-0}
+      - REDIS_URI=redis://:${REDIS_PASSWORD:-defaultpassword}@${REDIS_HOST:-redis}:${REDIS_PORT:-6379}/${REDIS_DB:-0}
       - MONGO_URI=mongodb://${MONGO_USER:-user}:${MONGO_PASSWORD:-password123}@mongodb:27017/finfrases?authSource=admin
     ports:
       - "8000:8000"

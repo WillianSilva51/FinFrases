@@ -4,6 +4,8 @@ from fastapi import FastAPI
 from fastapi.exceptions import HTTPException, RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from scalar_fastapi import get_scalar_api_reference
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 
 from api.core.database import init_db
 from api.core.exceptions.custom_exceptions import (
@@ -17,6 +19,7 @@ from api.core.handlers.exception_handlers import (
     request_validation_handler,
     resource_not_found_handler,
 )
+from api.core.limiter import limiter
 from api.routers.health import api_router as health_router
 from api.routers.quotes import api_router as quotes_router
 
@@ -68,6 +71,8 @@ Totalmente em português (PT-BR).
     lifespan=lifespan,
 )
 
+app.state.limiter = limiter
+
 
 @app.get("/api/docs", include_in_schema=False)
 async def scalar_html():
@@ -86,6 +91,7 @@ app.add_exception_handler(HTTPException, http_handler)  # type: ignore
 app.add_exception_handler(DomainValidationException, domain_validation_handler)  # type: ignore
 app.add_exception_handler(ResourceNotFoundException, resource_not_found_handler)  # type: ignore
 app.add_exception_handler(RequestValidationError, request_validation_handler)  # type: ignore
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)  # type: ignore
 app.add_exception_handler(Exception, global_exception_handler)
 
 app.include_router(quotes_router, prefix="/api", tags=["Frases"])
