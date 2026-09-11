@@ -10,15 +10,15 @@ localhost {
 	handle {
 		root * /usr/share/caddy/finfrases
 
-		rewrite / /html/index.html
+		rewrite / /index.html
 	
-		try_files /html{path} /html{path}.html {path} {path}/
+		try_files /{path} /{path}.html {path} {path}/
 	
 		file_server
 	}
 	
 	handle_errors {
-		rewrite * /html/error.html
+		rewrite * /error.html
 	
 		file_server
 	}
