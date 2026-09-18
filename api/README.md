@@ -74,7 +74,7 @@ Produção: <https://seu-dominio.com/api/docs>
 Retorna uma lista de frases. Você pode filtrar via *Query Parameters*.
 `GET /api/v1/quotes?limit=10&skip=0`
 
-**Filtros disponíveis:** `author`, `tags`, `source`, `verified`.
+**Filtros disponíveis:** `author`, `tags`, `exclude_tags`, `source`, `verified`.
 *Exemplo: `GET /api/v1/quotes?tags=INVESTIMENTOS&author=Warren Buffett`*
 
 ### Frases Aleatórias
@@ -134,4 +134,4 @@ openssl rand -base64 64
 > [!IMPORTANT]
 > A saída terá aproximadamente 88 caracteres, pois está codificada em Base64.
 
-3. Coloque a chave gerada no campo `API_KEY` do arquivo `.env` e reinicie os containers para aplicar a nova chave.
+1. Coloque a chave gerada no campo `API_KEY` do arquivo `.env` e reinicie os containers para aplicar a nova chave.

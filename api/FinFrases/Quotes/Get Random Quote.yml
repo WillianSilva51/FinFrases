@@ -5,11 +5,12 @@ info:
 
 http:
   method: GET
-  url: "{{baseUrl}}/{{versionApi}}/quotes/random?size=1"
+  url: "{{baseUrl}}/{{versionApi}}/quotes/random"
   params:
     - name: size
       value: "1"
       type: query
+      disabled: true
   auth: inherit
 
 settings:
@@ -17,3 +18,4 @@ settings:
   timeout: 0
   followRedirects: true
   maxRedirects: 5
+  forwardAuthorizationHeader: true

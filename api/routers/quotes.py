@@ -63,6 +63,9 @@ async def get_all_quotes(
     tags: list[CategoryQuote] | None = Query(  # noqa: B008
         default=None, description="Lista de categorias para filtrar as citações."
     ),
+    exclude_tags: list[CategoryQuote] | None = Query(  # noqa: B008
+        default=None, description="Lista de categorias para excluir das citações."
+    ),
     source: str | None = Query(
         default=None, description="Fonte para filtrar as citações."
     ),
@@ -76,6 +79,7 @@ async def get_all_quotes(
     quotes, total_counts, pages = await service.get_all(
         author=author,
         tags=tags,
+        exclude_tags=exclude_tags,
         source=source,
         verified=verified,
         limit=params.get_limit(),
