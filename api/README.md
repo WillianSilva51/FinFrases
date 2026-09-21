@@ -128,10 +128,10 @@ Para atualizar ou deletar frases, utilize os endpoints `PUT /api/v1/quotes/{id}`
 2. Execute o comando abaixo para gerar uma chave aleatória segura com 64 bytes (512 bits) de entropia e imprimi-la no terminal:
 
 ```bash
-openssl rand -base64 64
+openssl rand -hex 64
 ```
 
 > [!IMPORTANT]
-> A saída terá aproximadamente 88 caracteres, pois está codificada em Base64.
+> A saída terá aproximadamente 128 caracteres, pois está codificada em Hexadecimal.
 
-1. Coloque a chave gerada no campo `API_KEY` do arquivo `.env` e reinicie os containers para aplicar a nova chave.
+3. Coloque a chave gerada no campo `API_KEY` do arquivo `.env` e reinicie os containers para aplicar a nova chave.

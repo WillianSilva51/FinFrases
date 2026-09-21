@@ -1,6 +1,5 @@
 from contextlib import asynccontextmanager
 
-from core.config import settings
 from fastapi import FastAPI
 from fastapi.exceptions import HTTPException, RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
@@ -8,6 +7,7 @@ from scalar_fastapi import get_scalar_api_reference
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 
+from api.core.config import settings
 from api.core.database import init_db
 from api.core.exceptions.custom_exceptions import (
     DomainValidationException,
@@ -56,7 +56,7 @@ API aberta e gratuita para frases de mentalidade financeira 💰
 Totalmente em português (PT-BR).
 """,
     summary="Frases de mentalidade financeira em português",
-    version="1.0.2",
+    version=settings.VERSION,
     openapi_url="/api/openapi.json",
     tags_metadata=tags_metadata,
     contact={

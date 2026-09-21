@@ -2,16 +2,21 @@ from enum import Enum
 
 
 class CategoryQuote(str, Enum):
-    GERAL = "GERAL"
-    INVESTIMENTOS = "INVESTIMENTOS"
-    POUPANCA = "POUPANCA"
-    PSICOLOGIA = "PSICOLOGIA"
-    DIVIDENDOS = "DIVIDENDOS"
-    EDUCACAO = "EDUCACAO"
-    EMPREENDEDORISMO = "EMPREENDEDORISMO"
-    ACAO = "ACAO"
-    FIIS = "FIIS"
+    GERAL = "geral"
+    INVESTIMENTOS = "investimentos"
+    POUPANCA = "poupanca"
+    PSICOLOGIA = "psicologia"
+    DIVIDENDOS = "dividendos"
+    EDUCACAO = "educacao"
+    EMPREENDEDORISMO = "empreendedorismo"
+    ACAO = "acao"
+    FIIS = "fiis"
 
     @classmethod
     def _missing_(cls, value):
+        if isinstance(value, str):
+            for category in cls:
+                if category.value.lower() == value.lower():
+                    return category
+
         return cls.GERAL
