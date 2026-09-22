@@ -54,6 +54,7 @@ class QuoteService:
         self,
         author: str | None,
         tags: list[CategoryQuote] | None,
+        exclude_tags: list[CategoryQuote] | None,
         source: str | None,
         verified: bool,
         limit: int,
@@ -85,6 +86,8 @@ class QuoteService:
             filters["source"] = source
         if tags:
             filters["tags"] = {"$in": tags}
+        if exclude_tags:
+            filters["tags"] = {"$nin": exclude_tags}
 
         logger.info(
             f"Obtendo citações com filtros: {filters}, limit: {limit}, skip: {skip}"

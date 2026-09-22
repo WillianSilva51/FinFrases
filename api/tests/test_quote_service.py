@@ -123,6 +123,7 @@ class TestGetAllQuotes:
         result, total, pages = await service.get_all(
             author=None,
             tags=None,
+            exclude_tags=None,
             source=None,
             verified=True,
             limit=10,

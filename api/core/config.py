@@ -3,7 +3,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "FinFrases API"
-    VERSION: str = "1.1.0"
+    VERSION: str = "1.1.1"
+    API_PREFIX: str = "/api"
     MONGO_URI: str
     API_KEY: str
     REDIS_HOST: str

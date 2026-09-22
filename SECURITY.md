@@ -6,7 +6,7 @@ Atualmente, apenas a versão mais recente da API recebe atualizações de segura
 
 | Versão | Suportada |
 | :--- | :--- |
-| 1.0.0 | ✅ Sim |
+| 1.1.1 | ✅ Sim |
 | < 1.0.0 | ❌ Não |
 
 ## Reportar uma Vulnerabilidade
@@ -25,7 +25,7 @@ Se descobrir uma vulnerabilidade de segurança neste projeto, por favor siga est
 A API utiliza um cabeçalho personalizado `X-API-Key` para autenticar operações administrativas (como a criação de novas frases).
 
 * A verificação utiliza `secrets.compare_digest` para prevenir ataques de tempo (timing attacks).
-* É fortemente recomendado gerar chaves seguras com alta entropia utilizando comandos como `openssl rand -base64 64`.
+* É fortemente recomendado gerar chaves seguras com alta entropia utilizando comandos como `openssl rand -hex 64`.
 
 ### 2. Gestão de Variáveis de Ambiente
 

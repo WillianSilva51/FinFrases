@@ -7,6 +7,7 @@ from scalar_fastapi import get_scalar_api_reference
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 
+from api.core.config import settings
 from api.core.database import init_db
 from api.core.exceptions.custom_exceptions import (
     DomainValidationException,
@@ -20,8 +21,7 @@ from api.core.handlers.exception_handlers import (
     resource_not_found_handler,
 )
 from api.core.limiter import limiter
-from api.routers.health import api_router as health_router
-from api.routers.quotes import api_router as quotes_router
+from api.routers.main_router import main_router
 
 tags_metadata = [
     {
@@ -33,6 +33,8 @@ tags_metadata = [
         "description": "Endpoint para verificar a saúde da API.",
     },
 ]
+
+PREFIX = settings.API_PREFIX
 
 
 @asynccontextmanager
@@ -54,7 +56,7 @@ API aberta e gratuita para frases de mentalidade financeira 💰
 Totalmente em português (PT-BR).
 """,
     summary="Frases de mentalidade financeira em português",
-    version="1.0.2",
+    version=settings.VERSION,
     openapi_url="/api/openapi.json",
     tags_metadata=tags_metadata,
     contact={
@@ -67,14 +69,14 @@ Totalmente em português (PT-BR).
         "url": "https://opensource.org/licenses/MIT",
     },
     docs_url=None,
-    redoc_url="/api/redoc",
+    redoc_url=f"{PREFIX}/redoc",
     lifespan=lifespan,
 )
 
 app.state.limiter = limiter
 
 
-@app.get("/api/docs", include_in_schema=False)
+@app.get(f"{PREFIX}/docs", include_in_schema=False)
 async def scalar_html():
     return get_scalar_api_reference(openapi_url=app.openapi_url, title=app.title)
 
@@ -94,5 +96,4 @@ app.add_exception_handler(RequestValidationError, request_validation_handler)  #
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)  # type: ignore
 app.add_exception_handler(Exception, global_exception_handler)
 
-app.include_router(quotes_router, prefix="/api", tags=["Frases"])
-app.include_router(health_router, prefix="/api", tags=["Health"])
+app.include_router(main_router)
