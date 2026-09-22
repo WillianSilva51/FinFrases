@@ -5,16 +5,9 @@ const closeIcon = document.getElementById("header-classic-close")
 
 export function toggleMenu() {
     hamburger.addEventListener("click", () => {
-        if (hamburger.getAttribute("aria-expanded") === "true") {
-            hamburger.setAttribute("aria-expanded", "false");
-            menu.classList.add("hidden");
-            openIcon.classList.remove("hidden");
-            closeIcon.classList.add("hidden");
-        } else {
-            hamburger.setAttribute("aria-expanded", "true");
-            menu.classList.remove("hidden");
-            openIcon.classList.add("hidden");
-            closeIcon.classList.remove("hidden");
-        }
+        hamburger.toggleAttribute("aria-expanded");
+        menu.classList.toggle("hidden");
+        openIcon.toggleAttribute("hidden");
+        closeIcon.toggleAttribute("hidden");
     });
 }

@@ -2,6 +2,7 @@ opencollection: 1.0.0
 
 info:
   name: fin-frases
+  version: 1.0.2
 config:
   proxy:
     inherit: true
@@ -23,3 +24,10 @@ extensions:
       request:
         type: http
         url: http://localhost:8000/api
+    openapi:
+      - sourceUrl: https://finfrases.developer.li/api/openapi.json
+        groupBy: tags
+        lastSyncDate: 2026-08-22T03:47:52.929Z
+        specHash: 551ea08a8e943499b8afc40d9e6139a8
+        autoCheck: true
+        autoCheckInterval: 60
