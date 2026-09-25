@@ -45,14 +45,10 @@ services:
     container_name: finfrases-api
     restart: always
     environment:
-      - API_KEY=${API_KEY}
+      - API_KEY=${API_KEY:-62c51b25860358ae57def8bf8801aa6fb3ca45ef1f4347b373d93bbfb2c7ff98}
       - API_PREFIX=${API_PREFIX:-/api}
-      - REDIS_HOST=${REDIS_HOST:-redis}
-      - REDIS_PORT=${REDIS_PORT:-6379}
-      - REDIS_PASSWORD=${REDIS_PASSWORD:-defaultpassword}
-      - REDIS_DB=${REDIS_DB:-0}
-      - REDIS_URI=redis://:${REDIS_PASSWORD:-defaultpassword}@${REDIS_HOST:-redis}:${REDIS_PORT:-6379}/${REDIS_DB:-0}
-      - MONGO_URI=mongodb://${MONGO_USER:-user}:${MONGO_PASSWORD:-password123}@mongodb:27017/finfrases?authSource=admin
+      - REDIS_URI=${REDIS_URI:-redis://:${REDIS_PASSWORD:-defaultpassword}@${REDIS_HOST:-redis}:${REDIS_PORT:-6379}/${REDIS_DB:-0}}
+      - MONGO_URI=${MONGO_URI:-mongodb://${MONGO_USER:-user}:${MONGO_PASSWORD:-password123}@mongodb:27017/finfrases?authSource=admin}
     ports:
       - "8000:8000"
     depends_on:
