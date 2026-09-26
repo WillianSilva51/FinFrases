@@ -1,7 +1,13 @@
-const LOCALHOST = false;
+import { expirationMidnight } from "./utils.js";
+
+const isLocal =
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1";
 
 // const API_URL = "https://localhost:443/api/v1/quotes/"; localmente no docker
-const API_URL = LOCALHOST ? "/api/v1/quotes/" : "https://api.finfrases.developer.li/v1/quotes/";
+const API_URL = isLocal
+    ? "/api/v1/quotes/"
+    : "https://api.finfrases.developer.li/v1/quotes/";
 
 const todayQuoteLink = document.getElementById("today-quote-link");
 const randomQuoteLink = document.getElementById("random-quote-link");
@@ -26,12 +32,6 @@ const validQuotesTags = {
     "fiis": ["bg-teal-700", "text-white"]
 };
 
-const expirationMidnight = () => {
-    const nextMidnight = new Date();
-    nextMidnight.setDate(nextMidnight.getDate() + 1);
-    nextMidnight.setUTCHours(0, 0, 0, 0);
-    return nextMidnight.getTime();
-};
 
 const toggleQuoteDetails = (hidden) => {
     quoteAuthor.hidden = hidden;
@@ -106,8 +106,8 @@ export async function displayQuote(endpoint = "today") {
             const tagElement = document.createElement("span");
             const [bg, text] = validQuotesTags[tag] ?? ["bg-gray-700", "text-white"];
 
-            tagElement.className = `${bg} ${text.toUpperCase()} px-2 py-1 rounded-lg text-sm text-center font-semibold border border-black/10 dark:border-white/10`;
-            tagElement.textContent = tag;
+            tagElement.className = `${bg} ${text} px-2 py-1 rounded-lg text-sm text-center font-semibold border border-black/10 dark:border-white/10 hover:opacity-80 transition-opacity duration-300`;
+            tagElement.textContent = tag.toUpperCase();
 
             quoteTags.appendChild(tagElement);
         }
