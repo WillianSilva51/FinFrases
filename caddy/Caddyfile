@@ -18,7 +18,7 @@ localhost {
 	}
 	
 	handle_errors {
-		rewrite * /error.html
+		rewrite * /404.html
 	
 		file_server
 	}
