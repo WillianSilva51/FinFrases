@@ -1,7 +1,7 @@
 const LOCALHOST = false;
 
 // const API_URL = "https://localhost:443/api/v1/quotes/"; localmente no docker
-const API_URL = LOCALHOST ? "/api/v1/quotes/" : "api.finfrases.developer.li/v1/quotes/";
+const API_URL = LOCALHOST ? "/api/v1/quotes/" : "https://api.finfrases.developer.li/v1/quotes/";
 
 const todayQuoteLink = document.getElementById("today-quote-link");
 const randomQuoteLink = document.getElementById("random-quote-link");
