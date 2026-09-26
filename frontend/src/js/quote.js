@@ -1,5 +1,7 @@
+const LOCALHOST = false;
+
 // const API_URL = "https://localhost:443/api/v1/quotes/"; localmente no docker
-const API_URL = "/api/v1/quotes/"; // caddy proxy
+const API_URL = LOCALHOST ? "/api/v1/quotes/" : "api.finfrases.developer.li/v1/quotes/";
 
 const todayQuoteLink = document.getElementById("today-quote-link");
 const randomQuoteLink = document.getElementById("random-quote-link");
@@ -13,15 +15,15 @@ const quoteTags = document.getElementById("quote-tags");
 const validTypes = new Set(["today", "random"]);
 
 const validQuotesTags = {
-    "GERAL": ["bg-gray-700", "text-white"],
-    "INVESTIMENTOS": ["bg-green-700", "text-white"],
-    "POUPANCA": ["bg-blue-700", "text-white"],
-    "PSICOLOGIA": ["bg-purple-700", "text-white"],
-    "DIVIDENDOS": ["bg-yellow-700", "text-white"],
-    "EDUCACAO": ["bg-red-700", "text-white"],
-    "EMPREENDEDORISMO": ["bg-indigo-700", "text-white"],
-    "ACAO": ["bg-pink-700", "text-white"],
-    "FIIS": ["bg-teal-700", "text-white"]
+    "geral": ["bg-gray-700", "text-white"],
+    "investimentos": ["bg-green-700", "text-white"],
+    "poupanca": ["bg-blue-700", "text-white"],
+    "psicologia": ["bg-purple-700", "text-white"],
+    "dividendos": ["bg-yellow-700", "text-white"],
+    "educacao": ["bg-red-700", "text-white"],
+    "empreendedorismo": ["bg-indigo-700", "text-white"],
+    "acao": ["bg-pink-700", "text-white"],
+    "fiis": ["bg-teal-700", "text-white"]
 };
 
 const expirationMidnight = () => {
@@ -104,7 +106,7 @@ export async function displayQuote(endpoint = "today") {
             const tagElement = document.createElement("span");
             const [bg, text] = validQuotesTags[tag] ?? ["bg-gray-700", "text-white"];
 
-            tagElement.className = `${bg} ${text} px-2 py-1 rounded-lg text-sm text-center font-semibold border border-black/10 dark:border-white/10`;
+            tagElement.className = `${bg} ${text.toUpperCase()} px-2 py-1 rounded-lg text-sm text-center font-semibold border border-black/10 dark:border-white/10`;
             tagElement.textContent = tag;
 
             quoteTags.appendChild(tagElement);
