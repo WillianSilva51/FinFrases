@@ -57,8 +57,8 @@ jobs:
 
             git pull
 
-            docker compose -f compose-prod.yml pull finfrases-api
+            docker compose -f compose-prod-dist.yml pull finfrases-api
 
-            docker compose -f compose-prod.yml up -d finfrases-api
+            docker compose -f compose-prod-dist.yml up -d finfrases-api
 
             docker image prune -f

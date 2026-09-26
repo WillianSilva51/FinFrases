@@ -3,14 +3,10 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "FinFrases API"
-    VERSION: str = "1.1.1"
+    VERSION: str = "1.1.2"
     API_PREFIX: str = "/api"
     MONGO_URI: str
     API_KEY: str
-    REDIS_HOST: str
-    REDIS_PORT: int
-    REDIS_DB: int
-    REDIS_PASSWORD: str
     REDIS_URI: str
 
     model_config = SettingsConfigDict(

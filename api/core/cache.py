@@ -33,12 +33,7 @@ class RedisCache:
         registrado no logger.
         """
         try:
-            self.client = Redis(
-                host=settings.REDIS_HOST,
-                port=settings.REDIS_PORT,
-                db=settings.REDIS_DB,
-                password=settings.REDIS_PASSWORD,
-            )
+            self.client = Redis.from_url(settings.REDIS_URI)
         except ConnectionError as e:
             logger.error(e)
 

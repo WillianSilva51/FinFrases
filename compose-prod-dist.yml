@@ -6,11 +6,7 @@ services:
     environment:
       - API_KEY=${API_KEY}
       - API_PREFIX=${API_PREFIX:-/api}
-      - REDIS_HOST=${REDIS_HOST:-redis}
-      - REDIS_PORT=${REDIS_PORT:-6379}
-      - REDIS_PASSWORD=${REDIS_PASSWORD:-defaultpassword}
-      - REDIS_DB=${REDIS_DB:-0}
-      - REDIS_URI=${REDIS_URI:-redis://:${REDIS_PASSWORD:-defaultpassword}@${REDIS_HOST:-redis}:${REDIS_PORT:-6379}/${REDIS_DB:-0}
+      - REDIS_URI=${REDIS_URI}
       - MONGO_URI=${MONGO_URI}
     expose:
       - "8000"
