@@ -3,6 +3,6 @@ variables:
   - name: versionApi
     value: v1
   - name: baseUrl
-    value: https://finfrases.developer.li	/api
+    value: https://api.finfrases.developer.li/
   - secret: true
     name: API_KEY
