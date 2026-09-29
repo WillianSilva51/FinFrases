@@ -6,7 +6,7 @@ Atualmente, apenas a versão mais recente da API recebe atualizações de segura
 
 | Versão | Suportada |
 | :--- | :--- |
-| 1.1.1 | ✅ Sim |
+| 1.1.3 | ✅ Sim |
 | < 1.0.0 | ❌ Não |
 
 ## Reportar uma Vulnerabilidade
