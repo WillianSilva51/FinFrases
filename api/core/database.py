@@ -6,6 +6,7 @@ MongoDB utilizando o cliente assíncrono do PyMongo e o Beanie para mapeamento d
 
 from beanie import init_beanie
 from pymongo import AsyncMongoClient
+from pymongo.asynchronous.database import AsyncDatabase
 
 from api.core.config import settings
 from api.models.quote import Quote
@@ -13,7 +14,7 @@ from api.models.quote import Quote
 client: AsyncMongoClient | None = None
 
 
-async def get_db():
+def get_db() -> AsyncDatabase:
     """Obtém a instância do banco de dados MongoDB.
 
     Estabelece uma conexão com o MongoDB na primeira chamada e retorna
@@ -34,7 +35,7 @@ async def get_db():
     return client["finfrases"]
 
 
-async def init_db():
+async def init_db() -> None:
     """Inicializa o banco de dados com os modelos de documentos.
 
     Realiza a conexão com o banco de dados e registra os modelos de documentos
@@ -48,5 +49,5 @@ async def init_db():
         ConnectionFailure: Se não conseguir conectar ao servidor MongoDB.
         OperationalError: Se houver erros durante a inicialização do Beanie.
     """
-    db = await get_db()
+    db = get_db()
     await init_beanie(database=db, document_models=[Quote])

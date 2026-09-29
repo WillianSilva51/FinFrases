@@ -57,7 +57,7 @@ Totalmente em português (PT-BR).
 """,
     summary="Frases de mentalidade financeira em português",
     version=settings.VERSION,
-    openapi_url="/api/openapi.json",
+    openapi_url=f"{PREFIX}/openapi.json",
     tags_metadata=tags_metadata,
     contact={
         "name": "Willian Silva",

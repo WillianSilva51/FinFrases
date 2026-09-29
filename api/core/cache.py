@@ -37,16 +37,13 @@ class RedisCache:
         except ConnectionError as e:
             logger.error(e)
 
-    def ping(self):
+    async def ping(self):
         """Verifica se o servidor Redis está respondendo.
 
         Returns:
             O retorno da operação ``PING`` realizada pelo cliente Redis.
         """
-        try:
-            return self.client.ping()
-        except ConnectionError as e:
-            logger.error(f"Erro de conexão com o Redis: {e}")
+        return await self.client.ping()
 
     async def set(self, key: str, value, expire: int):
         """Armazena um valor no Redis com tempo de expiração.
@@ -204,3 +201,15 @@ class RedisCache:
             return wrapper
 
         return decorator
+
+
+redis = RedisCache()
+
+
+def get_redis() -> RedisCache:
+    """Obtém a instância do gerenciador de cache Redis.
+
+    Returns:
+        RedisCache: Instância do gerenciador de cache Redis.
+    """
+    return redis
