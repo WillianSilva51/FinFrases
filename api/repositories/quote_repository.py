@@ -1,10 +1,10 @@
 from beanie import PydanticObjectId
 
-from api.core.cache import RedisCache
+from api.core.cache import get_redis
 from api.models.quote import Quote
 from api.schemas.quote_schema import CreateQuoteRequest
 
-cache = RedisCache()
+cache = get_redis()
 
 
 class QuoteRepository:

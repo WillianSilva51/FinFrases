@@ -21,6 +21,9 @@ api_router = APIRouter(prefix="/v1/health")
 )
 @limiter.exempt
 async def health_check():
+    """
+    Verifica a saúde da API.
+    """
     return {"status": "healthy", "version": settings.VERSION}
 
 
@@ -34,6 +37,9 @@ async def health_check():
 )
 @limiter.exempt
 async def liveness_check():
+    """
+    Verifica se a API está viva.
+    """
     return {"status": "alive"}
 
 
@@ -50,14 +56,19 @@ async def readiness_check(
     mongodb: AsyncDatabase = Depends(get_db),  # noqa: B008
     redis: RedisCache = Depends(get_redis),  # noqa: B008
 ):
+    """
+    Verifica se a API está pronta para receber requisições.
+    """
     try:
         await redis.ping()
         await mongodb.command("ping")
         return {"status": "ready", "version": settings.VERSION}
     except Exception:  # noqa: BLE001
-        logger.exception("Readiness check failed")
+        logger.exception(
+            "A verificação de prontidão falhou. A API não está pronta para receber requisições."
+        )
 
         raise HTTPException(
             status_code=HTTPStatus.SERVICE_UNAVAILABLE,
-            detail="Service is not ready",
+            detail="O serviço não está pronto para receber requisições.",
         )
