@@ -128,7 +128,7 @@ class RedisCache:
         """
         return isinstance(value, (str, int, float, bool, type(None), list, dict))
 
-    def cacheable(self, expire: Callable[[], int] | int = 3600):
+    def cacheable(self, model: type | None, expire: Callable[[], int] | int = 3600):
         """Cria um decorador para cache automático de funções assíncronas.
 
         A chave de cache é construída com o nome da função e os argumentos
@@ -137,6 +137,7 @@ class RedisCache:
         e seu resultado é salvo no cache.
 
         Args:
+            model: O tipo de modelo a ser usado para serialização e desserialização.
             expire: Tempo de expiração em segundos ou uma função que retorne
                 dinamicamente esse valor.
 
@@ -171,7 +172,15 @@ class RedisCache:
                 if cache_data:
                     logger.info(f"Cache encontrado para a chave: {cache_key}")
 
-                    return loads(cache_data.decode("utf-8"))
+                    cached_data = loads(cache_data.decode("utf-8"))
+
+                    if model is not None:
+                        if isinstance(cached_data, list):
+                            return [model.model_validate(item) for item in cached_data]
+
+                        return model.model_validate(cached_data)
+
+                    return cached_data
 
                 result = await func(*args, **kwargs)
 
