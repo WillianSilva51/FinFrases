@@ -65,7 +65,7 @@ def quote_filters() -> QuoteFilters:
         source=None,
         tags=None,
         exclude_tags=None,
-        q=None,
+        search=None,
     )
 
 

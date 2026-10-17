@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from re import escape
 from typing import Annotated
 
 from beanie import SortDirection
@@ -18,7 +17,7 @@ class QuoteFilters:
         source (str | None): Filtro pela fonte da citação.
         tags (list[str] | None): Filtro por tags associadas à citação.
         exclude_tags (list[str] | None): Filtro para excluir citações com determinadas tags.
-        q (str | None): Termo de pesquisa para busca textual nas citações.
+        search (str | None): Filtro de pesquisa textual para buscar citações que contenham a string fornecida.
     """
 
     verified: bool = True
@@ -32,7 +31,7 @@ class QuoteFilters:
         list[CategoryQuote] | None,
         Query(description="Filtro para excluir citações com determinadas tags"),
     ] = None
-    q: str | None = None
+    search: str | None = None
 
     def to_dict(self) -> dict:
         tags_filter = {
@@ -48,22 +47,7 @@ class QuoteFilters:
             "author": self.author,
             "source": self.source,
             "tags": tags_filter or None,
-            "$or": [
-                {
-                    "content": {
-                        "$regex": escape(self.q.strip()),
-                        "$options": "i",
-                    }
-                },
-                {
-                    "author": {
-                        "$regex": escape(self.q.strip()),
-                        "$options": "i",
-                    }
-                },
-            ]
-            if self.q and self.q.strip()
-            else None,
+            "$text": {"$search": self.search} if self.search else None,
         }
 
         return {
