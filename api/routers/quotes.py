@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, Query, Request, Response
 from api.core.cache import RedisCache
 from api.core.limiter import limiter
 from api.core.security import verify_api_key
-from api.models.enums import CategoryQuote
+from api.models.quote import QueryParams
 from api.repositories.quote_repository import QuoteRepository
 from api.schemas.pagination import PaginatedResponse, Params
 from api.schemas.quote_schema import (
@@ -57,31 +57,13 @@ async def post_quote(
 async def get_all_quotes(
     request: Request,
     response: Response,
-    author: str | None = Query(
-        default=None, description="Autor para filtrar as citações."
-    ),
-    tags: list[CategoryQuote] | None = Query(  # noqa: B008
-        default=None, description="Lista de categorias para filtrar as citações."
-    ),
-    exclude_tags: list[CategoryQuote] | None = Query(  # noqa: B008
-        default=None, description="Lista de categorias para excluir das citações."
-    ),
-    source: str | None = Query(
-        default=None, description="Fonte para filtrar as citações."
-    ),
-    verified: bool = Query(
-        default=True, description="Filtrar apenas citações verificadas."
-    ),
+    query_params: QueryParams = Depends(QueryParams),  # noqa: B008
     params: Params = Depends(Params),  # noqa: B008
     service: QuoteService = Depends(QuoteService),  # noqa: B008
     repo: QuoteRepository = Depends(QuoteRepository),  # noqa: B008
 ) -> PaginatedResponse[QuoteResponse]:
     quotes, total_counts, pages = await service.get_all(
-        author=author,
-        tags=tags,
-        exclude_tags=exclude_tags,
-        source=source,
-        verified=verified,
+        query_params=query_params,
         limit=params.get_limit(),
         skip=params.get_offset(),
         repo=repo,

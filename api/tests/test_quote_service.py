@@ -13,7 +13,7 @@ from api.core.exceptions.custom_exceptions import (
     QuoteNotFoundException,
 )
 from api.models.enums import CategoryQuote
-from api.models.quote import Quote
+from api.models.quote import QueryParams, Quote
 from api.repositories.quote_repository import QuoteRepository
 from api.schemas.quote_schema import CreateQuoteRequest, UpdateQuoteRequest
 from api.services.quote_service import QuoteService
@@ -52,6 +52,19 @@ def quote(valid_request_data):
         tags=valid_request_data.tags,
         source=valid_request_data.source,
         verified=valid_request_data.verified,
+    )
+
+
+@pytest.fixture
+def query_params() -> QueryParams:
+    """Retorna parâmetros de consulta válidos para listagem de citações."""
+    return QueryParams(
+        verified=True,
+        author=None,
+        source=None,
+        tags=None,
+        exclude_tags=None,
+        q=None,
     )
 
 
@@ -108,7 +121,7 @@ class TestGetAllQuotes:
     """Testes do método de listagem de citações."""
 
     @pytest.mark.asyncio
-    async def test_get_all_success(self, service, mock_repo, quote):
+    async def test_get_all_success(self, service, mock_repo, query_params, quote):
         """Verifica a listagem com filtro e paginação."""
         other_quote = Quote.model_construct(
             content="Outra frase.",
@@ -121,11 +134,7 @@ class TestGetAllQuotes:
         mock_repo.get_all.return_value = ([quote, other_quote], 2)
 
         result, total, pages = await service.get_all(
-            author=None,
-            tags=None,
-            exclude_tags=None,
-            source=None,
-            verified=True,
+            query_params=query_params,
             limit=10,
             skip=0,
             repo=mock_repo,
