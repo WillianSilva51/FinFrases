@@ -1,24 +1,20 @@
-import json
 from http import HTTPStatus
 
 from fastapi import APIRouter, Depends, Query, Request, Response
 
-from api.core.cache import RedisCache
 from api.core.limiter import limiter
 from api.core.security import verify_api_key
-from api.models.enums import CategoryQuote
 from api.repositories.quote_repository import QuoteRepository
 from api.schemas.pagination import PaginatedResponse, Params
+from api.schemas.quote_filters import QuoteFilters, QuoteSort
 from api.schemas.quote_schema import (
     CreateQuoteRequest,
     QuoteResponse,
     UpdateQuoteRequest,
 )
 from api.services.quote_service import QuoteService
-from api.utils.utils import expiration_midnight
 
 api_router = APIRouter(prefix="/v1/quotes")
-cache = RedisCache()
 
 
 @api_router.post(
@@ -57,31 +53,15 @@ async def post_quote(
 async def get_all_quotes(
     request: Request,
     response: Response,
-    author: str | None = Query(
-        default=None, description="Autor para filtrar as citações."
-    ),
-    tags: list[CategoryQuote] | None = Query(  # noqa: B008
-        default=None, description="Lista de categorias para filtrar as citações."
-    ),
-    exclude_tags: list[CategoryQuote] | None = Query(  # noqa: B008
-        default=None, description="Lista de categorias para excluir das citações."
-    ),
-    source: str | None = Query(
-        default=None, description="Fonte para filtrar as citações."
-    ),
-    verified: bool = Query(
-        default=True, description="Filtrar apenas citações verificadas."
-    ),
+    quote_filters: QuoteFilters = Depends(QuoteFilters),  # noqa: B008
+    quote_sort: QuoteSort = Depends(QuoteSort),  # noqa: B008
     params: Params = Depends(Params),  # noqa: B008
     service: QuoteService = Depends(QuoteService),  # noqa: B008
     repo: QuoteRepository = Depends(QuoteRepository),  # noqa: B008
 ) -> PaginatedResponse[QuoteResponse]:
     quotes, total_counts, pages = await service.get_all(
-        author=author,
-        tags=tags,
-        exclude_tags=exclude_tags,
-        source=source,
-        verified=verified,
+        quote_filters=quote_filters,
+        quote_sort=quote_sort,
         limit=params.get_limit(),
         skip=params.get_offset(),
         repo=repo,
@@ -135,7 +115,6 @@ async def get_random_quote(
     response_description="Citação do dia.",
 )
 @limiter.limit("30/minute")
-@cache.cacheable(expire=expiration_midnight)
 async def get_today_quote(
     request: Request,
     response: Response,
@@ -157,7 +136,6 @@ async def get_today_quote(
     response_description="Citação encontrada com sucesso.",
 )
 @limiter.limit("30/minute")
-@cache.cacheable(expire=3600)
 async def get_quote_by_id(
     id: str,
     request: Request,
@@ -190,9 +168,6 @@ async def update_quote(
 ) -> QuoteResponse:
     quote = await service.update_quote_by_id(id=id, quote_data=quote_data, repo=repo)
 
-    cache_key = f"get_quote_by_id:{json.dumps({'id': id}, sort_keys=True)}"
-    await cache.delete(cache_key)
-
     return QuoteResponse.model_validate(quote.model_dump())
 
 
@@ -214,6 +189,3 @@ async def delete_quote(
     _: str = Depends(verify_api_key),
 ) -> None:
     await service.delete_quote_by_id(id=id, repo=repo)
-
-    cache_key = f"get_quote_by_id:{json.dumps({'id': id}, sort_keys=True)}"
-    await cache.delete(cache_key)

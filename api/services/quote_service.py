@@ -1,15 +1,20 @@
 from datetime import UTC, datetime
+from json import dumps
 
 from loguru import logger
 
+from api.core.cache import get_redis
 from api.core.exceptions.custom_exceptions import (
     DomainValidationException,
     QuoteNotFoundException,
 )
-from api.models.enums import CategoryQuote
 from api.models.quote import Quote
 from api.repositories.quote_repository import QuoteRepository
+from api.schemas.quote_filters import QuoteFilters, QuoteSort
 from api.schemas.quote_schema import CreateQuoteRequest, UpdateQuoteRequest
+from api.utils.utils import expiration_midnight
+
+cache = get_redis()
 
 
 class QuoteService:
@@ -52,11 +57,8 @@ class QuoteService:
 
     async def get_all(
         self,
-        author: str | None,
-        tags: list[CategoryQuote] | None,
-        exclude_tags: list[CategoryQuote] | None,
-        source: str | None,
-        verified: bool,
+        quote_filters: QuoteFilters,
+        quote_sort: QuoteSort,
         limit: int,
         skip: int,
         repo: QuoteRepository,
@@ -64,11 +66,8 @@ class QuoteService:
         """Retorna citações paginadas com base nos filtros informados.
 
         Args:
-            author: Nome do autor para filtragem, quando informado.
-            tags: Lista de categorias para filtragem, quando informada.
-            source: Fonte da citação para filtragem, quando informada.
-            verified: Define se a consulta deve retornar apenas citações
-                verificadas.
+            quote_filters: Parâmetros de filtragem.
+            quote_sort: Parâmetros de ordenação.
             limit: Quantidade máxima de itens por página.
             skip: Quantidade de itens a serem ignorados na paginação.
             repo: Repositório responsável pelo acesso aos dados.
@@ -77,28 +76,21 @@ class QuoteService:
             Uma tupla contendo a lista de citações, o total de registros e o
             total de páginas calculado.
         """
-        filters = {}
-        filters["verified"] = verified
 
-        if author:
-            filters["author"] = author
-        if source:
-            filters["source"] = source
-        if tags:
-            filters["tags"] = {"$in": tags}
-        if exclude_tags:
-            filters["tags"] = {"$nin": exclude_tags}
+        quote_filters_dict = quote_filters.to_dict()
+        sort_params = quote_sort.to_sort_list()
 
         logger.info(
-            f"Obtendo citações com filtros: {filters}, limit: {limit}, skip: {skip}"
+            f"Obtendo citações com filtros: {quote_filters_dict}, ordenação: {sort_params}, limit: {limit}, skip: {skip}"
         )
 
-        quotes = await repo.get_all(filters, limit, skip)
+        quotes = await repo.get_all(quote_filters_dict, sort_params, limit, skip)
 
         quotes, total_counts = quotes
 
         return quotes, total_counts, (total_counts + limit - 1) // limit
 
+    @cache.cacheable(expire=3600, model=Quote)
     async def get_quote_by_id(self, id: str, repo: QuoteRepository) -> Quote:
         """Busca uma citação pelo identificador.
 
@@ -134,6 +126,7 @@ class QuoteService:
 
         return await repo.get_random_quote(size=size)
 
+    @cache.cacheable(expire=expiration_midnight, model=Quote)
     async def get_today_quote(self, repo: QuoteRepository) -> list[Quote]:
         """Retorna a citação do dia.
 
@@ -194,7 +187,11 @@ class QuoteService:
         quote_data_dict = quote_data.model_dump(exclude_unset=True)
         quote_data_dict["updated_at"] = datetime.now(UTC)
 
-        return await repo.update_quote(id, quote_data_dict)
+        updated_quote = await repo.update_quote(id, quote_data_dict)
+
+        await self._remove_quote_from_cache(id)
+
+        return updated_quote
 
     async def delete_quote_by_id(self, id: str, repo: QuoteRepository) -> None:
         """Remove uma citação existente pelo identificador.
@@ -210,6 +207,17 @@ class QuoteService:
         """
         logger.info(f"Deletando citação com id: {id}")
 
-        await self.get_quote_by_id(id, repo)
+        result = await repo.delete_quote_by_id(id)
 
-        await repo.delete_quote_by_id(id)
+        if not result:
+            raise QuoteNotFoundException(f"Citação com id '{id}' não encontrada")
+
+        await self._remove_quote_from_cache(id)
+
+    async def _remove_quote_from_cache(self, id):
+        cache_key = [
+            f"get_quote_by_id:{dumps({'id': id})}",
+            f"get_today_quote:{dumps({})}",
+        ]
+
+        await cache.delete(cache_key)

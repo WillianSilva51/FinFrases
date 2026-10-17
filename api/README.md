@@ -74,7 +74,19 @@ Produção: <https://seu-dominio.com/api/docs>
 Retorna uma lista de frases. Você pode filtrar via *Query Parameters*.
 `GET /api/v1/quotes?limit=10&skip=0`
 
-**Filtros disponíveis:** `author`, `tags`, `exclude_tags`, `source`, `verified`.
+**Filtros disponíveis:** 
+
+| Parâmetro | Tipo | Descrição |
+| --- | --- | --- |
+| `author` | string | Filtra por autor exato |
+| `tags` | string | Filtra por uma ou mais tags (case-insensitive) |
+| `exclude_tags` | string | Exclui frases com as tags especificadas |
+| `source` | string | Filtra por fonte exata |
+| `verified` | boolean | Filtra por frases verificadas (true) ou não verificadas (false) |
+| `sort_by` | string | Ordena os resultados por um campo específico (case-insensitive) |
+| `order` | string | Define a ordem de classificação: 'asc' para ascendente e 'desc' para descendente |
+| `search` | string | Realiza uma busca textual nos campos de conteúdo, autor e fonte. |
+
 *Exemplo: `GET /api/v1/quotes?tags=INVESTIMENTOS&author=Warren Buffett`*
 
 ### Frases Aleatórias

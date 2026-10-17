@@ -1,10 +1,7 @@
-from beanie import PydanticObjectId
+from beanie import PydanticObjectId, SortDirection
 
-from api.core.cache import get_redis
 from api.models.quote import Quote
 from api.schemas.quote_schema import CreateQuoteRequest
-
-cache = get_redis()
 
 
 class QuoteRepository:
@@ -29,7 +26,11 @@ class QuoteRepository:
         return await new_quote.insert()
 
     async def get_all(
-        self, params: dict, limit: int, skip: int
+        self,
+        params: dict,
+        sort_params: list[tuple[str, SortDirection]] | None,
+        limit: int,
+        skip: int,
     ) -> tuple[list[Quote], int]:
         """Retorna uma lista paginada de citações e a quantidade total.
 
@@ -44,7 +45,12 @@ class QuoteRepository:
         """
         total_count = await Quote.find(params).count()
 
-        quotes = Quote.find(params).limit(limit).skip(skip)
+        quotes = Quote.find(params)
+
+        if sort_params:
+            quotes = quotes.sort(sort_params)
+
+        quotes = quotes.skip(skip).limit(limit)
 
         return await quotes.to_list(), total_count
 
@@ -106,17 +112,17 @@ class QuoteRepository:
         update_query = {"$set": quote_data}
         quote = await quote.update(update_query)
 
-        await cache.delete(id)
-
         return quote
 
-    async def delete_quote_by_id(self, id: str) -> None:
+    async def delete_quote_by_id(self, id: str) -> bool:
         """Remove uma citação pelo identificador.
 
         Args:
             id: Identificador da citação a ser removida.
 
         Returns:
-            ``None``.
+            ``True`` se a citação for removida com sucesso, ``False`` caso contrário.
         """
-        await Quote.find_one({"_id": PydanticObjectId(id)}).delete()
+        result = await Quote.find_one({"_id": PydanticObjectId(id)}).delete()
+
+        return result.deleted_count > 0 if result is not None else False

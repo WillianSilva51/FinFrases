@@ -1,15 +1,15 @@
 from datetime import UTC, datetime
-from typing import Annotated
 
-from beanie import Document, Indexed
+from beanie import Document
 from pydantic import Field
+from pymongo import IndexModel
 
 from .enums import CategoryQuote
 
 
 class Quote(Document):
     content: str
-    author: Annotated[str, Indexed()]
+    author: str
     tags: list[CategoryQuote]
     source: str | None
     verified: bool = False
@@ -18,3 +18,13 @@ class Quote(Document):
 
     class Settings:
         name = "quotes"
+        indexes = [  # noqa: RUF012,
+            "author",
+            "tags",
+            "verified",
+            "source",
+            IndexModel(
+                [("content", "text"), ("author", "text"), ("source", "text")],
+                weights={"content": 10, "author": 5, "source": 3},
+            ),
+        ]

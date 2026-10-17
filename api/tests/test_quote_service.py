@@ -15,6 +15,7 @@ from api.core.exceptions.custom_exceptions import (
 from api.models.enums import CategoryQuote
 from api.models.quote import Quote
 from api.repositories.quote_repository import QuoteRepository
+from api.schemas.quote_filters import QuoteFilters, QuoteSort
 from api.schemas.quote_schema import CreateQuoteRequest, UpdateQuoteRequest
 from api.services.quote_service import QuoteService
 
@@ -52,6 +53,28 @@ def quote(valid_request_data):
         tags=valid_request_data.tags,
         source=valid_request_data.source,
         verified=valid_request_data.verified,
+    )
+
+
+@pytest.fixture
+def quote_filters() -> QuoteFilters:
+    """Retorna parâmetros de filtragem válidos para listagem de citações."""
+    return QuoteFilters(
+        verified=True,
+        author=None,
+        source=None,
+        tags=None,
+        exclude_tags=None,
+        search=None,
+    )
+
+
+@pytest.fixture
+def quote_sort() -> QuoteSort:
+    """Retorna parâmetros de ordenação válidos para listagem de citações."""
+    return QuoteSort(
+        sort_by=None,
+        order=None,
     )
 
 
@@ -108,7 +131,9 @@ class TestGetAllQuotes:
     """Testes do método de listagem de citações."""
 
     @pytest.mark.asyncio
-    async def test_get_all_success(self, service, mock_repo, quote):
+    async def test_get_all_success(
+        self, service, mock_repo, quote_filters, quote_sort, quote
+    ):
         """Verifica a listagem com filtro e paginação."""
         other_quote = Quote.model_construct(
             content="Outra frase.",
@@ -121,11 +146,8 @@ class TestGetAllQuotes:
         mock_repo.get_all.return_value = ([quote, other_quote], 2)
 
         result, total, pages = await service.get_all(
-            author=None,
-            tags=None,
-            exclude_tags=None,
-            source=None,
-            verified=True,
+            quote_filters=quote_filters,
+            quote_sort=quote_sort,
             limit=10,
             skip=0,
             repo=mock_repo,
@@ -135,7 +157,7 @@ class TestGetAllQuotes:
         assert total == 2
         assert pages == 1
 
-        mock_repo.get_all.assert_awaited_once_with({"verified": True}, 10, 0)
+        mock_repo.get_all.assert_awaited_once_with({"verified": True}, None, 10, 0)
 
 
 class TestGetTodayQuote:
@@ -200,11 +222,10 @@ class TestDeleteQuoteById:
     async def test_delete_quote_by_id_success(self, service, mock_repo, quote):
         """Verifica a exclusão quando a citação existe."""
         quote_id = "64b8f0c2e1d2f5a1b2c3d4e"
-        mock_repo.get_quote_by_id.return_value = quote
+        mock_repo.delete_quote_by_id.return_value = True
 
         await service.delete_quote_by_id(id=quote_id, repo=mock_repo)
 
-        mock_repo.get_quote_by_id.assert_awaited_once_with(quote_id)
         mock_repo.delete_quote_by_id.assert_awaited_once_with(quote_id)
 
     @pytest.mark.asyncio
@@ -213,15 +234,14 @@ class TestDeleteQuoteById:
         quote_id = "64b8f0c2e1d2f5a1b2c3d4e"
         expected_message = f"Citação com id '{quote_id}' não encontrada"
 
-        mock_repo.get_quote_by_id.return_value = None
+        mock_repo.delete_quote_by_id.return_value = False
 
         with pytest.raises(QuoteNotFoundException) as exc_info:
             await service.delete_quote_by_id(id=quote_id, repo=mock_repo)
 
         assert str(exc_info.value) == expected_message
 
-        mock_repo.get_quote_by_id.assert_awaited_once_with(quote_id)
-        mock_repo.delete_quote_by_id.assert_not_awaited()
+        mock_repo.delete_quote_by_id.assert_awaited_once_with(quote_id)
 
 
 class TestGetQuoteById:

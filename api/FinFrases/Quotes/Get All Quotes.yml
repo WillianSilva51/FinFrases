@@ -35,6 +35,18 @@ http:
       value: ""
       type: query
       disabled: true
+    - name: sort_by
+      value: ""
+      type: query
+      disabled: true
+    - name: order
+      value: ""
+      type: query
+      disabled: true
+    - name: search
+      value: ""
+      type: query
+      disabled: true
   auth: inherit
 
 settings:
