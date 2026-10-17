@@ -45,7 +45,12 @@ class QuoteRepository:
         """
         total_count = await Quote.find(params).count()
 
-        quotes = Quote.find(params).sort(sort_params).limit(limit).skip(skip)
+        quotes = Quote.find(params)
+
+        if sort_params:
+            quotes = quotes.sort(sort_params)
+
+        quotes = quotes.skip(skip).limit(limit)
 
         return await quotes.to_list(), total_count
 
@@ -118,6 +123,6 @@ class QuoteRepository:
         Returns:
             ``True`` se a citação for removida com sucesso, ``False`` caso contrário.
         """
-        result = await Quote.find_one({"_id": PydanticObjectId(id)}).delete_one()
+        result = await Quote.find_one({"_id": PydanticObjectId(id)}).delete()
 
         return result.deleted_count > 0 if result is not None else False
