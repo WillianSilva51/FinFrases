@@ -9,9 +9,7 @@ const API_URL = isLocal
     ? "/api/v1/quotes/"
     : "https://api.finfrases.developer.li/v1/quotes/";
 
-const todayQuoteLink = document.getElementById("today-quote-link");
-const randomQuoteLink = document.getElementById("random-quote-link");
-
+const toggleQuote = document.getElementById("toggle-quote")
 const randomQuoteButton = document.getElementById("random-quote-button");
 const quoteTitle = document.getElementById("quote-title");
 const quoteText = document.getElementById("quote-text");
@@ -119,36 +117,16 @@ export async function displayQuote(endpoint = "today") {
     }
 }
 
-function setActiveLink(active, inactive) {
-    active.classList.add("text-cyan-600", "dark:text-cyan-500");
-    active.classList.remove("text-gray-800", "dark:text-gray-200");
-
-    inactive.classList.add("text-gray-800", "dark:text-gray-200");
-    inactive.classList.remove("text-cyan-600", "dark:text-cyan-500");
-}
-
-todayQuoteLink.addEventListener("click", (e) => {
-    e.preventDefault();
-
-    setActiveLink(todayQuoteLink, randomQuoteLink);
-
-    randomQuoteButton.hidden = true;
-    quoteTitle.textContent = "Frase Diária";
-    quoteText.textContent = "Carregando Frase Diária...";
+toggleQuote.addEventListener("click", () => {
     toggleQuoteDetails(true);
-    displayQuote("today");
-});
 
-randomQuoteLink.addEventListener("click", (e) => {
-    e.preventDefault();
+    const check = toggleQuote.checked;
 
-    setActiveLink(randomQuoteLink, todayQuoteLink);
+    randomQuoteButton.hidden = !check;
+    quoteTitle.textContent = check ? "Frase Aleatória" : "Frase Diária";
+    quoteText.textContent = check ? "Carregando Frase Aleatória..." : "Carregando Frase Diária...";
 
-    randomQuoteButton.hidden = false;
-    quoteTitle.textContent = "Frase Aleatória";
-    quoteText.textContent = "Carregando Frase Aleatória...";
-    toggleQuoteDetails(true);
-    displayQuote("random");
+    displayQuote(check ? "random" : "today");
 });
 
 

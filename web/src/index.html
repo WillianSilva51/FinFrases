@@ -43,15 +43,9 @@
                     <div
                         class="py-2 md:py-0 flex flex-col md:flex-row md:items-center md:justify-end gap-0.5 md:gap-1 focus">
                         <a class="p-2 flex items-center text-sm text-cyan-600 dark:text-cyan-500 focus:outline-hidden"
-                            href="#quote" aria-current="page" id="today-quote-link">
-                            <i class="material-symbols-outlined md:hidden text-[18px]! me-1.5">today</i>
-                            Diária
-                        </a>
-
-                        <a class="p-2 flex items-center text-sm text-gray-800 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-hidden"
-                            href="#quote" id="random-quote-link">
-                            <i class="material-symbols-outlined md:hidden  text-[18px]! me-1.5">shuffle</i>
-                            Aleatória
+                            href="#quote" aria-current="page" id="initial-page-link">
+                            <i class="material-symbols-outlined md:hidden text-[18px]! me-1.5">house</i>
+                            Início
                         </a>
 
                         <a class="p-2 flex items-center text-sm text-gray-800 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-hidden"
@@ -100,10 +94,29 @@
         </nav>
     </header>
     <main class="min-h-[calc(100vh-105px)] flex flex-col items-center justify-center">
+        <div class="flex items-center mb-8">
+            <label for="toggle-quote" title="Alternar entre Frase Diária e Frase Aleatória"
+                class="relative inline-block w-20 h-10 cursor-pointer">
+                <input type="checkbox" id="toggle-quote" class="peer sr-only"
+                    aria-label="Alternar entre Frase Diária e Frase Aleatória">
+                <span
+                    class="border backdrop:blur-md border-black/10 dark:border-white/10 shadow-2xl absolute inset-0 bg-slate-800/95 dark:bg-white/5 rounded-full transition-colors duration-200 ease-in-out peer-disabled:opacity-50 peer-disabled:pointer-events-none"></span>
+                <span
+                    class="absolute top-1/2 inset-s-0.5 -translate-y-1/2 size-8 bg-plain rounded-full shadow-xs transition-normal duration-200 ease-in-out bg-blue-100 dark:bg-blue-100 peer-checked:bg-blue-100 dark:peer-checked:bg-blue-100 peer-checked:left-[calc(100%-2.15rem)]"></span>
+                <span
+                    class="flex-col absolute top-1/2 inset-s-2 -translate-y-1/2 flex justify-center items-center size-5 text-cyan-600 dark:text-cyan-500 peer-checked:text-gray-200 dark:peer-checked:text-gray-200 transition-colors duration-200">
+                    <i class="material-symbols-outlined md:hidden text-[19px]!">today</i>
+                </span>
+                <span
+                    class="flex-col absolute top-1/2 inset-e-2 -translate-y-1/2 flex justify-center items-center size-5 text-gray-200 dark:text-gray-200 peer-checked:text-cyan-600 dark:peer-checked:text-cyan-500 transition-colors duration-200">
+                    <i class="material-symbols-outlined md:hidden  text-[19px]!">shuffle</i>
+                </span>
+            </label>
+        </div>
         <h1 id="quote-title" class="text-3xl md:text-4xl font-bold text-center mb-8">Frase Diária</h1>
         <section id="quote" class="flex flex-col items-center justify-center w-full">
             <div id="quote-container"
-                class="max-w-2xl md:w-full p-8 mx-4 bg-slate-800/95 dark:bg-white/5 backdrop-blur-md rounded-2xl border border-black/10 dark:border-white/10 shadow-2xl flex justify-center flex-col transition-all duration-500 hover:-translate-y-1.5 hover:shadow-2xl dark:hover:shadow-cyan-500/20 hover:shadow-cyan-900">
+                class="max-w-2xl md:w-full p-8 mx-4 bg-slate-800/95 dark:bg-white/5 backdrop-blur-md rounded-2xl border border-black/10 dark:border-white/10 shadow-2xl flex justify-center flex-col transition-normal transition-transform duration-500 hover:-translate-y-1.5 hover:shadow-2xl dark:hover:shadow-cyan-500/20 hover:shadow-cyan-900">
                 <q id="quote-text" class="text-2xl md:text-3xl text-slate-100 italic text-center font-light">Carregando
                     Frase....</q>
                 <small id="quote-author" class="text-right text-emerald-400 font-semibold mt-6" hidden>Carregando
@@ -119,10 +132,10 @@
                 Nova Frase Aleatória
             </button>
         </section>
-        <aside class="mt-12 text-center">
+        <aside class=" mt-12 text-center">
             <p>Quer usar a API? Consulte a documentação.</p>
             <a href="https://api.finfrases.developer.li/docs" target="_blank" rel="noopener noreferrer"
-                class="text-cyan-600 hover:text-cyan-500 dark:text-cyan-500 dark:hover:text-cyan-400 shadow-md hover:shadow-cyan-500/20 transition-all duration-300">
+                class="text-cyan-600 hover:text-cyan-500 dark:text-cyan-500 dark:hover:text-cyan-400 shadow-md hover:shadow-cyan-500/20 transition-normal duration-300">
                 Acessar a documentação
             </a>
         </aside>
