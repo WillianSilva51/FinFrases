@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-br" class="scroll-smooth dark">
+<html lang="pt-br" class="scroll-smooth scrollbar-none dark">
 
 <head>
     <meta charset="UTF-8">
@@ -16,7 +16,7 @@
     <title>FinFrases</title>
 </head>
 
-<body class="bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-white">
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-white flex flex-col min-h-screen">
     <header
         class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-white/10 flex flex-wrap md:justify-start md:flex-nowrap z-50 w-full">
         <nav
@@ -93,8 +93,140 @@
             </div>
         </nav>
     </header>
-    <main class="min-h-[calc(100vh-105px)] flex flex-col items-center justify-center">
-        <h1 class="text-3xl md:text-4xl font-bold text-center mb-8">Pesquisar Frases</h1>
+    <main class="flex grow flex-col items-center justify-center py-10 px-4 max-w-5xl mx-auto w-full">
+        <h1 id="search-title" class="text-3xl md:text-4xl font-bold text-center mb-8">Pesquisar Frases</h1>
+        <section
+            class="min-w-full p-6 md:p-8 bg-white dark:bg-slate-800/80 backdrop-blur-md rounded-2xl border border-slate-200 dark:border-white/10 shadow-xl">
+            <form id="search-form" class="flex flex-col gap-4">
+                <legend class="text-sm font-medium text-gray-700 dark:text-gray-300">Pesquisa</legend>
+
+                <fieldset class="flex flex-col md:flex-row gap-4">
+
+                    <div class="relative grow">
+                        <input type="text" name="search" id="search-input"
+                            placeholder="Digite um autor, palavra-chave ou frase..."
+                            class="w-full border border-gray-300 dark:border-gray-700 bg-slate-50 dark:bg-slate-900 rounded-lg px-4 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                    </div>
+
+                    <button type="button" id="toggle-filters-btn" aria-expanded="false"
+                        aria-controls="filters-container"
+                        class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 cursor-pointer border border-slate-300 dark:border-slate-600">
+                        <i id="toggle-filters-icon" class="material-symbols-outlined text-[20px]">tune</i>
+                        <span>Filtros</span>
+                    </button>
+
+                    <button type="submit"
+                        class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-2 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 cursor-pointer">
+                        <i class="material-symbols-outlined text-[20px]">search</i>
+                        <span>Pesquisar</span>
+                    </button>
+                </fieldset>
+
+                <div hidden aria-hidden="true" id="filters-container" class="flex-col gap-4 pt-4 border-t border-gray-200 dark:border-gray-700/50>
+                    <div class=" flex flex-col gap-4 mt-4">
+                    <legend class="text-sm font-medium text-gray-700 dark:text-gray-300">Filtros</legend>
+                    <fieldset
+                        class="flex flex-wrap justify-center items-center gap-6 pt-2 border-t border-gray-100 dark:border-gray-700/50">
+
+                        <div class="flex items-center gap-2">
+                            <input checked type="checkbox" name="verified" id="verified-checkbox"
+                                class="w-4 h-4 text-cyan-600 rounded border-gray-300 focus:ring-cyan-500">
+                            <label for="verified-checkbox"
+                                class="text-sm text-gray-700 dark:text-gray-300 cursor-pointer">Apenas frases
+                                verificadas</label>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <label for="tags-select"
+                                class="text-sm font-medium text-gray-700 dark:text-gray-300">Categoria:</label>
+                            <select name="tags" id="tags-select"
+                                class="border border-gray-300 dark:border-gray-700 bg-slate-50 dark:bg-slate-900 rounded-lg px-3 py-1.5 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-cyan-500">
+                                <optgroup label="Categorias">
+                                    <option value="" selected>Todas</option>
+                                    <option value="geral">Geral</option>
+                                    <option value="investimentos">Investimentos</option>
+                                    <option value="poupanca">Poupança</option>
+                                    <option value="psicologia">Psicologia</option>
+                                    <option value="dividendos">Dividendos</option>
+                                    <option value="educacao">Educação</option>
+                                    <option value="empreendedorismo">Empreendedorismo</option>
+                                    <option value="acao">Ação</option>
+                                    <option value="fiis">FIIs</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                    </fieldset>
+
+                    <fieldset
+                        class="flex flex-wrap justify-center items-center gap-6 pt-2 border-t border-gray-100 dark:border-gray-700/50">
+                        <legend class="text-sm font-medium text-gray-700 dark:text-gray-300">Ordenação</legend>
+                        <div class="flex items-center gap-2">
+                            <label for="sort-select"
+                                class="text-sm font-medium text-gray-700 dark:text-gray-300">Ordenar
+                                por:</label>
+                            <select name="sort_by" id="sort-select"
+                                class="border border-gray-300 dark:border-gray-700 bg-slate-50 dark:bg-slate-900 rounded-lg px-3 py-1.5 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-cyan-500">
+                                <optgroup label="Opções de Ordenação">
+                                    <option value="content" selected>Conteúdo</option>
+                                    <option value="author">Autor</option>
+                                    <option value="tags">Tags</option>
+                                    <option value="created_at">Data de Criação</option>
+                                    <option value="updated_at">Data de Atualização</option>
+                                </optgroup>
+                            </select>
+                        </div>
+
+                        <div class="flex items-center gap-2  md:ms-4">
+                            <label for="order-select"
+                                class="text-sm font-medium text-gray-700 dark:text-gray-300">Ordem:</label>
+                            <select name="order" id="order-select"
+                                class="border border-gray-300 dark:border-gray-700 bg-slate-50 dark:bg-slate-900 rounded-lg px-3 py-1.5 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-cyan-500">
+                                <optgroup label="Opções de Ordem">
+                                    <option value="asc" selected>Crescente</option>
+                                    <option value="desc">Decrescente</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                    </fieldset>
+                </div>
+                </div>
+            </form>
+        </section>
+
+        <div id="status-message" class="mt-8 text-center">
+            <p id="status-text" class="text-gray-500 dark:text-gray-400 text-lg">Carregando...</p>
+        </div>
+
+        <!-- Resultados da Pesquisa -->
+        <section id="results-container" class="mt-8 w-full flex justify-center flex-col items-center gap-6">
+            <div id="search-results" class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+                <!-- Os cards retornados da API serão injetados via JS neste container -->
+            </div>
+            <!-- Pagination -->
+            <nav id="pagination-container" class="flex items-center gap-x-1" aria-label="Pagination" hidden>
+                <button hidden type="button"
+                    class="min-h-9.5 min-w-9.5 py-2 px-2.5 inline-flex justify-center items-center gap-x-2 text-sm rounded-lg text-gray-800 dark:text-neutral-200 hover:bg-gray-200 dark:hover:bg-sky-600 focus:outline-hidden focus:bg-gray-100 dark:focus:bg-neutral-700 disabled:opacity-50 disabled:pointer-events-none"
+                    aria-label="Previous">
+                    <i class="material-symbols-outlined text-[18px]!">chevron_left</i>
+                    <span class="sr-only">Previous</span>
+                </button>
+                <div class="flex items-center gap-x-1">
+                    <span
+                        class="min-h-9.5 min-w-9.5 flex justify-center items-center border border-gray-200 dark:border-sky-600 text-gray-800 dark:text-neutral-200 py-2 px-3 text-sm rounded-lg focus:outline-hidden disabled:opacity-50 disabled:pointer-events-none">1</span>
+                    <span
+                        class="min-h-9.5 flex justify-center items-center text-gray-500 dark:text-neutral-400 py-2 px-1.5 text-sm">de</span>
+                    <span
+                        class="min-h-9.5 flex justify-center items-center text-gray-500 dark:text-neutral-400 py-2 px-1.5 text-sm">3</span>
+                </div>
+                <button type="button"
+                    class="min-h-9.5 min-w-9.5 py-2 px-2.5 inline-flex justify-center items-center gap-x-2 text-sm rounded-lg text-gray-800 dark:text-neutral-200 hover:bg-gray-200 dark:hover:bg-sky-600 focus:outline-hidden focus:bg-gray-100 dark:focus:bg-neutral-700 disabled:opacity-50 disabled:pointer-events-none"
+                    aria-label="Next">
+                    <span class="sr-only">Next</span>
+                    <i class="material-symbols-outlined text-[18px]!">chevron_right</i>
+                </button>
+            </nav>
+            <!-- End Pagination -->
+        </section>
     </main>
     <footer class="flex justify-center p-4 dark:bg-gray-800 border-t dark:border-white/10 bg-slate-50 border-black/10">
         <small class="dark:text-slate-400 text-slate-900">&copy FinFrases 2026 — Todos os Direitos Reservados</small>
