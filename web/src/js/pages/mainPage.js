@@ -1,5 +1,6 @@
-
 import { request } from "../api/client.js";
+import { escapeHtml } from '../utils/sanitizer.js';
+import { createTagElements } from "../components/tagsElements.js";
 import "../components/theme.js";
 
 const toggleQuote = document.getElementById("toggle-quote")
@@ -9,18 +10,6 @@ const quoteText = document.getElementById("quote-text");
 const quoteAuthor = document.getElementById("quote-author");
 const quoteSource = document.getElementById("quote-source");
 const quoteTags = document.getElementById("quote-tags");
-
-const validQuotesTags = {
-    "geral": ["bg-gray-700", "text-white"],
-    "investimentos": ["bg-green-700", "text-white"],
-    "poupanca": ["bg-blue-700", "text-white"],
-    "psicologia": ["bg-purple-700", "text-white"],
-    "dividendos": ["bg-yellow-700", "text-white"],
-    "educacao": ["bg-red-700", "text-white"],
-    "empreendedorismo": ["bg-indigo-700", "text-white"],
-    "acao": ["bg-pink-700", "text-white"],
-    "fiis": ["bg-teal-700", "text-white"]
-};
 
 export function init() {
     displayUniqueQuote();
@@ -68,18 +57,13 @@ async function displayUniqueQuote(endpoint = "today") {
     quoteTags.innerHTML = "";
 
     if (quote) {
-        quoteText.textContent = quote.content;
-        quoteAuthor.textContent = `~ ${quote.author}`;
-        quoteSource.textContent = quote.source;
+        quoteText.textContent = escapeHtml(quote.content);
+        quoteAuthor.textContent = `~ ${escapeHtml(quote.author)}`;
+        quoteSource.textContent = escapeHtml(quote.source);
 
-        for (const tag of quote.tags) {
-            const tagElement = document.createElement("a");
-            const [bg, text] = validQuotesTags[tag] ?? ["bg-gray-700", "text-white"];
+        const tagElements = createTagElements(quote.tags);
 
-            tagElement.href = `search.html?tags=${tag}`;
-            tagElement.className = `${bg} ${text} px-2 py-1 rounded-lg text-sm text-center font-semibold border border-black/10 dark:border-white/10 hover:opacity-80 transition-opacity duration-300`;
-            tagElement.textContent = tag.toUpperCase();
-
+        for (const tagElement of tagElements) {
             quoteTags.appendChild(tagElement);
         }
 
