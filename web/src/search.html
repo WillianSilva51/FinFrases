@@ -12,11 +12,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link rel="icon" type="image/png" href="https://img.icons8.com/?size=100&id=Yo9kOcztQ9xn&format=png&color=000000" />
     <link rel="stylesheet" href="css/output.css">
-    <script type="module" src="js/searchPage.js" defer></script>
+    <script type="module" src="js/main.js" defer></script>
     <title>FinFrases</title>
 </head>
 
-<body class="bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-white flex flex-col min-h-screen">
+<body data-page="search"
+    class="bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-white flex flex-col min-h-screen">
     <header
         class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-white/10 flex flex-wrap md:justify-start md:flex-nowrap z-50 w-full">
         <nav
@@ -122,73 +123,74 @@
                     </button>
                 </fieldset>
 
-                <div hidden aria-hidden="true" id="filters-container" class="flex-col gap-4 pt-4 border-t border-gray-200 dark:border-gray-700/50>
+                <div hidden aria-hidden="true" id="filters-container"
+                    class="flex-col gap-4 pt-4 border-t border-gray-200 dark:border-gray-700/50 transition duration-200">
                     <div class=" flex flex-col gap-4 mt-4">
-                    <legend class="text-sm font-medium text-gray-700 dark:text-gray-300">Filtros</legend>
-                    <fieldset
-                        class="flex flex-wrap justify-center items-center gap-6 pt-2 border-t border-gray-100 dark:border-gray-700/50">
+                        <legend class="text-sm font-medium text-gray-700 dark:text-gray-300">Filtros</legend>
+                        <fieldset
+                            class="flex flex-wrap justify-center items-center gap-6 pt-2 border-t border-gray-100 dark:border-gray-700/50">
 
-                        <div class="flex items-center gap-2">
-                            <input checked type="checkbox" name="verified" id="verified-checkbox"
-                                class="w-4 h-4 text-cyan-600 rounded border-gray-300 focus:ring-cyan-500">
-                            <label for="verified-checkbox"
-                                class="text-sm text-gray-700 dark:text-gray-300 cursor-pointer">Apenas frases
-                                verificadas</label>
-                        </div>
+                            <div class="flex items-center gap-2">
+                                <input checked type="checkbox" name="verified" id="verified-checkbox"
+                                    class="w-4 h-4 text-cyan-600 rounded border-gray-300 focus:ring-cyan-500">
+                                <label for="verified-checkbox"
+                                    class="text-sm text-gray-700 dark:text-gray-300 cursor-pointer">Apenas frases
+                                    verificadas</label>
+                            </div>
 
-                        <div class="flex items-center gap-2">
-                            <label for="tags-select"
-                                class="text-sm font-medium text-gray-700 dark:text-gray-300">Categoria:</label>
-                            <select name="tags" id="tags-select"
-                                class="border border-gray-300 dark:border-gray-700 bg-slate-50 dark:bg-slate-900 rounded-lg px-3 py-1.5 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-cyan-500">
-                                <optgroup label="Categorias">
-                                    <option value="" selected>Todas</option>
-                                    <option value="geral">Geral</option>
-                                    <option value="investimentos">Investimentos</option>
-                                    <option value="poupanca">Poupança</option>
-                                    <option value="psicologia">Psicologia</option>
-                                    <option value="dividendos">Dividendos</option>
-                                    <option value="educacao">Educação</option>
-                                    <option value="empreendedorismo">Empreendedorismo</option>
-                                    <option value="acao">Ação</option>
-                                    <option value="fiis">FIIs</option>
-                                </optgroup>
-                            </select>
-                        </div>
-                    </fieldset>
+                            <div class="flex items-center gap-2">
+                                <label for="tags-select"
+                                    class="text-sm font-medium text-gray-700 dark:text-gray-300">Categoria:</label>
+                                <select name="tags" id="tags-select"
+                                    class="border border-gray-300 dark:border-gray-700 bg-slate-50 dark:bg-slate-900 rounded-lg px-3 py-1.5 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-cyan-500">
+                                    <optgroup label="Categorias">
+                                        <option value="" selected>Todas</option>
+                                        <option value="geral">Geral</option>
+                                        <option value="investimentos">Investimentos</option>
+                                        <option value="poupanca">Poupança</option>
+                                        <option value="psicologia">Psicologia</option>
+                                        <option value="dividendos">Dividendos</option>
+                                        <option value="educacao">Educação</option>
+                                        <option value="empreendedorismo">Empreendedorismo</option>
+                                        <option value="acao">Ação</option>
+                                        <option value="fiis">FIIs</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                        </fieldset>
 
-                    <fieldset
-                        class="flex flex-wrap justify-center items-center gap-6 pt-2 border-t border-gray-100 dark:border-gray-700/50">
-                        <legend class="text-sm font-medium text-gray-700 dark:text-gray-300">Ordenação</legend>
-                        <div class="flex items-center gap-2">
-                            <label for="sort-select"
-                                class="text-sm font-medium text-gray-700 dark:text-gray-300">Ordenar
-                                por:</label>
-                            <select name="sort_by" id="sort-select"
-                                class="border border-gray-300 dark:border-gray-700 bg-slate-50 dark:bg-slate-900 rounded-lg px-3 py-1.5 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-cyan-500">
-                                <optgroup label="Opções de Ordenação">
-                                    <option value="content" selected>Conteúdo</option>
-                                    <option value="author">Autor</option>
-                                    <option value="tags">Tags</option>
-                                    <option value="created_at">Data de Criação</option>
-                                    <option value="updated_at">Data de Atualização</option>
-                                </optgroup>
-                            </select>
-                        </div>
+                        <fieldset
+                            class="flex flex-wrap justify-center items-center gap-6 pt-2 border-t border-gray-100 dark:border-gray-700/50">
+                            <legend class="text-sm font-medium text-gray-700 dark:text-gray-300">Ordenação</legend>
+                            <div class="flex items-center gap-2">
+                                <label for="sort-select"
+                                    class="text-sm font-medium text-gray-700 dark:text-gray-300">Ordenar
+                                    por:</label>
+                                <select name="sort_by" id="sort-select"
+                                    class="border border-gray-300 dark:border-gray-700 bg-slate-50 dark:bg-slate-900 rounded-lg px-3 py-1.5 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-cyan-500">
+                                    <optgroup label="Opções de Ordenação">
+                                        <option value="content" selected>Conteúdo</option>
+                                        <option value="author">Autor</option>
+                                        <option value="tags">Tags</option>
+                                        <option value="created_at">Data de Criação</option>
+                                        <option value="updated_at">Data de Atualização</option>
+                                    </optgroup>
+                                </select>
+                            </div>
 
-                        <div class="flex items-center gap-2  md:ms-4">
-                            <label for="order-select"
-                                class="text-sm font-medium text-gray-700 dark:text-gray-300">Ordem:</label>
-                            <select name="order" id="order-select"
-                                class="border border-gray-300 dark:border-gray-700 bg-slate-50 dark:bg-slate-900 rounded-lg px-3 py-1.5 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-cyan-500">
-                                <optgroup label="Opções de Ordem">
-                                    <option value="asc" selected>Crescente</option>
-                                    <option value="desc">Decrescente</option>
-                                </optgroup>
-                            </select>
-                        </div>
-                    </fieldset>
-                </div>
+                            <div class="flex items-center gap-2  md:ms-4">
+                                <label for="order-select"
+                                    class="text-sm font-medium text-gray-700 dark:text-gray-300">Ordem:</label>
+                                <select name="order" id="order-select"
+                                    class="border border-gray-300 dark:border-gray-700 bg-slate-50 dark:bg-slate-900 rounded-lg px-3 py-1.5 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-cyan-500">
+                                    <optgroup label="Opções de Ordem">
+                                        <option value="asc" selected>Crescente</option>
+                                        <option value="desc">Decrescente</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                        </fieldset>
+                    </div>
                 </div>
             </form>
         </section>
