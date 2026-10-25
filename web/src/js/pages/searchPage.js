@@ -12,6 +12,8 @@ const paginationContainer = document.getElementById("pagination-container");
 export async function init() {
     toggleFilters();
 
+    applyTagFromURL();
+
     paginationContainer.addEventListener("click", async (event) => {
         const button = event.target.closest("button");
         await setupPaginationListeners(button);
@@ -82,6 +84,25 @@ async function fetchAndDisplayQuotes(page = 1) {
     paginationContainer.dataset.currentPage = currentPage;
 
     hideStatusMessage();
+}
+
+function applyTagFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    const selectedTag = params.get("tags");
+
+    if (!selectedTag) return;
+
+    const tagsSelect = document.getElementById("tags-select");
+
+    if (!tagsSelect) return;
+
+    const matchingOption = Array.from(tagsSelect.options).find(
+        option => option.value.toLowerCase() === selectedTag.toLowerCase()
+    );
+
+    if (matchingOption) {
+        tagsSelect.value = matchingOption.value;
+    }
 }
 
 async function handleSearch(page = 1) {
