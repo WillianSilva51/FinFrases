@@ -53,6 +53,67 @@ export async function request(endpoint = "", options = {}) {
     }
 }
 
+export async function createQuote(quote) {
+    try {
+        const response = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-API-KEY": sessionStorage.getItem("X-API-KEY") || "",
+            },
+            body: JSON.stringify(quote),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Falha ao criar frase. Status: ${response.status}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+export async function updateQuote(id, updatedQuote) {
+    try {
+        const response = await fetch(`${API_URL}/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "X-API-KEY": sessionStorage.getItem("X-API-KEY") || "",
+            },
+            body: JSON.stringify(updatedQuote),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Falha ao atualizar frase. Status: ${response.status}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+export async function deleteQuote(id) {
+    try {
+        const response = await fetch(`${API_URL}/${id}`, {
+            method: "DELETE",
+            headers: {
+                "X-API-KEY": sessionStorage.getItem("X-API-KEY") || "",
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Falha ao deletar frase. Status: ${response.status}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 async function getAllQuotes(options = {}) {
     try {
         const urlRequest = API_URL + "?" + new URLSearchParams(options).toString();

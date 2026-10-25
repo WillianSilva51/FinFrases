@@ -3,7 +3,7 @@ import { escapeHtml } from '../utils/sanitizer.js';
 import { createTagElements } from "../components/tagsElements.js";
 import "../components/theme.js";
 
-const toggleQuote = document.getElementById("toggle-quote")
+const toggleQuote = document.getElementById("toggle-quote");
 const randomQuoteButton = document.getElementById("random-quote-button");
 const quoteTitle = document.getElementById("quote-title");
 const quoteText = document.getElementById("quote-text");

@@ -4,6 +4,7 @@ import { toggleMenu } from './components/hamburger.js';
 const PAGE_ROUTES = {
     main: () => import('./pages/mainPage.js').then(module => module.init()),
     search: () => import('./pages/searchPage.js').then(module => module.init()),
+    login: () => import('./pages/loginPage.js').then(async module => await module.init())
 }
 
 class App {
