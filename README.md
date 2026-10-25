@@ -24,7 +24,7 @@ Este é um *monorepo* que reúne os serviços necessários para executar o FinFr
 Cada módulo possui sua própria documentação técnica:
 
 - ⚙️ [**`/api`**](./api/README.md): Backend assíncrono desenvolvido em FastAPI, responsável pelas regras de negócio, paginação, integração com MongoDB e cache distribuído com Redis.
-- 🖥️ [**`/frontend`**](./frontend/README.md): Interface de usuário para visualização, busca e interação com as frases curadas.
+- 🖥️ [**`/web`**](./web/README.md): Interface de usuário para visualização, busca e interação com as frases curadas.
 
 > Consulte o README de cada módulo para obter informações sobre configuração, desenvolvimento, estrutura interna e detalhes técnicos específicos.
 

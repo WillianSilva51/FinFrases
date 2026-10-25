@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-br" class="scroll-smooth dark">
+<html lang="pt-br" class="scroll-smooth scrollbar-none dark">
 
 <head>
     <meta charset="UTF-8">
@@ -12,18 +12,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <link rel="icon" type="image/png" href="https://img.icons8.com/?size=100&id=Yo9kOcztQ9xn&format=png&color=000000" />
     <link rel="stylesheet" href="css/output.css">
-    <script type="module" src="js/mainPage.js" defer></script>
+    <script type="module" src="js/main.js" defer></script>
     <title>FinFrases</title>
 </head>
 
-<body class="bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-white">
+<body data-page="login"
+    class="bg-slate-100 text-slate-900 dark:bg-slate-900 dark:text-white flex flex-col min-h-screen">
     <header
-        class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-white/10 flex flex-wrap md:justify-start md:flex-nowrap z-50 w-full">
+        class="bg-slate-50 dark:bg-gray-800 border-b border-gray-200 dark:border-white/10 flex flex-wrap md:justify-start md:flex-nowrap z-50 w-full">
         <nav
             class="relative max-w-340 w-full md:flex md:items-center md:justify-between md:gap-3 mx-auto px-4 sm:px-6 lg:px-8 py-2">
             <div class="flex items-center justify-between">
                 <a class="flex-none font-semibold text-xl text-slate-900 dark:text-gray-200 focus:outline-hidden focus:opacity-80 hover:animate-pulse"
-                    href="" aria-label="Brand">FinFrases</a>
+                    href="index.html" aria-label="Brand">FinFrases</a>
 
                 <div class="md:hidden">
                     <button type="button"
@@ -42,20 +43,14 @@
                     class="overflow-hidden overflow-y-auto max-h-[75vh] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-none [&::-webkit-scrollbar-track]:bg-gray-100 dark:[&::-webkit-scrollbar-track]:bg-gray-700 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-thumb]:bg-gray-500">
                     <div
                         class="py-2 md:py-0 flex flex-col md:flex-row md:items-center md:justify-end gap-0.5 md:gap-1 focus">
-                        <a class="p-2 flex items-center text-sm text-cyan-600 dark:text-cyan-500 focus:outline-hidden"
-                            href="#quote" aria-current="page" id="today-quote-link">
-                            <i class="material-symbols-outlined md:hidden text-[18px]! me-1.5">today</i>
-                            Diária
+                        <a class="p-2 flex items-center text-sm text-gray-800 dark:text-gray-200 focus:outline-hidden"
+                            href="index.html" aria-current="page" id="initial-page-link">
+                            <i class="material-symbols-outlined md:hidden text-[18px]! me-1.5">house</i>
+                            Início
                         </a>
 
                         <a class="p-2 flex items-center text-sm text-gray-800 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-hidden"
-                            href="#quote" id="random-quote-link">
-                            <i class="material-symbols-outlined md:hidden  text-[18px]! me-1.5">shuffle</i>
-                            Aleatória
-                        </a>
-
-                        <a class="p-2 flex items-center text-sm text-gray-800 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-hidden"
-                            href="./search.html" id="search-quote-button">
+                            href="search.html" id="search-quote-button">
                             <i class="material-symbols-outlined md:hidden text-[18px]! me-1.5">search</i>
                             Pesquisar
                         </a>
@@ -88,7 +83,7 @@
 
                         <div
                             class="relative flex flex-wrap items-center gap-x-1.5 md:ps-2.5 mt-1 md:mt-0 md:ms-1.5 before:block before:absolute before:top-1/2 before:-inset-s-px before:w-px before:h-4 before:bg-gray-200 dark:before:bg-gray-700 before:-translate-y-1/2">
-                            <a class="p-2 w-full flex items-center text-sm text-gray-800 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-hidden"
+                            <a class="p-2 w-full flex items-center text-sm text-cyan-600 dark:text-cyan-500 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-hidden"
                                 href="login.html">
                                 <i class="material-symbols-outlined text-[18px]! me-1.5">lock_person</i>
                                 <span class="md:hidden">Área Administrativa</span>
@@ -99,33 +94,32 @@
             </div>
         </nav>
     </header>
-    <main class="min-h-[calc(100vh-105px)] flex flex-col items-center justify-center">
-        <h1 id="quote-title" class="text-3xl md:text-4xl font-bold text-center mb-8">Frase Diária</h1>
-        <section id="quote" class="flex flex-col items-center justify-center w-full">
-            <div id="quote-container"
-                class="max-w-2xl md:w-full p-8 mx-4 bg-slate-800/95 dark:bg-white/5 backdrop-blur-md rounded-2xl border border-black/10 dark:border-white/10 shadow-2xl flex justify-center flex-col transition-all duration-500 hover:-translate-y-1.5 hover:shadow-2xl dark:hover:shadow-cyan-500/20 hover:shadow-cyan-900">
-                <q id="quote-text" class="text-2xl md:text-3xl text-slate-100 italic text-center font-light">Carregando
-                    Frase....</q>
-                <small id="quote-author" class="text-right text-emerald-400 font-semibold mt-6" hidden>Carregando
-                    Autor...</small>
-                <small id="quote-source" class="text-left text-emerald-500 font-semibold mt-4" hidden>Carregando
-                    Fonte...</small>
-            </div>
-            <div id="quote-tags" class="flex flex-wrap justify-center gap-2 mt-4" hidden>
-            </div>
-            <button id="random-quote-button"
-                class="mt-8 px-6 py-3 bg-cyan-700 cursor-pointer text-white rounded-lg shadow-md hover:bg-cyan-900 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-cyan-500/20 animate-pulse"
-                aria-label="Nova Frase Aleatória" hidden>
-                Nova Frase Aleatória
-            </button>
-        </section>
-        <aside class="mt-12 text-center">
-            <p>Quer usar a API? Consulte a documentação.</p>
-            <a href="https://api.finfrases.developer.li/docs" target="_blank" rel="noopener noreferrer"
-                class="text-cyan-600 hover:text-cyan-500 dark:text-cyan-500 dark:hover:text-cyan-400 shadow-md hover:shadow-cyan-500/20 transition-all duration-300">
-                Acessar a documentação
-            </a>
-        </aside>
+    <main class="flex grow min-w-full flex-col items-center justify-center">
+        <h1 class="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-1">Área Administrativa</h1>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Digite sua chave para acessar o painel</p>
+        <div
+            class="w-full max-w-md bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-md p-7 flex flex-col items-center justify-center transition-transform duration-300 hover:scale-105 shadow-cyan-500/10">
+            <h2 class="text-xl font-bold text-slate-800 dark:text-slate-100 mb-4">Login</h2>
+            <hr class="w-full border-gray-200 dark:border-gray-700 mb-4">
+            <form id="login-form" class="flex flex-col max-w-sm w-full" method="POST">
+                <div class="flex flex-col mb-4">
+
+                    <div class="flex items-stretch w-full">
+                        <input type="password" autofocus title="Insira a chave secreta" name="X-API-KEY" id="secret-key"
+                            placeholder="Digite a chave secreta..."
+                            class="grow border border-gray-300 dark:border-gray-700 bg-slate-50 dark:bg-slate-900 rounded-l-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:focus:ring-cyan-400">
+                        <button type="button" id="toggle-secret-key" title="Mostrar/Esconder chave secreta"
+                            class="flex items-center justify-center border border-l-0 border-gray-300 dark:border-gray-700 rounded-r-lg px-3.5 py-2.5 text-gray-500 dark:text-gray-400 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 focus:outline-none cursor-pointer transition-colors">
+                            <i id="toggle-secret-key-icon" class="material-symbols-outlined text-[18px]!">visibility</i>
+                        </button>
+                    </div>
+                    <span id="secret-key-error" class="text-red-500 text-sm mt-1" hidden>A chave secreta é
+                        obrigatória.</span>
+                </div>
+                <button id="login-submit-button" type="submit" class="bg-cyan-500 hover:bg-cyan-600 dark:bg-cyan-600 dark:hover:bg-cyan-700 text-white font-semibold py-2 px-4 rounded focus
+:outline-none focus:ring-2 focus:ring-cyan-500 dark:focus:ring-cyan-400 w-full transition-colors">Entrar</button>
+            </form>
+        </div>
     </main>
     <footer class="flex justify-center p-4 dark:bg-gray-800 border-t dark:border-white/10 bg-slate-50 border-black/10">
         <small class="dark:text-slate-400 text-slate-900">&copy FinFrases 2026 — Todos os Direitos Reservados</small>
