@@ -13,7 +13,7 @@ export function createQuoteCard(quote) {
     card.innerHTML = `
     <div>
         <div class="flex items-center justify-between mb-3">
-            <span class="text-xs font-semibold px-2.5 py-0.5 rounded bg-cyan-100 dark:bg-cyan-900/50 text-cyan-800 dark:text-cyan-300 uppercase">
+            <span class="flex flex-wrap grow gap-2 text-xs text-slate-600 dark:text-slate-300">
                 ${tags}
             </span>
             ${verified ?

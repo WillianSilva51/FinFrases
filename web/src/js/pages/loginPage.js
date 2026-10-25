@@ -1,15 +1,14 @@
 import { toggleSecretKeyVisibility } from "../components/visibilityKey.js";
 import { validateSecretKeyWithServer } from "../api/authService.js";
 
-const loginForm = document.getElementById("login-form");
-const secretKeyInput = document.getElementById("secret-key");
+const loginForm = document.getElementById("login-form");;
 const secretKeyError = document.getElementById("secret-key-error");
 const submitButton = document.getElementById("login-submit-button");
 
 export async function init() {
     toggleSecretKeyVisibility();
 
-    if (!loginForm || !secretKeyInput || !secretKeyError || !submitButton) {
+    if (!loginForm || !secretKeyError || !submitButton) {
         console.error("Elementos do formulário de login não encontrados.");
         return;
     }
@@ -23,7 +22,9 @@ export async function init() {
     loginForm.addEventListener("submit", async (event) => {
         event.preventDefault();
 
-        const secretKey = secretKeyInput.value.trim();
+        const formData = new FormData(loginForm);
+
+        const secretKey = formData.get("secret-key").trim();
 
         if (!validateSecretKey(secretKey)) {
             return;
