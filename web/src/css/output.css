@@ -12,21 +12,19 @@
       "Liberation Mono", "Courier New", monospace;
     --color-red-500: oklch(63.7% 0.237 25.331);
     --color-red-700: oklch(50.5% 0.213 27.518);
-    --color-amber-200: oklch(92.4% 0.12 95.746);
     --color-yellow-700: oklch(55.4% 0.135 66.442);
     --color-green-500: oklch(72.3% 0.219 149.579);
     --color-green-700: oklch(52.7% 0.154 150.069);
     --color-emerald-400: oklch(76.5% 0.177 163.223);
     --color-emerald-500: oklch(69.6% 0.17 162.48);
     --color-teal-700: oklch(51.1% 0.096 186.391);
-    --color-cyan-100: oklch(95.6% 0.045 203.388);
     --color-cyan-300: oklch(86.5% 0.127 207.078);
     --color-cyan-400: oklch(78.9% 0.154 211.53);
     --color-cyan-500: oklch(71.5% 0.143 215.221);
     --color-cyan-600: oklch(60.9% 0.126 221.723);
     --color-cyan-700: oklch(52% 0.105 223.128);
-    --color-cyan-800: oklch(45% 0.085 224.283);
     --color-cyan-900: oklch(39.8% 0.07 227.392);
+    --color-sky-500: oklch(68.5% 0.169 237.323);
     --color-sky-600: oklch(58.8% 0.158 241.966);
     --color-sky-800: oklch(44.3% 0.11 240.79);
     --color-blue-100: oklch(93.2% 0.032 255.585);
@@ -54,7 +52,6 @@
     --color-gray-800: oklch(27.8% 0.033 256.848);
     --color-neutral-200: oklch(92.2% 0 0);
     --color-neutral-400: oklch(70.8% 0 0);
-    --color-neutral-700: oklch(37.1% 0 0);
     --color-black: #000;
     --color-white: #fff;
     --spacing: 0.25rem;
@@ -352,24 +349,6 @@
   .z-50 {
     z-index: 50;
   }
-  .container {
-    width: 100%;
-    @media (width >= 40rem) {
-      max-width: 40rem;
-    }
-    @media (width >= 48rem) {
-      max-width: 48rem;
-    }
-    @media (width >= 64rem) {
-      max-width: 64rem;
-    }
-    @media (width >= 80rem) {
-      max-width: 80rem;
-    }
-    @media (width >= 96rem) {
-      max-width: 96rem;
-    }
-  }
   .mx-4 {
     margin-inline: calc(var(--spacing) * 4);
   }
@@ -493,9 +472,6 @@
   .max-w-340 {
     max-width: calc(var(--spacing) * 340);
   }
-  .max-w-\[calc\(100\%-100px\)\] {
-    max-width: calc(100% - 100px);
-  }
   .max-w-md {
     max-width: var(--container-md);
   }
@@ -556,26 +532,23 @@
   .scrollbar-none {
     scrollbar-width: none;
   }
-  .grid-flow-col {
-    grid-auto-flow: column;
-  }
   .grid-cols-1 {
     grid-template-columns: repeat(1, minmax(0, 1fr));
   }
-  .grid-cols-2 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .grid-cols-\[repeat\(auto-fit\,minmax\(100px\,1fr\)\)\] {
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  }
   .flex-col {
     flex-direction: column;
+  }
+  .flex-row {
+    flex-direction: row;
   }
   .flex-wrap {
     flex-wrap: wrap;
   }
   .items-center {
     align-items: center;
+  }
+  .items-end {
+    align-items: flex-end;
   }
   .items-stretch {
     align-items: stretch;
@@ -691,9 +664,6 @@
   .bg-blue-700 {
     background-color: var(--color-blue-700);
   }
-  .bg-cyan-100 {
-    background-color: var(--color-cyan-100);
-  }
   .bg-cyan-500 {
     background-color: var(--color-cyan-500);
   }
@@ -791,12 +761,6 @@
   }
   .px-6 {
     padding-inline: calc(var(--spacing) * 6);
-  }
-  .py-0 {
-    padding-block: 0;
-  }
-  .py-0\.5 {
-    padding-block: calc(var(--spacing) * 0.5);
   }
   .py-1 {
     padding-block: var(--spacing);
@@ -897,9 +861,6 @@
   .text-cyan-600 {
     color: var(--color-cyan-600);
   }
-  .text-cyan-800 {
-    color: var(--color-cyan-800);
-  }
   .text-emerald-400 {
     color: var(--color-emerald-400);
   }
@@ -924,6 +885,9 @@
   .text-red-500 {
     color: var(--color-red-500);
   }
+  .text-sky-500 {
+    color: var(--color-sky-500);
+  }
   .text-slate-100 {
     color: var(--color-slate-100);
   }
@@ -944,9 +908,6 @@
   }
   .text-white {
     color: var(--color-white);
-  }
-  .uppercase {
-    text-transform: uppercase;
   }
   .italic {
     font-style: italic;
@@ -1641,22 +1602,6 @@
       background-color: var(--color-cyan-600);
     }
   }
-  .dark\:bg-cyan-900\/50 {
-    &:where(.dark, .dark *) {
-      background-color: color-mix(
-        in srgb,
-        oklch(39.8% 0.07 227.392) 50%,
-        transparent
-      );
-      @supports (color: color-mix(in lab, red, red)) {
-        background-color: color-mix(
-          in oklab,
-          var(--color-cyan-900) 50%,
-          transparent
-        );
-      }
-    }
-  }
   .dark\:bg-gray-800 {
     &:where(.dark, .dark *) {
       background-color: var(--color-gray-800);
@@ -1703,11 +1648,6 @@
           transparent
         );
       }
-    }
-  }
-  .dark\:text-cyan-300 {
-    &:where(.dark, .dark *) {
-      color: var(--color-cyan-300);
     }
   }
   .dark\:text-cyan-500 {
@@ -1873,13 +1813,6 @@
     &:where(.dark, .dark *) {
       &:focus {
         background-color: var(--color-gray-700);
-      }
-    }
-  }
-  .dark\:focus\:bg-neutral-700 {
-    &:where(.dark, .dark *) {
-      &:focus {
-        background-color: var(--color-neutral-700);
       }
     }
   }

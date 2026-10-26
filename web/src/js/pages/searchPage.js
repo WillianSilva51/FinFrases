@@ -118,7 +118,7 @@ async function handleSearch(page = 1) {
         search: searchQuery,
         tags: tags,
         verified: verified,
-        sortBy: sortBy,
+        sort_by: sortBy,
         order: order,
         page: page,
         size: 6

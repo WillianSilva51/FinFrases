@@ -24,7 +24,7 @@ export async function init() {
 
         const formData = new FormData(loginForm);
 
-        const secretKey = formData.get("secret-key").trim();
+        const secretKey = formData.get("secret-key")?.trim();
 
         if (!validateSecretKey(secretKey)) {
             return;
@@ -75,5 +75,6 @@ function setLoadingState(isLoading) {
     submitButton.disabled = isLoading;
     submitButton.textContent = isLoading ? "Verificando..." : "Entrar";
     submitButton.classList.toggle("opacity-50", isLoading);
+    submitButton.classList.toggle("cursor-pointer", !isLoading);
     submitButton.classList.toggle("cursor-not-allowed", isLoading);
 }
