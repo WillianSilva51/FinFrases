@@ -43,6 +43,10 @@ async function getTodayQuote() {
 
     const expiresAt = expirationMidnight();
 
+    if (data.items && data.items.length > 0) {
+        throw new Error("Nenhuma frase encontrada para hoje.");
+    }
+
     localStorage.setItem("quote-today", JSON.stringify({ data, expiresAt }));
 
     return data;
@@ -79,7 +83,7 @@ export async function createQuote(quote) {
 
 export async function updateQuote(id, updatedQuote) {
     try {
-        const response = await fetch(`${API_URL}/${id}`, {
+        const response = await fetch(`${API_URL}${id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -100,7 +104,7 @@ export async function updateQuote(id, updatedQuote) {
 
 export async function deleteQuote(id) {
     try {
-        const response = await fetch(`${API_URL}/${id}`, {
+        const response = await fetch(`${API_URL}${id}`, {
             method: "DELETE",
             headers: {
                 "X-API-KEY": sessionStorage.getItem("X-API-KEY") || "",

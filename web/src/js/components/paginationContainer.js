@@ -1,6 +1,6 @@
 import { escapeHtml } from '../utils/sanitizer.js';
 
-export function createPagination(totalPages, currentPage) {
+export function createPagination(currentPage, totalPages) {
     const paginationNav = document.createElement("nav");
     paginationNav.setAttribute("aria-label", "Pagination");
     paginationNav.className = "flex items-center gap-x-1";
