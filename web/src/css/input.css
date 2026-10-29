@@ -1,3 +1,9 @@
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+@layer components {
+  .tag-admin {
+    @apply block bg-slate-300 dark:bg-slate-500 peer-checked:bg-cyan-500  dark:peer-checked:bg-cyan-700 p-2 rounded-xl transform hover:-translate-y-0.5 transition-all duration-200 text-sm font-medium cursor-pointer border border-gray-600 shadow-md;
+  }
+}
