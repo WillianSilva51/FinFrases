@@ -89,12 +89,11 @@
                                 <i class="material-symbols-outlined text-[18px]! me-1.5">lock_person</i>
                                 <span class="md:hidden">Área Administrativa</span>
                             </span>
-                            <a title="Logout"
-                                class="flex items-end text-sm text-red-500 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 focus:outline-hidden"
-                                href="login.html">
+                            <button id="btn-logout" type="button" title="Logout"
+                                class="flex items-end text-sm text-red-500 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 focus:outline-hidden cursor-pointer">
                                 <i class="material-symbols-outlined text-[18px]! me-1.5">logout</i>
                                 <span>Logout</span>
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -366,7 +365,8 @@
         </div>
     </dialog>
 
-    <footer class="flex justify-center p-4 dark:bg-gray-800 border-t dark:border-white/10 bg-slate-50 border-black/10">
+    <footer class=" flex justify-center p-4 dark:bg-gray-800 border-t dark:border-white/10 bg-slate-50
+        border-black/10">
         <small class="dark:text-slate-400 text-slate-900">&copy FinFrases 2026 — Todos os Direitos Reservados</small>
     </footer>
 </body>

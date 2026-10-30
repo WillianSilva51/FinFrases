@@ -2,12 +2,14 @@ import { createAdminQuoteCard } from '../components/quoteCard.js';
 import { toggleFilters } from '../components/filters.js';
 import { hideStatusMessage, showStatusMessage, updateStatusText, handleSearch } from './searchPage.js';
 import { createPagination } from '../components/paginationContainer.js';
+import { createStatusModal } from "../components/statusModal.js";
 import { QuoteService } from '../api/quoteService.js';
+import { validateSecretKeyWithServer } from "../api/authService.js";
 
 const adminResults = document.getElementById("admin-results");
 const searchForm = document.getElementById("search-form");
 const paginationContainer = document.getElementById("pagination-container");
-const logoutBtn = document.getElementById("logout-btn");
+const logoutBtn = document.getElementById("btn-logout");
 
 const quoteModal = document.getElementById("quote-modal");
 const modalTitle = document.getElementById("modal-title");
@@ -24,6 +26,8 @@ let currentQuoteToDeleteId = null;
 let currentAdminPage = 1;
 
 export async function init() {
+    await validateSessionApiKey();
+
     toggleFilters();
 
     setupEventListeners();
@@ -31,10 +35,20 @@ export async function init() {
     await fetchAndDisplayAdminQuotes();
 }
 
+async function validateSessionApiKey() {
+    if (sessionStorage.getItem("X-API-KEY") && !(await validateSecretKeyWithServer(sessionStorage.getItem("X-API-KEY"))) || !sessionStorage.getItem("X-API-KEY")) {
+        redirectToLogin();
+    }
+}
+
+function redirectToLogin() {
+    sessionStorage.removeItem("X-API-KEY");
+    window.location.href = "/login.html";
+}
+
 function setupEventListeners() {
     logoutBtn?.addEventListener('click', () => {
-        sessionStorage.removeItem("X-API-KEY");
-        window.location.href = "/login.html";
+        redirectToLogin();
     });
 
     searchForm.addEventListener("submit", async (e) => {
@@ -68,9 +82,12 @@ function setupEventListeners() {
     });
 
     btnConfirmDelete.addEventListener("click", async () => {
+        await validateSessionApiKey();
+
         if (currentQuoteToDeleteId) {
             await QuoteService.deleteQuote(currentQuoteToDeleteId);
             closeDeleteModal();
+            openStatusModal("Sucesso", "Frase excluída com sucesso.");
             await fetchAndDisplayAdminQuotes(currentAdminPage);
         }
     });
@@ -137,33 +154,49 @@ async function setupPaginationListeners(button) {
 }
 
 async function handleSaveQuote() {
+    await validateSessionApiKey();
+
     const formData = new FormData(quoteForm);
     const id = formData.get("id");
 
     const selectedTags = Array.from(document.querySelectorAll('input[name="tags"]:checked')).map(cb => cb.value);
+
+    if (selectedTags.length === 0) {
+        openStatusModal("Erro", "Selecione pelo menos uma tag.");
+        return;
+    }
 
     const quoteData = {
         id: id || undefined,
         content: formData.get("content"),
         author: formData.get("author"),
         tags: selectedTags,
-        source: formData.get("source"),
+        source: formData.get("source") || undefined,
         verified: formData.get("verified") === "on"
     };
 
     try {
         if (id) {
             await QuoteService.updateQuote(quoteData);
+            openStatusModal("Sucesso", "Frase atualizada com sucesso.");
         } else {
             await QuoteService.createQuote(quoteData);
+            openStatusModal("Sucesso", "Frase criada com sucesso.");
         }
 
         closeQuoteModal();
+
         await fetchAndDisplayAdminQuotes(currentAdminPage);
     } catch (error) {
-        alert("Erro ao salvar a frase. Verifique os dados digitados.");
         console.error(error);
+        openStatusModal("Erro", "Ocorreu um erro ao salvar a frase. Verifique os dados digitados.");
     }
+}
+
+function openStatusModal(status, message) {
+    const statusModal = createStatusModal(status, message);
+    document.body.appendChild(statusModal);
+    statusModal.showModal();
 }
 
 function openQuoteModal(quote) {

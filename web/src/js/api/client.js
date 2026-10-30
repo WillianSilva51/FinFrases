@@ -41,11 +41,11 @@ async function getTodayQuote() {
 
     const data = await getQuote("today");
 
-    const expiresAt = expirationMidnight();
-
-    if (data.items && data.items.length > 0) {
+    if (data || (data?.items && data?.items.length > 0)) {
         throw new Error("Nenhuma frase encontrada para hoje.");
     }
+
+    const expiresAt = expirationMidnight();
 
     localStorage.setItem("quote-today", JSON.stringify({ data, expiresAt }));
 
@@ -61,45 +61,37 @@ async function getAllQuotes(options = {}) {
 }
 
 export async function createQuote(quote) {
-    try {
-        const response = await fetch(API_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-API-KEY": sessionStorage.getItem("X-API-KEY") || "",
-            },
-            body: JSON.stringify(quote),
-        });
+    const response = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-API-KEY": sessionStorage.getItem("X-API-KEY") || "",
+        },
+        body: JSON.stringify(quote),
+    });
 
-        if (!response.ok) {
-            throw new Error(`Falha ao criar frase. Status: ${response.status}`);
-        }
-
-        return await response.json();
-    } catch (error) {
-        console.error(error);
+    if (!response.ok) {
+        throw new Error(`Falha ao criar frase. Status: ${response.status}`);
     }
+
+    return await response.json();
 }
 
 export async function updateQuote(id, updatedQuote) {
-    try {
-        const response = await fetch(`${API_URL}${id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "X-API-KEY": sessionStorage.getItem("X-API-KEY") || "",
-            },
-            body: JSON.stringify(updatedQuote),
-        });
+    const response = await fetch(`${API_URL}${id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "X-API-KEY": sessionStorage.getItem("X-API-KEY") || "",
+        },
+        body: JSON.stringify(updatedQuote),
+    });
 
-        if (!response.ok) {
-            throw new Error(`Falha ao atualizar frase. Status: ${response.status}`);
-        }
-
-        return await response.json();
-    } catch (error) {
-        console.error(error);
+    if (!response.ok) {
+        throw new Error(`Falha ao atualizar frase. Status: ${response.status}`);
     }
+
+    return await response.json();
 }
 
 export async function deleteQuote(id) {
@@ -114,8 +106,6 @@ export async function deleteQuote(id) {
         if (!response.ok) {
             throw new Error(`Falha ao deletar frase. Status: ${response.status}`);
         }
-
-        return await response.json();
     } catch (error) {
         console.error(error);
     }
