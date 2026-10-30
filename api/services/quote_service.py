@@ -179,7 +179,7 @@ class QuoteService:
             existing_quote = await repo.get_quote_by_content_and_author(
                 quote_data.content, quote_data.author
             )
-            if existing_quote and existing_quote.id != id:
+            if existing_quote and str(existing_quote.id) != str(id):
                 raise DomainValidationException(
                     f"A frase '{quote_data.content}' do autor '{quote_data.author}' já existe"
                 )

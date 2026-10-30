@@ -385,6 +385,44 @@ class TestUpdateQuoteById:
         mock_repo.update_quote.assert_not_awaited()
 
     @pytest.mark.asyncio
+    async def test_update_quote_by_id_conflict_with_same_quote(
+        self, service, mock_repo, quote, update_request_data
+    ):
+        """Verifica a atualização quando a própria citação é retornada como conflito."""
+        quote_id = "64b8f0c2e1d2f5a1b2c3d4e"
+
+        quote.id = quote_id
+
+        mock_repo.get_quote_by_id.return_value = quote
+
+        # Simula que a citação retornada é a mesma que está sendo atualizada
+        mock_repo.get_quote_by_content_and_author.return_value = quote
+
+        updated_quote = Quote.model_construct(
+            id=quote_id,
+            content=update_request_data.content,
+            author=update_request_data.author,
+            tags=update_request_data.tags,
+            source=quote.source,
+            verified=quote.verified,
+        )
+        mock_repo.update_quote.return_value = updated_quote
+
+        result = await service.update_quote_by_id(
+            id=quote_id, quote_data=update_request_data, repo=mock_repo
+        )
+
+        assert result.id == quote_id
+        assert result.content == update_request_data.content
+        assert result.author == update_request_data.author
+        assert result.tags == update_request_data.tags
+
+        mock_repo.get_quote_by_id.assert_awaited_once_with(quote_id)
+        mock_repo.get_quote_by_content_and_author.assert_awaited_once_with(
+            update_request_data.content, update_request_data.author
+        )
+
+    @pytest.mark.asyncio
     async def test_update_quote_by_id_same_quote_identity(
         self, service, mock_repo, quote, update_request_data
     ):

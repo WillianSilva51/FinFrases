@@ -20,7 +20,7 @@ class QuoteFilters:
         search (str | None): Filtro de pesquisa textual para buscar citações que contenham a string fornecida.
     """
 
-    verified: bool = True
+    verified: bool | None = None
     author: str | None = None
     source: str | None = None
     tags: Annotated[
@@ -44,6 +44,7 @@ class QuoteFilters:
         }
 
         optional_filters = {
+            "verified": self.verified,
             "author": self.author,
             "source": self.source,
             "tags": tags_filter or None,
@@ -51,7 +52,6 @@ class QuoteFilters:
         }
 
         return {
-            "verified": self.verified,
             **{
                 key: value
                 for key, value in optional_filters.items()
