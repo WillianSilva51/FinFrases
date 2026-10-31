@@ -33,6 +33,10 @@ tags_metadata = [
         "name": "Health",
         "description": "Endpoint para verificar a saúde da API.",
     },
+    {
+        "name": "Auth",
+        "description": "Endpoint para verificar a validade da chave de API.",
+    },
 ]
 
 PREFIX = settings.API_PREFIX
@@ -59,7 +63,7 @@ Totalmente em português (PT-BR).
     summary="Frases de mentalidade financeira em português",
     version=settings.VERSION,
     openapi_url=f"{PREFIX}/openapi.json",
-    tags_metadata=tags_metadata,
+    openapi_tags=tags_metadata,
     contact={
         "name": "Willian Silva",
         "url": "https://github.com/WillianSilva51",
