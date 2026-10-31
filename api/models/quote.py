@@ -10,7 +10,7 @@ from .enums import CategoryQuote
 class Quote(Document):
     content: str
     author: str
-    tags: list[CategoryQuote]
+    tags: list[CategoryQuote] = Field(default_factory=lambda: [CategoryQuote.GERAL])
     source: str | None
     verified: bool = False
     created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))

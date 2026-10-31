@@ -13,7 +13,7 @@ api_router = APIRouter(prefix="/v1/health")
 
 @api_router.get(
     path="",
-    status_code=200,
+    status_code=HTTPStatus.OK,
     name="health_check",
     summary="Health Check",
     description="Endpoint para verificar a saúde da API.",
@@ -29,7 +29,7 @@ async def health_check():
 
 @api_router.get(
     path="/live",
-    status_code=200,
+    status_code=HTTPStatus.OK,
     name="liveness_check",
     summary="Liveness Check",
     description="Endpoint para verificar se a API está viva.",
@@ -45,7 +45,7 @@ async def liveness_check():
 
 @api_router.get(
     path="/ready",
-    status_code=200,
+    status_code=HTTPStatus.OK,
     name="readiness_check",
     summary="Readiness Check",
     description="Endpoint para verificar se a API está pronta para receber requisições.",

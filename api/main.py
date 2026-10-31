@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from scalar_fastapi import get_scalar_api_reference
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
 
 from api.core.config import settings
 from api.core.database import init_db
@@ -31,6 +32,10 @@ tags_metadata = [
     {
         "name": "Health",
         "description": "Endpoint para verificar a saúde da API.",
+    },
+    {
+        "name": "Auth",
+        "description": "Endpoint para verificar a validade da chave de API.",
     },
 ]
 
@@ -58,7 +63,7 @@ Totalmente em português (PT-BR).
     summary="Frases de mentalidade financeira em português",
     version=settings.VERSION,
     openapi_url=f"{PREFIX}/openapi.json",
-    tags_metadata=tags_metadata,
+    openapi_tags=tags_metadata,
     contact={
         "name": "Willian Silva",
         "url": "https://github.com/WillianSilva51",
@@ -74,6 +79,7 @@ Totalmente em português (PT-BR).
 )
 
 app.state.limiter = limiter
+app.add_middleware(SlowAPIMiddleware)
 
 
 @app.get(f"{PREFIX}/docs", include_in_schema=False)
