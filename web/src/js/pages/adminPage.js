@@ -84,15 +84,24 @@ function setupEventListeners() {
     });
 
     btnConfirmDelete.addEventListener("click", async () => {
-        await validateSessionApiKey();
+        await executeQuoteDeletion();
+    });
+}
 
+async function executeQuoteDeletion() {
+    await validateSessionApiKey();
+
+    try {
         if (currentQuoteToDeleteId) {
             await QuoteService.deleteQuote(currentQuoteToDeleteId);
             closeDeleteModal();
             openStatusModal("Sucesso", "Frase excluída com sucesso.");
             await fetchAndDisplayAdminQuotes(currentAdminPage);
         }
-    });
+    } catch (error) {
+        console.error("Erro ao excluir frase:", error);
+        openStatusModal("Erro", "Ocorreu um erro ao excluir a frase.");
+    }
 }
 
 async function fetchAndDisplayAdminQuotes(page = 1) {
