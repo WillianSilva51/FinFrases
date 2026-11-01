@@ -23,8 +23,7 @@ export const QuoteService = {
         if (options.search) searchParams.append("search", options.search);
         if (options.tags) searchParams.append("tags", options.tag);
 
-        if (options.verified) searchParams.append("verified", "true")
-        else searchParams.append("verified", "false");
+        if (options.verified) searchParams.append("verified", options.verified ? "true" : "false");
 
         if (options.sortBy) searchParams.append("sort_by", options.sortBy);
         if (options.order) searchParams.append("order", options.order);

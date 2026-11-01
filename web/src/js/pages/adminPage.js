@@ -36,7 +36,9 @@ export async function init() {
 }
 
 async function validateSessionApiKey() {
-    if (sessionStorage.getItem("X-API-KEY") && !(await validateSecretKeyWithServer(sessionStorage.getItem("X-API-KEY"))) || !sessionStorage.getItem("X-API-KEY")) {
+    const apiKey = sessionStorage.getItem("X-API-KEY");
+
+    if ((apiKey && !(await validateSecretKeyWithServer(apiKey))) || !apiKey) {
         redirectToLogin();
     }
 }

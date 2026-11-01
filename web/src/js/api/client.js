@@ -1,7 +1,8 @@
-import { API_URL } from "../config/constants.js";
+import { API_URL, API_URL_QUOTES } from "../config/constants.js";
 import { expirationMidnight } from "../utils/midnight.js";
 
 const validEndpoints = { "today": getTodayQuote, "random": getRandomQuote, "all": getAllQuotes };
+const URL = `${API_URL}${API_URL_QUOTES}`;
 
 export async function request(endpoint, options = {}) {
     if (!validEndpoints[endpoint]) {
@@ -13,7 +14,7 @@ export async function request(endpoint, options = {}) {
 
 async function getQuote(endpoint = "", options = {}) {
     try {
-        const urlRequest = `${API_URL}${endpoint ? `${endpoint}` : ''}?${new URLSearchParams(options).toString()}`;
+        const urlRequest = `${URL}${endpoint ? `${endpoint}` : ''}?${new URLSearchParams(options).toString()}`;
         const response = await fetch(urlRequest);
 
         if (!response.ok) {
@@ -41,7 +42,7 @@ async function getTodayQuote() {
 
     const data = await getQuote("today");
 
-    if (data || (data?.items && data?.items.length > 0)) {
+    if (!data || (data?.items && data?.items.length > 0)) {
         throw new Error("Nenhuma frase encontrada para hoje.");
     }
 
@@ -61,7 +62,7 @@ async function getAllQuotes(options = {}) {
 }
 
 export async function createQuote(quote) {
-    const response = await fetch(API_URL, {
+    const response = await fetch(URL, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -78,7 +79,7 @@ export async function createQuote(quote) {
 }
 
 export async function updateQuote(id, updatedQuote) {
-    const response = await fetch(`${API_URL}${id}`, {
+    const response = await fetch(`${URL}${id}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
@@ -96,7 +97,7 @@ export async function updateQuote(id, updatedQuote) {
 
 export async function deleteQuote(id) {
     try {
-        const response = await fetch(`${API_URL}${id}`, {
+        const response = await fetch(`${URL}${id}`, {
             method: "DELETE",
             headers: {
                 "X-API-KEY": sessionStorage.getItem("X-API-KEY") || "",
