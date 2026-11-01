@@ -14,12 +14,16 @@ export async function init() {
 
     applyTagFromURL();
 
+    setupEventListeners();
+
+    await fetchAndDisplayQuotes();
+}
+
+function setupEventListeners() {
     paginationContainer.addEventListener("click", async (event) => {
         const button = event.target.closest("button");
         await setupPaginationListeners(button);
     });
-
-    await fetchAndDisplayQuotes();
 
     searchForm.addEventListener("submit", async (event) => {
         event.preventDefault();
@@ -77,7 +81,7 @@ async function fetchAndDisplayQuotes(page = 1) {
         searchResults.appendChild(quoteCard);
     }
 
-    const pagination = createPagination(totalPages, currentPage);
+    const pagination = createPagination(currentPage, totalPages);
     paginationContainer.appendChild(pagination);
 
     paginationContainer.dataset.totalPages = totalPages;
@@ -105,7 +109,7 @@ function applyTagFromURL() {
     }
 }
 
-async function handleSearch(page = 1) {
+export async function handleSearch(page = 1) {
     const formData = new FormData(searchForm);
 
     const searchQuery = formData.get("search");
@@ -118,7 +122,7 @@ async function handleSearch(page = 1) {
         search: searchQuery,
         tags: tags,
         verified: verified,
-        sortBy: sortBy,
+        sort_by: sortBy,
         order: order,
         page: page,
         size: 6
@@ -127,19 +131,19 @@ async function handleSearch(page = 1) {
     return quotes;
 }
 
-function hideStatusMessage() {
+export function hideStatusMessage() {
     if (statusMessage) {
         statusMessage.setAttribute("hidden", "true");
     }
 }
 
-function showStatusMessage() {
+export function showStatusMessage() {
     if (statusMessage) {
         statusMessage.removeAttribute("hidden");
     }
 }
 
-function updateStatusText(message) {
+export function updateStatusText(message) {
     if (statusMessage) {
         statusText.textContent = message;
     }

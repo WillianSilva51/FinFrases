@@ -78,8 +78,8 @@ O **FinFrases** é uma aplicação web moderna, modular e responsiva voltada par
 - [x] Implementar paginação para a exibição dos resultados de busca.
 - [x] Implementar arquitetura de navegação modular por página via `data-page` com *lazy loading* de módulos.
 - [x] Implementar sistema de login e validação da chave secreta via API (`X-API-KEY`).
-- [ ] Desenvolver o painel administrativo (`admin.html`).
-- [ ] Implementar operações de criação, edição e exclusão de frases (CRUD) no painel de administração.
+- [x] Desenvolver o painel administrativo (`admin.html`).
+- [x] Implementar operações de criação, edição e exclusão de frases (CRUD) no painel de administração.
 
 ---
 

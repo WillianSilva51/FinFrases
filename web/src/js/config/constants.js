@@ -5,7 +5,9 @@ const isLocal =
 
 // const API_URL = "https://localhost:443/api/v1/quotes/"; localmente no docker
 const API_URL = isLocal
-    ? "/api/v1/quotes/"
-    : "https://api.finfrases.developer.li/v1/quotes/";
+    ? "/api/"
+    : "https://api.finfrases.developer.li/";
 
-export { API_URL };
+const API_URL_QUOTES = "v1/quotes/";
+
+export { API_URL, API_URL_QUOTES };

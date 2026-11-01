@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pt-br" class="scroll-smooth scrollbar-none dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="https://img.icons8.com/?size=100&id=Yo9kOcztQ9xn&format=png&color=000000" />
+    <link rel="stylesheet" href="css/output.css">
+    <script type="module" src="js/main.js" defer></script>
+    <title>Admin - FinFrases</title>
+</head>
+
+<body data-page="admin" class="bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-white flex flex-col min-h-screen">
+    <header
+        class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-white/10 flex flex-wrap md:justify-start md:flex-nowrap z-50 w-full">
+        <nav
+            class="relative max-w-340 w-full md:flex md:items-center md:justify-between md:gap-3 mx-auto px-4 sm:px-6 lg:px-8 py-2">
+            <div class="flex items-center justify-between">
+                <a class="flex-none font-semibold text-xl text-slate-900 dark:text-gray-200 focus:outline-hidden focus:opacity-80 hover:animate-pulse"
+                    href="index.html" aria-label="Brand">FinFrases</a>
+
+                <div class="md:hidden">
+                    <button type="button"
+                        class="relative size-9 flex justify-center items-center text-sm font-semibold rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-hidden focus:bg-gray-50 dark:focus:bg-gray-700 disabled:opacity-50 cursor-pointer"
+                        id="header-classic-collapse" aria-expanded="false" aria-controls="header-classic"
+                        aria-label="Toggle navigation">
+                        <i id="header-classic-open" class="material-symbols-outlined text-[18px]!">menu</i>
+                        <i id="header-classic-close" class="material-symbols-outlined text-[18px]!" hidden>close</i>
+                        <span class="sr-only">Toggle navigation</span>
+                    </button>
+                </div>
+            </div>
+            <div id="header-classic" class="hidden overflow-hidden transition-all duration-400 basis-full grow md:block"
+                aria-labelledby="header-classic-collapse" role="region">
+                <div
+                    class="overflow-hidden overflow-y-auto max-h-[75vh] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-none [&::-webkit-scrollbar-track]:bg-gray-100 dark:[&::-webkit-scrollbar-track]:bg-gray-700 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-thumb]:bg-gray-500">
+                    <div
+                        class="py-2 md:py-0 flex flex-col md:flex-row md:items-center md:justify-end gap-0.5 md:gap-1 focus">
+                        <a title="Tela Inicial"
+                            class="p-2 flex items-center text-sm text-gray-800 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-hidden"
+                            href="index.html" aria-current="page" id="initial-page-link">
+                            <i class="material-symbols-outlined md:hidden text-[18px]! me-1.5">house</i>
+                            Início
+                        </a>
+
+                        <a title="Pesquisar Frases"
+                            class="p-2 flex items-center text-sm dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-hidden"
+                            href="search.html" id="search-quote-button">
+                            <i class="material-symbols-outlined md:hidden text-[18px]! me-1.5">search</i>
+                            Pesquisar
+                        </a>
+
+                        <div class="md:hidden">
+                            <hr class="my-2 border-gray-200 dark:border-gray-700" />
+                        </div>
+
+                        <div
+                            class="relative flex flex-wrap items-center gap-x-1.5 md:ps-2.5 mt-1 md:mt-0 md:ms-1.5 before:block before:absolute before:top-1/2 before:-inset-s-px before:w-px before:h-4 before:bg-gray-200 dark:before:bg-gray-700 before:-translate-y-1/2">
+                            <button title="Alternar Tema" id="theme-toggle"
+                                class="cursor-pointer p-2 w-full flex items-center text-sm text-gray-800 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-hidden">
+                                <i id="theme-toggle-icon"
+                                    class="material-symbols-outlined text-[18px]! me-1.5">dark_mode</i>
+                                <span class="md:hidden">Alternar Tema</span>
+                            </button>
+                        </div>
+
+                        <div class="relative flex flex-wrap items-center group-first-of-type:ap-x-1.5">
+                            <a title="Repositório do Projeto" href=" https://github.com/WillianSilva51/FinFrases"
+                                target="_blank" rel="noopener noreferrer"
+                                class="cursor-pointer p-2 w-full flex items-center text-sm text-gray-800 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-hidden">
+                                <img src="https://www.svgrepo.com/show/439171/github.svg" alt="GitHub Logo"
+                                    loading="lazy" class="w-5 h-5 me-1" />
+                                <span class="md:hidden">Repositório do Projeto</span>
+                            </a>
+                        </div>
+
+                        <hr class="my-2 border-gray-200 dark:border-gray-700 md:hidden" />
+
+                        <div
+                            class="relative flex flex-row items-center gap-x-1.5 md:ps-2.5 mt-1 md:mt-0 md:ms-1.5 before:block before:absolute before:top-1/2 before:-inset-s-px before:w-px before:h-4 before:bg-gray-200 dark:before:bg-gray-700 before:-translate-y-1/2">
+                            <span
+                                class="md:hidden p-2 w-full flex items-center text-sm text-cyan-600 dark:text-cyan-500 focus:outline-hidden">
+                                <i class="material-symbols-outlined text-[18px]! me-1.5">lock_person</i>
+                                <span class="md:hidden">Área Administrativa</span>
+                            </span>
+                            <button id="btn-logout" type="button" title="Logout"
+                                class="flex items-end text-sm text-red-500 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 focus:outline-hidden cursor-pointer">
+                                <i class="material-symbols-outlined text-[18px]! me-1.5">logout</i>
+                                <span>Logout</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main class="flex grow flex-col items-center justify-start py-10 px-4 max-w-5xl mx-auto w-full">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4 w-full mb-6">
+            <div class="text-center">
+                <h1 class="text-3xl font-bold text-slate-900 dark:text-gray-200">Área Administrativa</h1>
+                <p class="text-sm text-slate-600 dark:text-gray-400">Gerencie, crie e edite as frases da plataforma.</p>
+            </div>
+            <button id="btn-open-create-modal" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-2 px-4 rounded-lg transition-colors flex
+                items-center justify-center gap-2 cursor-pointer md:ms-auto mt-4 md:mt-0 shadow-md shadow-cyan-500/10">
+                <i class="material-symbols-outlined text-[20px]">add</i>
+                <span>Nova Frase</span>
+            </button>
+        </div>
+        <section
+            class="min-w-full p-4 md:p-6 bg-white dark:bg-slate-800/80 backdrop-blur-md rounded-2xl border border-slate-200 dark:border-white/10 shadow-xl">
+            <form id="search-form" class="flex flex-col gap-4">
+                <legend class="text-sm font-medium text-gray-700 dark:text-gray-300">Pesquisa</legend>
+
+                <fieldset class="flex flex-col md:flex-row gap-4">
+
+                    <div class="relative grow">
+                        <input type="search" name="search" id="search-input"
+                            placeholder="Digite um autor, palavra-chave ou frase..."
+                            class="w-full border border-gray-300 dark:border-gray-700 bg-slate-50 dark:bg-slate-900 rounded-lg px-4 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                    </div>
+
+                    <button type="button" id="toggle-filters-btn" aria-expanded="false"
+                        aria-controls="filters-container"
+                        class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 cursor-pointer border border-slate-300 dark:border-slate-600">
+                        <i id="toggle-filters-icon" class="material-symbols-outlined text-[20px]">tune</i>
+                        <span>Filtros</span>
+                    </button>
+
+                    <button type="submit"
+                        class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-2 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 cursor-pointer">
+                        <i class="material-symbols-outlined text-[20px]">search</i>
+                        <span>Pesquisar</span>
+                    </button>
+                </fieldset>
+
+                <div hidden aria-hidden="true" id="filters-container"
+                    class="flex-col gap-4 pt-4 border-t border-gray-200 dark:border-gray-700/50 transition duration-200">
+                    <div class=" flex flex-col gap-4 mt-4">
+                        <legend class="text-sm font-medium text-gray-700 dark:text-gray-300">Filtros</legend>
+                        <fieldset
+                            class="flex flex-wrap justify-center items-center gap-6 pt-2 border-t border-gray-100 dark:border-gray-700/50">
+
+                            <div class="flex items-center gap-2">
+                                <input checked type="checkbox" name="verified" id="verified-checkbox"
+                                    class="w-4 h-4 text-cyan-600 rounded border-gray-300 focus:ring-cyan-500">
+                                <label for="verified-checkbox"
+                                    class="text-sm text-gray-700 dark:text-gray-300 cursor-pointer">Apenas frases
+                                    verificadas</label>
+                            </div>
+
+                            <div class="flex items-center gap-2">
+                                <label for="tags-select"
+                                    class="text-sm font-medium text-gray-700 dark:text-gray-300">Categoria:</label>
+                                <select name="tags" id="tags-select"
+                                    class="border border-gray-300 dark:border-gray-700 bg-slate-50 dark:bg-slate-900 rounded-lg px-3 py-1.5 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-cyan-500">
+                                    <optgroup label="Categorias">
+                                        <option value="" selected>Todas</option>
+                                        <option value="geral">Geral</option>
+                                        <option value="investimentos">Investimentos</option>
+                                        <option value="poupanca">Poupança</option>
+                                        <option value="psicologia">Psicologia</option>
+                                        <option value="dividendos">Dividendos</option>
+                                        <option value="educacao">Educação</option>
+                                        <option value="empreendedorismo">Empreendedorismo</option>
+                                        <option value="acao">Ação</option>
+                                        <option value="fiis">FIIs</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                        </fieldset>
+
+                        <fieldset
+                            class="flex flex-wrap justify-center items-center gap-6 pt-2 border-t border-gray-100 dark:border-gray-700/50">
+                            <legend class="text-sm font-medium text-gray-700 dark:text-gray-300">Ordenação</legend>
+                            <div class="flex items-center gap-2">
+                                <label for="sort-select"
+                                    class="text-sm font-medium text-gray-700 dark:text-gray-300">Ordenar
+                                    por:</label>
+                                <select name="sort_by" id="sort-select"
+                                    class="border border-gray-300 dark:border-gray-700 bg-slate-50 dark:bg-slate-900 rounded-lg px-3 py-1.5 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-cyan-500">
+                                    <optgroup label="Opções de Ordenação">
+                                        <option value="content" selected>Conteúdo</option>
+                                        <option value="author">Autor</option>
+                                        <option value="tags">Tags</option>
+                                        <option value="created_at">Data de Criação</option>
+                                        <option value="updated_at">Data de Atualização</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+
+                            <div class="flex items-center gap-2  md:ms-4">
+                                <label for="order-select"
+                                    class="text-sm font-medium text-gray-700 dark:text-gray-300">Ordem:</label>
+                                <select name="order" id="order-select"
+                                    class="border border-gray-300 dark:border-gray-700 bg-slate-50 dark:bg-slate-900 rounded-lg px-3 py-1.5 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-cyan-500">
+                                    <optgroup label="Opções de Ordem">
+                                        <option value="asc" selected>Crescente</option>
+                                        <option value="desc">Decrescente</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+        <div id="status-message" class="mt-8 text-center">
+            <p id="status-text" class="text-gray-500 dark:text-gray-400 text-lg">Carregando frases do painel...</p>
+        </div>
+
+        <section id="results-container" class="mt-8 w-full flex justify-center flex-col items-center gap-6">
+            <div id="admin-results" class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+            </div>
+            <div id="pagination-container" class="mt-6">
+            </div>
+        </section>
+    </main>
+
+    <dialog hidden id="quote-modal"
+        class="fixed inset-0 z-50 flex justify-center items-center p-4 bg-slate-900/60 backdrop:blur-xs w-full h-full max-w-none max-h-none border-none">
+        <div
+            class="bg-gray-100 dark:bg-slate-800 border border-gray-500 dark:border-gray-700 rounded-2xl shadow-2xl w-full max-w-lg p-6 flex flex-col gap-4">
+            <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 pb-3">
+                <h3 id="modal-title" class="text-xl font-bold text-slate-800 dark:text-slate-100 ">Criar Nova Frase
+                </h3>
+                <button type="button" id="btn-close-modal" title="Fechar"
+                    class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer"">
+                        <i class=" material-symbols-outlined text-[24px]">close</i>
+                </button>
+            </div>
+
+            <form id="quote-form" method="post" class="flex flex-col gap-4 text-slate-800 dark:text-slate-100">
+                <input type="hidden" id="quote-id-input" name="id">
+
+                <fieldset class="flex flex-col gap-1">
+                    <label for="modal-content" class="text-sm font-medium">Conteúdo / Texto da Frase *</label>
+                    <textarea name="content" id="modal-content" minlength="10" maxlength="500" required rows="3"
+                        placeholder="Digite a frase..."
+                        class="p-3 w-full border border-gray-300 dark:border-gray-700 bg-slate-200 dark:bg-slate-900 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500 focus:outline-none"></textarea>
+                </fieldset>
+
+                <fieldset class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="flex flex-col gap-1">
+                        <label for="modal-autor" class="text-sm font-medium">Autor *</label>
+                        <input type="text" name="author" id="modal-autor" minlength="3" maxlength="100" required
+                            placeholder="Ex: Warren Buffett"
+                            class="px-3 py-2 w-full border border-gray-300 dark:border-gray-700 bg-slate-200 dark:bg-slate-900 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500 focus:outline-none">
+                    </div>
+
+                    <div class="flex flex-col gap-1">
+                        <label for="modal-source" class="text-sm font-medium">Fonte (Opcional)</label>
+                        <input type="text" id="modal-source" name="source" minlength="10" maxlength="150"
+                            placeholder="Ex: Livro X, Discurso Y"
+                            class="w-full border border-gray-300 dark:border-gray-700 bg-slate-200 dark:bg-slate-900 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-cyan-500 focus:outline-none">
+                    </div>
+                </fieldset>
+
+                <fieldset class="flex flex-col gap-1">
+                    <label class="text-sm font-medium">Tags (Selecione pelo menos uma)</label>
+                    <div id="modal-tags-container"
+                        class="flex flex-wrap gap-2 p-2 border border-gray-300 dark:border-gray-700 bg-slate-200 dark:bg-slate-900 rounded-lg">
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-2 items-center text-center w-full">
+                            <div>
+                                <input type="checkbox" name="tags" id="tag-geral" value="geral" checked
+                                    class="peer sr-only">
+                                <label for="tag-geral" class="tag-admin">Geral</label>
+                            </div>
+
+                            <div>
+                                <input type="checkbox" name="tags" id="tag-investimentos" value="investimentos"
+                                    class="peer sr-only">
+                                <label for="tag-investimentos" class="tag-admin">Investimentos</label>
+                            </div>
+
+                            <div>
+                                <input type="checkbox" name="tags" id="tag-poupanca" value="poupanca"
+                                    class="peer sr-only">
+                                <label for="tag-poupanca" class="tag-admin">Poupança</label>
+                            </div>
+
+                            <div>
+                                <input type="checkbox" name="tags" id="tag-psicologia" value="psicologia"
+                                    class="peer sr-only">
+                                <label for="tag-psicologia" class="tag-admin">Psicologia</label>
+                            </div>
+
+                            <div>
+                                <input type="checkbox" name="tags" id="tag-dividendos" value="dividendos"
+                                    class="peer sr-only">
+                                <label for="tag-dividendos" class="tag-admin">Dividendos</label>
+                            </div>
+
+                            <div>
+                                <input type="checkbox" name="tags" id="tag-educacao" value="educacao"
+                                    class="peer sr-only">
+                                <label for="tag-educacao" class="tag-admin">Educação</label>
+                            </div>
+
+                            <div>
+                                <input type="checkbox" name="tags" id="tag-empreendedorismo" value="empreendedorismo"
+                                    class="peer sr-only">
+                                <label for="tag-empreendedorismo" class="tag-admin">Empreendedorismo</label>
+                            </div>
+
+                            <div>
+                                <input type="checkbox" name="tags" id="tag-acao" value="acao" class="peer sr-only">
+                                <label for="tag-acao" class="tag-admin">Ação</label>
+                            </div>
+
+                            <div>
+                                <input type="checkbox" name="tags" id="tag-fiis" value="fiis" class="peer sr-only">
+                                <label for="tag-fiis" class="tag-admin">FIIs</label>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <label for="modal-verified" class="flex items-center gap-3 pt-2 cursor-pointer select-none">
+                    <input type="checkbox" id="modal-verified" name="verified" class="peer sr-only">
+                    <span class="relative w-11 h-6 shrink-0 rounded-full bg-slate-300 dark:bg-slate-600 transition-colors
+        peer-checked:bg-cyan-500 dark:peer-checked:bg-cyan-700
+        peer-focus-visible:ring-2 peer-focus-visible:ring-cyan-400
+        after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-5 after:h-5
+        after:rounded-full after:bg-white after:shadow after:transition-transform
+        peer-checked:after:translate-x-5"></span>
+                    <span class="text-sm font-medium">Marcar como frase verificada</span>
+                </label>
+
+                <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <button type="button" id="btn-cancel-modal"
+                        class="px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-slate-300 dark:hover:bg-slate-700 cursor-pointer">Cancelar</button>
+                    <button type="submit" id="btn-submit-modal"
+                        class="px-5 py-2 text-sm font-bold text-white bg-cyan-600 hover:bg-cyan-500 rounded-lg transition-colors cursor-pointer">Salvar
+                        Frase</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    <dialog hidden id="delete-quote-modal"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs w-full h-full max-w-none max-h-none border-none">
+        <div
+            class="bg-gray-100 dark:bg-slate-800 border border-gray-500 dark:border-gray-700 shadow-2xl w-full max-w-md p-6 backdrop:blur-lg rounded-2xl flex flex-col justify-center items-center gap-4 text-center text-slate-800 dark:text-slate-100">
+            <div
+                class="mx-auto flex items-center justify-center size-12 rounded-full bg-red-200 dark:bg-red-900/30 text-red-600 dark:text-red-400">
+                <i class="material-symbols-outlined text-[28px]">warning</i>
+            </div>
+            <h3 class="text-lg font-bold">Excluir Frase</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400">Tem certeza de que deseja excluir esta frase? Esta
+                ação não pode ser desfeita.</p>
+            <div class="flex justify-center gap-3 pt-2">
+                <button type="button" id="btn-cancel-delete"
+                    class="px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer">Cancelar</button>
+                <button type="button" id="btn-confirm-delete"
+                    class="px-5 py-2 text-sm font-medium rounded-lg bg-red-700 border border-gray-300 dark:border-gray-600 hover:bg-red-500 dark:hover:bg-red-700/55 transition-colors cursor-pointer">Sim,
+                    Excluir</button>
+            </div>
+        </div>
+    </dialog>
+
+    <footer class=" flex justify-center p-4 dark:bg-gray-800 border-t dark:border-white/10 bg-slate-50
+        border-black/10">
+        <small class="dark:text-slate-400 text-slate-900">&copy FinFrases 2026 — Todos os Direitos Reservados</small>
+    </footer>
+</body>
+
+</html>

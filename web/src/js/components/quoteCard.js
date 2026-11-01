@@ -34,3 +34,26 @@ export function createQuoteCard(quote) {
 
     return card;
 };
+
+export function createAdminQuoteCard(quote, { onEdit, onDelete }) {
+    const card = createQuoteCard(quote);
+
+    const actionsContainer = document.createElement("div");
+    actionsContainer.className = "border-t border-gray-100 dark:border-gray-700/50 pt-3 flex justify-end items-center gap-2";
+
+    actionsContainer.innerHTML = `
+        <button type="button" class="btn-edit-quote px-3 py-1.5 text-xs font-semibold text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-950/50 hover:bg-cyan-100 rounded-md transition-colors flex items-center gap-1 cursor-pointer">
+            <i class="material-symbols-outlined text-[16px]">edit</i> Editar
+        </button>
+        <button type="button" class="btn-delete-quote px-3 py-1.5 text-xs font-semibold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/50 hover:bg-red-100 rounded-md transition-colors flex items-center gap-1 cursor-pointer">
+            <i class="material-symbols-outlined text-[16px]">delete</i> Excluir
+        </button>
+        `;
+
+    card.appendChild(actionsContainer);
+
+    actionsContainer.querySelector(".btn-edit-quote").addEventListener("click", () => onEdit(quote));
+    actionsContainer.querySelector(".btn-delete-quote").addEventListener("click", () => onDelete(quote?._id));
+
+    return card;
+}

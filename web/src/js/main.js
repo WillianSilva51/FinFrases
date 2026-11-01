@@ -5,7 +5,7 @@ const PAGE_ROUTES = {
     main: () => import('./pages/mainPage.js').then(module => module.init()),
     search: () => import('./pages/searchPage.js').then(async module => await module.init()),
     login: () => import('./pages/loginPage.js').then(async module => await module.init()),
-    //   admin: () => import('./pages/adminPage.js').then(module => module.init()),
+    admin: () => import('./pages/adminPage.js').then(async module => await module.init()),
 }
 
 class App {

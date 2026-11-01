@@ -22,30 +22,34 @@ export async function init() {
     loginForm.addEventListener("submit", async (event) => {
         event.preventDefault();
 
-        const formData = new FormData(loginForm);
-
-        const secretKey = formData.get("secret-key").trim();
-
-        if (!validateSecretKey(secretKey)) {
-            return;
-        }
-
-        setLoadingState(true);
-
-        const isValid = await validateSecretKeyWithServer(secretKey);
-
-        if (!isValid) {
-            showError("Chave secreta inválida.");
-            setLoadingState(false);
-            return;
-        }
-
-        sessionStorage.setItem("X-API-KEY", secretKey);
-
-        setLoadingState(false);
-
-        window.location.href = "/admin.html";
+        await submitForm();
     });
+}
+
+async function submitForm() {
+    const formData = new FormData(loginForm);
+
+    const secretKey = formData.get("secret-key")?.trim();
+
+    if (!validateSecretKey(secretKey)) {
+        return;
+    }
+
+    setLoadingState(true);
+
+    const isValid = await validateSecretKeyWithServer(secretKey);
+
+    if (!isValid) {
+        showError("Chave secreta inválida.");
+        setLoadingState(false);
+        return;
+    }
+
+    sessionStorage.setItem("X-API-KEY", secretKey);
+
+    setLoadingState(false);
+
+    window.location.href = "/admin.html";
 }
 
 function validateSecretKey(secretKey) {
@@ -75,5 +79,6 @@ function setLoadingState(isLoading) {
     submitButton.disabled = isLoading;
     submitButton.textContent = isLoading ? "Verificando..." : "Entrar";
     submitButton.classList.toggle("opacity-50", isLoading);
+    submitButton.classList.toggle("cursor-pointer", !isLoading);
     submitButton.classList.toggle("cursor-not-allowed", isLoading);
 }
