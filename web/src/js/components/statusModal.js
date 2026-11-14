@@ -11,7 +11,7 @@ export function createStatusModal(status, message) {
             class="bg-gray-100 dark:bg-slate-800 border border-gray-500 dark:border-gray-700 shadow-2xl w-full max-w-md p-6 backdrop:blur-lg rounded-2xl flex flex-col justify-center items-center gap-4 text-center text-slate-800 dark:text-slate-100">
             <div
                 class="mx-auto flex items-center justify-center size-12 rounded-full bg-cyan-200 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400">
-                <i class="material-symbols-outlined text-[28px]">info</i>
+                <i class="material-symbols-rounded text-[28px]">info</i>
             </div>
             <h3 id="status-modal-title" class="text-lg font-bold">${status}</h3>
             <p id="status-modal-message" class="text-sm text-slate-600 dark:text-slate-400">${message}</p>
