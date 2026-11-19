@@ -53,6 +53,8 @@ async function displayUniqueQuote(endpoint = "today") {
     if (!req || req.length === 0) {
         quoteText.textContent = "Não foi possível carregar a frase.";
         toggleQuoteDetails(true);
+        quoteText.classList.toggle("animate-pulse", false);
+        loadingIcon.hidden = true;
         return;
     }
 

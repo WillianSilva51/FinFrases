@@ -21,7 +21,7 @@ export function createQuoteCard(quote) {
                 <i class="material-symbols-rounded text-[16px]">verified</i> Verificada
             </span>` :
             `<span class="text-xs text-red-500 flex items-center gap-1">
-                <i class="material-symbols-rounded text-[16px]">warning</i> Não Verificada
+                <i class="material-symbols-rounded text-[16px]">verified_off</i> Não Verificada
             </span>`}
         </div>
         <p class="text-lg italic text-slate-800 dark:text-slate-100 mb-4">
