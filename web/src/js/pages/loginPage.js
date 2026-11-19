@@ -78,7 +78,9 @@ function setLoadingState(isLoading) {
 
     submitButton.disabled = isLoading;
     submitButton.innerHTML = isLoading ? `<i
-                class="material-symbols-rounded mt-1 text-[20px]! animate-spin motion-reduce:animate-none text-cyan-200">progress_activity</i>`  : "Entrar";
+              aria-hidden="true"  class="material-symbols-rounded mt-1 text-[20px]! animate-spin motion-reduce:animate-none text-cyan-200">progress_activity</i>
+              <span class="sr-only">Verificando....</span>`
+        : "Entrar";
     submitButton.classList.toggle("opacity-50", isLoading);
     submitButton.classList.toggle("cursor-pointer", !isLoading);
     submitButton.classList.toggle("cursor-not-allowed", isLoading);

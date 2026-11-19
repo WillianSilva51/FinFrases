@@ -51,10 +51,7 @@ async function displayUniqueQuote(endpoint = "today") {
     const req = await request(endpoint);
 
     if (!req || req.length === 0) {
-        quoteText.textContent = "Não foi possível carregar a frase.";
-        toggleQuoteDetails(true);
-        quoteText.classList.toggle("animate-pulse", false);
-        loadingIcon.hidden = true;
+        displayErrorMessage();
         return;
     }
 
@@ -74,7 +71,13 @@ async function displayUniqueQuote(endpoint = "today") {
 
         toggleQuoteDetails(false);
     } else {
-        quoteText.textContent = "Não foi possível carregar a frase.";
-        toggleQuoteDetails(true);
+        displayErrorMessage();
     }
+}
+
+function displayErrorMessage() {
+    quoteText.textContent = "Não foi possível carregar a frase.";
+    toggleQuoteDetails(true);
+    loadingIcon.hidden = true;
+    quoteText.classList.remove("animate-pulse");
 }
