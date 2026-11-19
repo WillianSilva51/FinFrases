@@ -1,6 +1,6 @@
 import { createAdminQuoteCard } from '../components/quoteCard.js';
 import { toggleFilters } from '../components/filters.js';
-import { hideStatusMessage, showStatusMessage, updateStatusText, handleSearch } from './searchPage.js';
+import { hideStatusMessage, hideLoadingIcon, showStatusMessage, updateStatusText, handleSearch } from './searchPage.js';
 import { createPagination } from '../components/paginationContainer.js';
 import { createStatusModal } from "../components/statusModal.js";
 import { QuoteService } from '../api/quoteService.js';
@@ -107,6 +107,7 @@ async function executeQuoteDeletion() {
 async function fetchAndDisplayAdminQuotes(page = 1) {
     currentAdminPage = page;
     updateStatusText("Carregando...");
+    hideLoadingIcon();
     showStatusMessage();
     adminResults.innerHTML = "";
     paginationContainer.innerHTML = "";
@@ -118,6 +119,7 @@ async function fetchAndDisplayAdminQuotes(page = 1) {
 
         if (quotes.length === 0) {
             updateStatusText("Nenhuma frase encontrada.");
+            hideLoadingIcon(true);
             return;
         }
 
@@ -138,6 +140,7 @@ async function fetchAndDisplayAdminQuotes(page = 1) {
     }
     catch (error) {
         console.error("Erro ao buscar frases:", error);
+        hideLoadingIcon(true);
         updateStatusText("Ocorreu um erro ao buscar as frases.");
     }
 }

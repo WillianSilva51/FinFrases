@@ -123,8 +123,12 @@
                 <div id="quote-container"
                     class="max-w-2xl md:w-full p-8 mx-4 bg-slate-800/95 dark:bg-white/5 backdrop-blur-md rounded-2xl border border-black/10 dark:border-white/10 shadow-2xl flex justify-center flex-col transition-normal transition-transform duration-500 hover:-translate-y-1.5 hover:shadow-2xl dark:hover:shadow-cyan-500/20 hover:shadow-cyan-900">
                     <q id="quote-text"
-                        class="text-2xl md:text-3xl text-slate-100 italic text-center font-light">Carregando
+                        class="text-2xl md:text-3xl text-slate-100 italic text-center font-light animate-pulse">Carregando
                         Frase....</q>
+                    <div class="flex justify-center mt-4" id="loading-icon">
+                        <i
+                            class="material-symbols-rounded text-[20px]! animate-spin text-cyan-500">progress_activity</i>
+                    </div>
                     <small id="quote-author" class="text-right text-emerald-400 font-semibold mt-6" hidden>Carregando
                         Autor...</small>
                     <small id="quote-source" class="text-left text-emerald-500 font-semibold mt-4" hidden>Carregando

@@ -96,6 +96,8 @@
     --radius-xl: 0.75rem;
     --radius-2xl: 1rem;
     --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+    --animate-spin: spin 1s linear infinite;
+    --animate-ping: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
     --animate-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     --animate-bounce: bounce 1s infinite;
     --blur-xs: 4px;
@@ -367,9 +369,6 @@
   .z-50 {
     z-index: 50;
   }
-  .m-10 {
-    margin: calc(var(--spacing) * 10);
-  }
   .mx-4 {
     margin-inline: calc(var(--spacing) * 4);
   }
@@ -387,9 +386,6 @@
   }
   .mt-1 {
     margin-top: var(--spacing);
-  }
-  .mt-2 {
-    margin-top: calc(var(--spacing) * 2);
   }
   .mt-3 {
     margin-top: calc(var(--spacing) * 3);
@@ -574,6 +570,9 @@
   }
   .animate-pulse {
     animation: var(--animate-pulse);
+  }
+  .animate-spin {
+    animation: var(--animate-spin);
   }
   .cursor-not-allowed {
     cursor: not-allowed;
@@ -966,6 +965,9 @@
   .text-\[20px\] {
     font-size: 20px;
   }
+  .text-\[20px\]\! {
+    font-size: 20px !important;
+  }
   .text-\[24px\] {
     font-size: 24px;
   }
@@ -988,8 +990,23 @@
     --tw-font-weight: var(--font-weight-semibold);
     font-weight: var(--font-weight-semibold);
   }
+  .text-cyan-100 {
+    color: var(--color-cyan-100);
+  }
+  .text-cyan-200 {
+    color: var(--color-cyan-200);
+  }
+  .text-cyan-500 {
+    color: var(--color-cyan-500);
+  }
   .text-cyan-600 {
     color: var(--color-cyan-600);
+  }
+  .text-cyan-700 {
+    color: var(--color-cyan-700);
+  }
+  .text-cyan-950 {
+    color: var(--color-cyan-950);
   }
   .text-emerald-400 {
     color: var(--color-emerald-400);
@@ -2631,6 +2648,18 @@
   syntax: "*";
   inherits: false;
   initial-value: 1;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes ping {
+  75%,
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
 }
 @keyframes pulse {
   50% {

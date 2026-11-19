@@ -10,6 +10,7 @@ const quoteText = document.getElementById("quote-text");
 const quoteAuthor = document.getElementById("quote-author");
 const quoteSource = document.getElementById("quote-source");
 const quoteTags = document.getElementById("quote-tags");
+const loadingIcon = document.getElementById("loading-icon");
 
 export function init() {
     displayUniqueQuote();
@@ -42,6 +43,8 @@ const toggleQuoteDetails = (hidden) => {
     quoteAuthor.hidden = hidden;
     quoteSource.hidden = hidden;
     quoteTags.hidden = hidden;
+    loadingIcon.hidden = !hidden;
+    quoteText.classList.toggle("animate-pulse", hidden);
 }
 
 async function displayUniqueQuote(endpoint = "today") {
