@@ -18,10 +18,10 @@ export function createQuoteCard(quote) {
             </span>
             ${verified ?
             `<span class="text-xs text-green-500 flex items-center gap-1">
-                <i class="material-symbols-outlined text-[16px]">verified</i> Verificada
+                <i class="material-symbols-rounded text-[16px]">verified</i> Verificada
             </span>` :
             `<span class="text-xs text-red-500 flex items-center gap-1">
-                <i class="material-symbols-outlined text-[16px]">warning</i> Não Verificada
+                <i class="material-symbols-rounded text-[16px]">verified_off</i> Não Verificada
             </span>`}
         </div>
         <p class="text-lg italic text-slate-800 dark:text-slate-100 mb-4">
@@ -43,10 +43,10 @@ export function createAdminQuoteCard(quote, { onEdit, onDelete }) {
 
     actionsContainer.innerHTML = `
         <button type="button" class="btn-edit-quote px-3 py-1.5 text-xs font-semibold text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-950/50 hover:bg-cyan-100 rounded-md transition-colors flex items-center gap-1 cursor-pointer">
-            <i class="material-symbols-outlined text-[16px]">edit</i> Editar
+            <i class="material-symbols-rounded text-[16px]">edit</i> Editar
         </button>
         <button type="button" class="btn-delete-quote px-3 py-1.5 text-xs font-semibold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/50 hover:bg-red-100 rounded-md transition-colors flex items-center gap-1 cursor-pointer">
-            <i class="material-symbols-outlined text-[16px]">delete</i> Excluir
+            <i class="material-symbols-rounded text-[16px]">delete</i> Excluir
         </button>
         `;
 

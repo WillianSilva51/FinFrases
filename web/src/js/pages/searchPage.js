@@ -7,6 +7,7 @@ const statusMessage = document.getElementById("status-message");
 const statusText = document.getElementById("status-text");
 const searchForm = document.getElementById("search-form");
 const searchResults = document.getElementById("search-results");
+const loadingIcon = document.getElementById("loading-icon");
 const paginationContainer = document.getElementById("pagination-container");
 
 export async function init() {
@@ -60,6 +61,7 @@ async function setupPaginationListeners(button) {
 async function fetchAndDisplayQuotes(page = 1) {
     showStatusMessage();
     updateStatusText("Carregando...");
+    hideLoadingIcon();
 
     searchResults.innerHTML = "";
     paginationContainer.innerHTML = "";
@@ -73,6 +75,7 @@ async function fetchAndDisplayQuotes(page = 1) {
 
     if (!quotesList || quotesList.length === 0) {
         updateStatusText("Nenhum resultado encontrado.");
+        hideLoadingIcon(true);
         return;
     }
 
@@ -147,4 +150,8 @@ export function updateStatusText(message) {
     if (statusMessage) {
         statusText.textContent = message;
     }
+}
+
+export function hideLoadingIcon(hide = false) {
+    loadingIcon.hidden = hide;
 }

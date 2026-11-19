@@ -9,7 +9,7 @@ export function createPagination(currentPage, totalPages) {
                 <button type="button" ${currentPage === 1 ? 'disabled' : ''} id="prev-page-btn"
                     class="min-h-9.5 min-w-9.5 py-2 px-2.5 inline-flex justify-center items-center gap-x-2 text-sm rounded-lg text-gray-800 dark:text-neutral-200 hover:bg-gray-200 dark:hover:bg-sky-600 focus:outline-hidden focus:bg-gray-100 dark:focus:bg-sky-800 disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
                     aria-label="Previous">
-                    <i class="material-symbols-outlined text-[18px]!">chevron_left</i>
+                    <i class="material-symbols-rounded text-[18px]!">chevron_left</i>
                     <span class="sr-only">Previous</span>
                 </button>
                 <div class="flex items-center gap-x-1">
@@ -26,7 +26,7 @@ export function createPagination(currentPage, totalPages) {
                     class="min-h-9.5 min-w-9.5 py-2 px-2.5 inline-flex justify-center items-center gap-x-2 text-sm rounded-lg text-gray-800 dark:text-neutral-200 hover:bg-gray-200 dark:hover:bg-sky-600 focus:outline-hidden focus:bg-gray-100 dark:focus:bg-sky-800 disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
                     aria-label="Next">
                     <span class="sr-only">Next</span>
-                    <i class="material-symbols-outlined text-[18px]!">chevron_right</i>
+                    <i class="material-symbols-rounded text-[18px]!">chevron_right</i>
                 </button>`;
 
     return paginationNav;

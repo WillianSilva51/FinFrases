@@ -9,7 +9,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
         rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet" />
     <link rel="icon" type="image/png" href="https://img.icons8.com/?size=100&id=Yo9kOcztQ9xn&format=png&color=000000" />
     <link rel="stylesheet" href="css/output.css">
     <script type="module" src="js/main.js" defer></script>
@@ -30,8 +30,8 @@
                         class="relative size-9 flex justify-center items-center text-sm font-semibold rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-hidden focus:bg-gray-50 dark:focus:bg-gray-700 disabled:opacity-50 cursor-pointer"
                         id="header-classic-collapse" aria-expanded="false" aria-controls="header-classic"
                         aria-label="Toggle navigation">
-                        <i id="header-classic-open" class="material-symbols-outlined text-[18px]!">menu</i>
-                        <i id="header-classic-close" class="material-symbols-outlined text-[18px]!" hidden>close</i>
+                        <i id="header-classic-open" class="material-symbols-rounded text-[18px]!">menu</i>
+                        <i id="header-classic-close" class="material-symbols-rounded text-[18px]!" hidden>close</i>
                         <span class="sr-only">Toggle navigation</span>
                     </button>
                 </div>
@@ -45,14 +45,14 @@
                         <a title="Tela Inicial"
                             class="p-2 flex items-center text-sm text-cyan-600 dark:text-cyan-500 focus:outline-hidden"
                             href="#quote" aria-current="page" id="initial-page-link">
-                            <i class="material-symbols-outlined md:hidden text-[18px]! me-1.5">house</i>
+                            <i class="material-symbols-rounded md:hidden text-[18px]! me-1.5">house</i>
                             Início
                         </a>
 
                         <a title="Pesquisar Frases"
                             class="p-2 flex items-center text-sm text-gray-800 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-hidden"
                             href="search.html" id="search-quote-button">
-                            <i class="material-symbols-outlined md:hidden text-[18px]! me-1.5">search</i>
+                            <i class="material-symbols-rounded md:hidden text-[18px]! me-1.5">search</i>
                             Pesquisar
                         </a>
 
@@ -65,7 +65,7 @@
                             <button title="Alternar Tema" id="theme-toggle"
                                 class="cursor-pointer p-2 w-full flex items-center text-sm text-gray-800 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-hidden">
                                 <i id="theme-toggle-icon"
-                                    class="material-symbols-outlined text-[18px]! me-1.5">dark_mode</i>
+                                    class="material-symbols-rounded text-[18px]! me-1.5">dark_mode</i>
                                 <span class="md:hidden">Alternar Tema</span>
                             </button>
                         </div>
@@ -87,7 +87,7 @@
                             <a title="Área Administrativa"
                                 class="p-2 w-full flex items-center text-sm text-gray-800 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-hidden"
                                 href="login.html">
-                                <i class="material-symbols-outlined text-[18px]! me-1.5">lock_person</i>
+                                <i class="material-symbols-rounded text-[18px]! me-1.5">lock_person</i>
                                 <span class="md:hidden">Área Administrativa</span>
                             </a>
                         </div>
@@ -96,8 +96,9 @@
             </div>
         </nav>
     </header>
-    <main class="flex grow min-w-full flex-col items-center justify-center">
-        <div class="flex items-center mb-8">
+
+    <main class="flex grow w-full flex-col items-center justify-center">
+        <div class="flex items-center mb-8 md:mt-2 mt-5">
             <label for="toggle-quote" title="Alternar entre Frase Diária e Frase Aleatória"
                 class="relative inline-block w-20 h-10 cursor-pointer">
                 <input type="checkbox" id="toggle-quote" class="peer sr-only"
@@ -108,11 +109,11 @@
                     class="absolute top-1/2 inset-s-0.5 -translate-y-1/2 size-8 bg-plain rounded-full shadow-xs transition-normal duration-200 ease-in-out bg-blue-100 dark:bg-blue-100 peer-checked:bg-blue-100 dark:peer-checked:bg-blue-100 peer-checked:left-[calc(100%-2.15rem)]"></span>
                 <span
                     class="flex-col absolute top-1/2 inset-s-2 -translate-y-1/2 flex justify-center items-center size-5 text-cyan-600 dark:text-cyan-500 peer-checked:text-gray-200 dark:peer-checked:text-gray-200 transition-colors duration-200">
-                    <i class="material-symbols-outlined md:hidden text-[19px]!">today</i>
+                    <i class="material-symbols-rounded md:hidden text-[19px]!">today</i>
                 </span>
                 <span
                     class="flex-col absolute top-1/2 inset-e-2 -translate-y-1/2 flex justify-center items-center size-5 text-gray-200 dark:text-gray-200 peer-checked:text-cyan-600 dark:peer-checked:text-cyan-500 transition-colors duration-200">
-                    <i class="material-symbols-outlined md:hidden text-[19px]!">shuffle</i>
+                    <i class="material-symbols-rounded md:hidden text-[19px]!">shuffle</i>
                 </span>
             </label>
         </div>
@@ -122,8 +123,12 @@
                 <div id="quote-container"
                     class="max-w-2xl md:w-full p-8 mx-4 bg-slate-800/95 dark:bg-white/5 backdrop-blur-md rounded-2xl border border-black/10 dark:border-white/10 shadow-2xl flex justify-center flex-col transition-normal transition-transform duration-500 hover:-translate-y-1.5 hover:shadow-2xl dark:hover:shadow-cyan-500/20 hover:shadow-cyan-900">
                     <q id="quote-text"
-                        class="text-2xl md:text-3xl text-slate-100 italic text-center font-light">Carregando
+                        class="text-2xl md:text-3xl text-slate-100 italic text-center font-light animate-pulse">Carregando
                         Frase....</q>
+                    <div class="flex justify-center mt-4" id="loading-icon">
+                        <i
+                            class="material-symbols-rounded text-[20px]! animate-spin motion-reduce:animate-none text-cyan-500">progress_activity</i>
+                    </div>
                     <small id="quote-author" class="text-right text-emerald-400 font-semibold mt-6" hidden>Carregando
                         Autor...</small>
                     <small id="quote-source" class="text-left text-emerald-500 font-semibold mt-4" hidden>Carregando
@@ -146,6 +151,7 @@
             </a>
         </aside>
     </main>
+
     <footer class="flex justify-center p-4 dark:bg-gray-800 border-t dark:border-white/10 bg-slate-50 border-black/10">
         <small class="dark:text-slate-400 text-slate-900">&copy FinFrases 2026 — Todos os Direitos Reservados</small>
     </footer>

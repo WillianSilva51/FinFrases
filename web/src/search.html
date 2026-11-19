@@ -9,7 +9,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
         rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet" />
     <link rel="icon" type="image/png" href="https://img.icons8.com/?size=100&id=Yo9kOcztQ9xn&format=png&color=000000" />
     <link rel="stylesheet" href="css/output.css">
     <script type="module" src="js/main.js" defer></script>
@@ -31,8 +31,8 @@
                         class="relative size-9 flex justify-center items-center text-sm font-semibold rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-hidden focus:bg-gray-50 dark:focus:bg-gray-700 disabled:opacity-50 cursor-pointer"
                         id="header-classic-collapse" aria-expanded="false" aria-controls="header-classic"
                         aria-label="Toggle navigation">
-                        <i id="header-classic-open" class="material-symbols-outlined text-[18px]!">menu</i>
-                        <i id="header-classic-close" class="material-symbols-outlined text-[18px]!" hidden>close</i>
+                        <i id="header-classic-open" class="material-symbols-rounded text-[18px]!">menu</i>
+                        <i id="header-classic-close" class="material-symbols-rounded text-[18px]!" hidden>close</i>
                         <span class="sr-only">Toggle navigation</span>
                     </button>
                 </div>
@@ -46,14 +46,14 @@
                         <a title="Tela Inicial"
                             class="p-2 flex items-center text-sm text-gray-800 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-hidden"
                             href="index.html" aria-current="page" id="initial-page-link">
-                            <i class="material-symbols-outlined md:hidden text-[18px]! me-1.5">house</i>
+                            <i class="material-symbols-rounded md:hidden text-[18px]! me-1.5">house</i>
                             Início
                         </a>
 
                         <a title="Pesquisar Frases"
                             class="p-2 flex items-center text-sm text-cyan-600 dark:text-cyan-500 focus:outline-hidden"
                             href="search.html" id="search-quote-button">
-                            <i class="material-symbols-outlined md:hidden text-[18px]! me-1.5">search</i>
+                            <i class="material-symbols-rounded md:hidden text-[18px]! me-1.5">search</i>
                             Pesquisar
                         </a>
 
@@ -66,7 +66,7 @@
                             <button title="Alternar Tema" id="theme-toggle"
                                 class="cursor-pointer p-2 w-full flex items-center text-sm text-gray-800 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-hidden">
                                 <i id="theme-toggle-icon"
-                                    class="material-symbols-outlined text-[18px]! me-1.5">dark_mode</i>
+                                    class="material-symbols-rounded text-[18px]! me-1.5">dark_mode</i>
                                 <span class="md:hidden">Alternar Tema</span>
                             </button>
                         </div>
@@ -88,7 +88,7 @@
                             <a title="Área Administrativa"
                                 class="p-2 w-full flex items-center text-sm text-gray-800 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-hidden"
                                 href="login.html">
-                                <i class="material-symbols-outlined text-[18px]! me-1.5">lock_person</i>
+                                <i class="material-symbols-rounded text-[18px]! me-1.5">lock_person</i>
                                 <span class="md:hidden">Área Administrativa</span>
                             </a>
                         </div>
@@ -115,13 +115,13 @@
                     <button type="button" id="toggle-filters-btn" aria-expanded="false"
                         aria-controls="filters-container"
                         class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 cursor-pointer border border-slate-300 dark:border-slate-600">
-                        <i id="toggle-filters-icon" class="material-symbols-outlined text-[20px]">tune</i>
+                        <i id="toggle-filters-icon" class="material-symbols-rounded text-[20px]">tune</i>
                         <span>Filtros</span>
                     </button>
 
                     <button type="submit"
                         class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-2 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 cursor-pointer">
-                        <i class="material-symbols-outlined text-[20px]">search</i>
+                        <i class="material-symbols-rounded text-[20px]">search</i>
                         <span>Pesquisar</span>
                     </button>
                 </fieldset>
@@ -200,6 +200,8 @@
 
         <div id="status-message" class="mt-8 text-center">
             <p id="status-text" class="text-gray-500 dark:text-gray-400 text-lg">Carregando...</p>
+            <i id="loading-icon"
+                class="material-symbols-rounded mt-3 text-[20px]! animate-spin motion-reduce:animate-none text-cyan-700 dark:text-cyan-500">progress_activity</i>
         </div>
 
         <section id="results-container" class="mt-8 w-full flex justify-center flex-col items-center gap-6">
@@ -209,6 +211,7 @@
             </div>
         </section>
     </main>
+
     <footer class="flex justify-center p-4 dark:bg-gray-800 border-t dark:border-white/10 bg-slate-50 border-black/10">
         <small class="dark:text-slate-400 text-slate-900">&copy FinFrases 2026 — Todos os Direitos Reservados</small>
     </footer>
