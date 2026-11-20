@@ -10,6 +10,7 @@ import pytest
 
 from api.core.exceptions.custom_exceptions import (
     DomainValidationException,
+    QuoteAlreadyExistsException,
     QuoteNotFoundException,
 )
 from api.models.enums import CategoryQuote
@@ -116,7 +117,7 @@ class TestCreateQuote:
             verified=valid_request_data.verified,
         )
 
-        with pytest.raises(DomainValidationException) as exc_info:
+        with pytest.raises(QuoteAlreadyExistsException) as exc_info:
             await service.create_quote(quote=valid_request_data, repo=mock_repo)
 
         assert str(exc_info.value) == expected_message
@@ -371,7 +372,7 @@ class TestUpdateQuoteById:
         )
         mock_repo.get_quote_by_content_and_author.return_value = conflicting_quote
 
-        with pytest.raises(DomainValidationException) as exc_info:
+        with pytest.raises(QuoteAlreadyExistsException) as exc_info:
             await service.update_quote_by_id(
                 id=quote_id, quote_data=update_request_data, repo=mock_repo
             )

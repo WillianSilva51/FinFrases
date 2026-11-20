@@ -6,6 +6,7 @@ from loguru import logger
 from api.core.cache import get_redis
 from api.core.exceptions.custom_exceptions import (
     DomainValidationException,
+    QuoteAlreadyExistsException,
     QuoteNotFoundException,
 )
 from api.models.quote import Quote
@@ -38,7 +39,7 @@ class QuoteService:
             A citação recém-criada.
 
         Raises:
-            DomainValidationException: Se já existir uma citação com o mesmo
+            QuoteAlreadyExistsException: Se já existir uma citação com o mesmo
                 conteúdo e autor.
         """
         logger.info(f"Criando nova citação: {quote}")
@@ -47,7 +48,7 @@ class QuoteService:
             await repo.get_quote_by_content_and_author(quote.content, quote.author)
             is not None
         ):
-            raise DomainValidationException(
+            raise QuoteAlreadyExistsException(
                 f"A frase '{quote.content}' do autor '{quote.author}' já existe"
             )
 
@@ -168,7 +169,7 @@ class QuoteService:
 
         Raises:
             QuoteNotFoundException: Se a citação não existir.
-            DomainValidationException: Se já existir outra citação com o mesmo
+            QuoteAlreadyExistsException: Se já existir outra citação com o mesmo
                 conteúdo e autor.
         """
         logger.info(f"Atualizando citação com id: {id}, dados: {quote_data}")
@@ -180,7 +181,7 @@ class QuoteService:
                 quote_data.content, quote_data.author
             )
             if existing_quote and str(existing_quote.id) != str(id):
-                raise DomainValidationException(
+                raise QuoteAlreadyExistsException(
                     f"A frase '{quote_data.content}' do autor '{quote_data.author}' já existe"
                 )
 
