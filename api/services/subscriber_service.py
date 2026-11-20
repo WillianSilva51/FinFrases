@@ -38,7 +38,7 @@ class SubscriberService:
                     "Assinante com este e-mail já existe."
                 )
 
-        new_subscriber = await repo.create(subscriber)
+        new_subscriber = await repo.create_subscriber(subscriber)
 
         return SubscriberResponse.model_validate(new_subscriber.model_dump())
 
@@ -55,16 +55,11 @@ class SubscriberService:
         Returns:
             A instância de ``Subscriber`` desinscrita.
         """
-        subscriber = await repo.get_subscriber_by_email(unsubscriber.email)
-
-        if not subscriber:
+        if not repo.subscriber_exists_by_unsubscribe_token(
+            unsubscriber.unsubscribe_token
+        ):
             raise SubscriberNotFoundException(
-                "Assinante com este e-mail não foi encontrado."
-            )
-
-        if subscriber.unsubscribe_token != unsubscriber.unsubscribe_token:
-            raise SubscriberNotFoundException(
-                "Token de desinscrição inválido para este assinante."
+                "Assinante com este token de desinscrição não foi encontrado."
             )
 
         unsubscribed_subscriber = await repo.unsubscribe_subscriber(unsubscriber)

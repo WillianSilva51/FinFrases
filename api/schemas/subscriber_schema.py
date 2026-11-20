@@ -28,14 +28,6 @@ class UpdateSubscriberRequest(CreateSubscriberRequest):
 
 
 class UnsubscribeSubscriberRequest(BaseModel):
-    email: Annotated[
-        EmailStr,
-        Field(
-            title="E-mail",
-            description="O e-mail do assinante",
-            examples=["joao@example.com"],
-        ),
-    ]
     unsubscribe_token: Annotated[
         str,
         Field(

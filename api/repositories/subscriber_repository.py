@@ -16,7 +16,9 @@ class SubscriberRepository:
     camada de acesso a dados isolada da regra de negócio.
     """
 
-    async def create(self, subscriber_data: CreateSubscriberRequest) -> Subscriber:
+    async def create_subscriber(
+        self, subscriber_data: CreateSubscriberRequest
+    ) -> Subscriber:
         """Cria e persiste um novo assinante no banco de dados.
 
         Args:
@@ -50,7 +52,7 @@ class SubscriberRepository:
             }
         )
 
-    async def get_subscriber_by_email(self, email: str):
+    async def get_subscriber_by_email(self, email: str) -> Subscriber | None:
         """
         Obtém um assinante pelo endereço de e-mail.
 
@@ -86,6 +88,34 @@ class SubscriberRepository:
 
         return await subscribers.to_list(), total_count
 
+    async def get_subscriber_by_unsubscribe_token(
+        self, unsubscribe_token: str
+    ) -> Subscriber | None:
+        """
+        Obtém um assinante pelo token de cancelamento de inscrição.
+
+        Args:
+            unsubscribe_token: O token de cancelamento de inscrição do assinante.
+
+        Returns:
+            A instância de ``Subscriber`` encontrada, ou ``None`` se não for encontrada.
+        """
+        return await Subscriber.find_one({"token": unsubscribe_token})
+
+    async def subscriber_exists_by_unsubscribe_token(
+        self, unsubscribe_token: str
+    ) -> bool:
+        """
+        Verifica se um assinante existe com o token de cancelamento de inscrição fornecido.
+
+        Args:
+            unsubscribe_token: O token de cancelamento de inscrição do assinante.
+
+        Returns:
+            ``True`` se o assinante existir, ``False`` caso contrário.
+        """
+        return await Subscriber.find_one({"token": unsubscribe_token}).count() > 0
+
     async def unsubscribe_subscriber(
         self, unsubscriber: UnsubscribeSubscriberRequest
     ) -> Subscriber:
@@ -99,7 +129,9 @@ class SubscriberRepository:
             A instância de ``Subscriber`` atualizada com o status "unsubscribed" e a data de desinscrição.
         """
 
-        subcriber = await self.get_subscriber_by_email(str(unsubscriber.email))
+        subcriber = await self.get_subscriber_by_unsubscribe_token(
+            unsubscriber.unsubscribe_token
+        )
 
         date = datetime.now(UTC)
 
