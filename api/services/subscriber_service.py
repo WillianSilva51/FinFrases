@@ -1,20 +1,29 @@
+from secrets import token_urlsafe
+
 from api.core.exceptions.custom_exceptions import (
     SubscriberAlreadyExistsException,
     SubscriberNotFoundException,
+    UnsubcriberAlreadyUnsubscribedException,
+    UnsubscribeTokenInvalidException,
 )
 from api.models.enums import SubscriberStatus
+from api.models.subscriber import Subscriber
 from api.repositories.subscriber_repository import SubscriberRepository
 from api.schemas.subscriber_schema import (
     CreateSubscriberRequest,
     SubscriberResponse,
+    UnsubscribeResponse,
     UnsubscribeSubscriberRequest,
     UpdateSubscriberRequest,
 )
+from api.utils.utils import mask_email
 
 
 class SubscriberService:
     async def create_subscriber(
-        self, repo: SubscriberRepository, subscriber: CreateSubscriberRequest
+        self,
+        subscriber: CreateSubscriberRequest,
+        repo: SubscriberRepository,
     ) -> SubscriberResponse:
         """
         Cria um novo assinante.
@@ -24,15 +33,19 @@ class SubscriberService:
             subscriber: Dados de entrada validados para criação do assinante.
 
         Returns:
-            A instância de ``Subscriber`` criada.
+            Uma instância de ``SubscriberResponse`` com os dados do novo assinante.
         """
         subscriber_exists = await repo.get_subscriber_by_email(subscriber.email)
 
         if subscriber_exists:
             if subscriber_exists.status == SubscriberStatus.UNSUBSCRIBED:
-                subscriber_exists = await repo.reativate_subscriber(subscriber_exists)
+                new_unsubscribe_token = token_urlsafe(32)
 
-                return SubscriberResponse.model_validate(subscriber_exists.model_dump())
+                subscriber_exists = await repo.reativate_subscriber(
+                    subscriber_exists, new_unsubscribe_token
+                )
+
+                return self._create_subscriber_response(subscriber_exists)
             else:
                 raise SubscriberAlreadyExistsException(
                     "Assinante com este e-mail já existe."
@@ -40,11 +53,13 @@ class SubscriberService:
 
         new_subscriber = await repo.create_subscriber(subscriber)
 
-        return SubscriberResponse.model_validate(new_subscriber.model_dump())
+        return self._create_subscriber_response(new_subscriber)
 
     async def unsubscribe_subscriber(
-        self, repo: SubscriberRepository, unsubscriber: UnsubscribeSubscriberRequest
-    ) -> SubscriberResponse:
+        self,
+        unsubscriber: UnsubscribeSubscriberRequest,
+        repo: SubscriberRepository,
+    ) -> UnsubscribeResponse:
         """
         Desinscreve um assinante existente.
 
@@ -53,32 +68,44 @@ class SubscriberService:
             unsubscriber: Um objeto ``UnsubscribeSubscriberRequest`` contendo o e-mail do assinante a ser desinscrito e o token de desinscrição.
 
         Returns:
-            A instância de ``Subscriber`` desinscrita.
+            Uma instância de ``UnsubscribeResponse`` indicando o sucesso da operação.
         """
-        if not repo.subscriber_exists_by_unsubscribe_token(
+        subscriber = await repo.get_subscriber_by_unsubscribe_token(
             unsubscriber.unsubscribe_token
-        ):
-            raise SubscriberNotFoundException(
-                "Assinante com este token de desinscrição não foi encontrado."
+        )
+
+        if not subscriber:
+            raise UnsubscribeTokenInvalidException("Token de desinscrição inválido.")
+
+        if subscriber.status == SubscriberStatus.UNSUBSCRIBED:
+            raise UnsubcriberAlreadyUnsubscribedException(
+                "Assinante com este token de desinscrição já está desinscrito."
             )
 
         unsubscribed_subscriber = await repo.unsubscribe_subscriber(unsubscriber)
 
-        return SubscriberResponse.model_validate(unsubscribed_subscriber.model_dump())
+        return UnsubscribeResponse.model_validate(
+            {
+                "message": "Sua inscrição foi cancelada com sucesso. Você não receberá mais e-mails diários.",
+                "status": unsubscribed_subscriber.status,
+                "masked_email": mask_email(str(unsubscribed_subscriber.email)),
+            }
+        )
 
     async def update_subscriber_name(
-        self, repo: SubscriberRepository, update_subscriber: UpdateSubscriberRequest
+        self,
+        update_subscriber: UpdateSubscriberRequest,
+        repo: SubscriberRepository,
     ) -> SubscriberResponse:
         """
         Atualiza o nome de um assinante existente.
 
         Args:
             repo: Instância do repositório de assinantes.
-            email: O e-mail do assinante a ser atualizado.
-            new_name: O novo nome para o assinante.
+            update_subscriber: Um objeto ``UpdateSubscriberRequest`` contendo o e-mail e o novo nome do assinante.
 
         Returns:
-            A instância de ``Subscriber`` atualizada.
+            Uma instância de ``SubscriberResponse`` com os dados atualizados.
         """
         subscriber = await repo.get_subscriber_by_email(update_subscriber.email)
 
@@ -88,17 +115,17 @@ class SubscriberService:
             )
 
         updated_subscriber = await repo.update_subscriber(
-            **update_subscriber.model_dump()
+            update_subscriber.email, {"name": update_subscriber.name}
         )
 
-        return SubscriberResponse.model_validate(updated_subscriber.model_dump())
+        return self._create_subscriber_response(updated_subscriber)
 
     async def get_subscribers(
         self,
-        repo: SubscriberRepository,
         status: SubscriberStatus,
         skip: int,
         limit: int,
+        repo: SubscriberRepository,
     ) -> tuple[list[SubscriberResponse], int, int]:
         """
         Obtém uma lista de assinantes com base no status fornecido.
@@ -117,8 +144,15 @@ class SubscriberService:
         )
 
         subscriber_responses = [
-            SubscriberResponse.model_validate(subscriber.model_dump())
-            for subscriber in subscribers
+            self._create_subscriber_response(subscriber) for subscriber in subscribers
         ]
 
         return subscriber_responses, total_count, (total_count + limit - 1) // limit
+
+    def _create_subscriber_response(self, subscriber: Subscriber) -> SubscriberResponse:
+        """
+        Cria uma instância de ``SubscriberResponse`` a partir de um objeto ``Subscriber``.
+        """
+        return SubscriberResponse.model_validate(
+            subscriber.model_dump(include={"name", "email", "unsubscribe_token"})
+        )

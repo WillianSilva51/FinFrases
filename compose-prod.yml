@@ -51,26 +51,26 @@ services:
     networks:
       - finfrases-network
 
-    rabbitmq:
-      image: docker.io/library/rabbitmq:4-management-alpine
-      container_name: finfrases-rabbitmq
-      restart: always
-      expose:
-        - "5672"
-        - "15672"
-      volumes:
-        - rabbitmq-data:/var/lib/rabbitmq
-      environment:
-        RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-user}
-        RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-password123}
-      healthcheck:
-        test: ["CMD", "rabbitmqctl", "status"]
-        interval: 10s
-        timeout: 5s
-        retries: 3
-        start_period: 10s
-      networks:
-        - finfrases-network
+  rabbitmq:
+    image: docker.io/library/rabbitmq:4-management-alpine
+    container_name: finfrases-rabbitmq
+    restart: always
+    expose:
+      - "5672"
+      - "15672"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-user}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-password123}
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - finfrases-network
 
   finfrases-api:
     image: docker.io/williansilva51/fin-frases

@@ -16,6 +16,14 @@ class DomainValidationException(Exception):
         self.message = message
 
 
+class UnsubscribeTokenInvalidException(DomainValidationException):
+    pass
+
+
+class UnsubcriberAlreadyUnsubscribedException(DomainValidationException):
+    pass
+
+
 class SubscriberAlreadyExistsException(ResourceAlreadyExistsException):
     pass
 

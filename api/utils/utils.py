@@ -13,3 +13,19 @@ def expiration_midnight() -> int:
     now = datetime.now(UTC)
     midnight = (now + timedelta(1)).replace(hour=0, minute=0, second=0, microsecond=0)
     return int((midnight - now).total_seconds())
+
+
+def mask_email(email: str) -> str:
+    """
+    Máscara um endereço de e-mail, ocultando parte do nome local.
+
+    Args:
+        email (str): O endereço de e-mail a ser mascarado.
+
+    Returns:
+        str: O endereço de e-mail mascarado, com parte do nome local substituída por asteriscos.
+    """
+    local, domain = email.split("@", 1)
+    if len(local) <= 2:
+        return f"{local[0]}***@{domain}"
+    return f"{local[:2]}***@{domain}"

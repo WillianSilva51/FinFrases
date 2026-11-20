@@ -9,7 +9,7 @@ from api.models.enums import SubscriberStatus
 
 
 class Subscriber(Document):
-    name: Annotated[str, Field(max_length=100)]
+    name: Annotated[str, Field(max_length=50)]
     email: Annotated[EmailStr, Indexed(unique=True, name="uq_subscriber_email")]
     status: Annotated[SubscriberStatus, Indexed(name="idx_status_subscriber")] = Field(
         default=SubscriberStatus.ACTIVE

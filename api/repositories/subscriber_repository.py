@@ -31,7 +31,9 @@ class SubscriberRepository:
 
         return await new_subscriber.insert()
 
-    async def reativate_subscriber(self, subscriber: Subscriber) -> Subscriber:
+    async def reativate_subscriber(
+        self, subscriber: Subscriber, new_unsubscribe_token: str
+    ) -> Subscriber:
         """
         Reativa um assinante previamente desinscrito, atualizando seu status para "active".
 
@@ -41,13 +43,13 @@ class SubscriberRepository:
         Returns:
             A instância de ``Subscriber`` atualizada com o status "active".
         """
-        assert subscriber is not None
         return await subscriber.update(
             {
                 "$set": {
                     "status": SubscriberStatus.ACTIVE,
                     "updated_at": datetime.now(UTC),
                     "unsubscribed_at": None,
+                    "unsubscribe_token": new_unsubscribe_token,
                 }
             }
         )
@@ -100,7 +102,7 @@ class SubscriberRepository:
         Returns:
             A instância de ``Subscriber`` encontrada, ou ``None`` se não for encontrada.
         """
-        return await Subscriber.find_one({"token": unsubscribe_token})
+        return await Subscriber.find_one({"unsubscribe_token": unsubscribe_token})
 
     async def subscriber_exists_by_unsubscribe_token(
         self, unsubscribe_token: str
@@ -114,7 +116,10 @@ class SubscriberRepository:
         Returns:
             ``True`` se o assinante existir, ``False`` caso contrário.
         """
-        return await Subscriber.find_one({"token": unsubscribe_token}).count() > 0
+        return (
+            await Subscriber.find_one({"unsubscribe_token": unsubscribe_token}).count()
+            > 0
+        )
 
     async def unsubscribe_subscriber(
         self, unsubscriber: UnsubscribeSubscriberRequest
@@ -129,14 +134,13 @@ class SubscriberRepository:
             A instância de ``Subscriber`` atualizada com o status "unsubscribed" e a data de desinscrição.
         """
 
-        subcriber = await self.get_subscriber_by_unsubscribe_token(
+        subscriber = await self.get_subscriber_by_unsubscribe_token(
             unsubscriber.unsubscribe_token
         )
 
         date = datetime.now(UTC)
 
-        assert subcriber is not None
-        return await subcriber.update(
+        return await subscriber.update(
             {
                 "$set": {
                     "status": SubscriberStatus.UNSUBSCRIBED,
@@ -161,5 +165,4 @@ class SubscriberRepository:
 
         update_data = {**subscriber_data, "updated_at": datetime.now(UTC)}
 
-        assert existing_subscriber is not None
         return await existing_subscriber.update({"$set": update_data})
