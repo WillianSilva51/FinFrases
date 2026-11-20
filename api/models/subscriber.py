@@ -1,4 +1,5 @@
 from datetime import UTC, datetime
+from secrets import token_urlsafe
 from typing import Annotated
 
 from beanie import Document, Indexed
@@ -16,7 +17,7 @@ class Subscriber(Document):
     unsubscribe_token: Annotated[
         str,
         Indexed(unique=True, name="uq_subscriber_unsubscribe_token"),
-    ]
+    ] = Field(default_factory=token_urlsafe)
     created_at: Annotated[datetime, Field(default_factory=lambda: datetime.now(UTC))]
     updated_at: datetime | None = None
     unsubscribed_at: Annotated[

@@ -7,7 +7,7 @@ from loguru import logger
 
 from api.core.exceptions.custom_exceptions import (
     DomainValidationException,
-    QuoteNotFoundException,
+    ResourceAlreadyExistsException,
     ResourceNotFoundException,
 )
 from api.schemas.error_schema import ErrorResponse
@@ -19,12 +19,22 @@ def _json_error_response(error: ErrorResponse) -> JSONResponse:
     )
 
 
-async def resource_not_found_handler(
-    _: Request, exc: ResourceNotFoundException | QuoteNotFoundException
+async def resource_already_exists_handler(
+    _: Request, exc: ResourceAlreadyExistsException
 ) -> JSONResponse:
     return _json_error_response(
         ErrorResponse.from_http_status(
-            status_code=HTTPStatus.NOT_FOUND, message=exc.message
+            status_code=HTTPStatus.CONFLICT, message=getattr(exc, "message", str(exc))
+        )
+    )
+
+
+async def resource_not_found_handler(
+    _: Request, exc: ResourceNotFoundException
+) -> JSONResponse:
+    return _json_error_response(
+        ErrorResponse.from_http_status(
+            status_code=HTTPStatus.NOT_FOUND, message=getattr(exc, "message", str(exc))
         )
     )
 
@@ -34,7 +44,8 @@ async def domain_validation_handler(
 ) -> JSONResponse:
     return _json_error_response(
         ErrorResponse.from_http_status(
-            status_code=HTTPStatus.BAD_REQUEST, message=exc.message
+            status_code=HTTPStatus.BAD_REQUEST,
+            message=getattr(exc, "message", str(exc)),
         )
     )
 

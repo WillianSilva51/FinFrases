@@ -55,3 +55,11 @@ class SubscriberResponse(BaseModel):
             examples=["joao@example.com"],
         ),
     ]
+    token: Annotated[
+        str,
+        Field(
+            title="Token de cancelamento de inscrição",
+            description="O token de cancelamento de inscrição do assinante",
+            examples=["1234567890abcdef"],
+        ),
+    ]

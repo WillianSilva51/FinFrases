@@ -55,7 +55,7 @@ class QuoteOrderBy(str, Enum):
 
 class SubscriberStatus(str, Enum):
     ACTIVE = "active"
-    UNSUBCRIBED = "unsubscribed"
+    UNSUBSCRIBED = "unsubscribed"
 
     @classmethod
     def _missing_(cls, value):

@@ -29,6 +29,27 @@ class SubscriberRepository:
 
         return await new_subscriber.insert()
 
+    async def reativate_subscriber(self, subscriber: Subscriber) -> Subscriber:
+        """
+        Reativa um assinante previamente desinscrito, atualizando seu status para "active".
+
+        Args:
+            subscriber: A instância de ``Subscriber`` a ser reativada.
+
+        Returns:
+            A instância de ``Subscriber`` atualizada com o status "active".
+        """
+        assert subscriber is not None
+        return await subscriber.update(
+            {
+                "$set": {
+                    "status": SubscriberStatus.ACTIVE,
+                    "updated_at": datetime.now(UTC),
+                    "unsubscribed_at": None,
+                }
+            }
+        )
+
     async def get_subscriber_by_email(self, email: str):
         """
         Obtém um assinante pelo endereço de e-mail.
@@ -41,7 +62,7 @@ class SubscriberRepository:
         """
         return await Subscriber.find_one({"email": email})
 
-    async def get_subscriber_with_status(
+    async def get_subscribers_by_status(
         self, status: SubscriberStatus, limit: int, skip: int
     ) -> tuple[list[Subscriber], int]:
         """
@@ -65,7 +86,7 @@ class SubscriberRepository:
 
         return await subscribers.to_list(), total_count
 
-    async def soft_delete(
+    async def unsubscribe_subscriber(
         self, unsubscriber: UnsubscribeSubscriberRequest
     ) -> Subscriber:
         """
@@ -86,7 +107,7 @@ class SubscriberRepository:
         return await subcriber.update(
             {
                 "$set": {
-                    "status": SubscriberStatus.UNSUBCRIBED,
+                    "status": SubscriberStatus.UNSUBSCRIBED,
                     "updated_at": date,
                     "unsubscribed_at": date,
                 }
