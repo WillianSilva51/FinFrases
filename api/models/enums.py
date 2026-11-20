@@ -51,3 +51,17 @@ class QuoteOrderBy(str, Enum):
                     return order_by
 
         return cls.CREATED_AT
+
+
+class SubscriberStatus(str, Enum):
+    ACTIVE = "active"
+    UNSUBCRIBED = "unsubscribed"
+
+    @classmethod
+    def _missing_(cls, value):
+        if isinstance(value, str):
+            for status in cls:
+                if status.value.lower() == value.lower():
+                    return status
+
+        return cls.ACTIVE
