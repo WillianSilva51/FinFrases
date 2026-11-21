@@ -11,7 +11,6 @@ from api.schemas.subscriber_schema import (
     SubscriberResponse,
     UnsubscribeResponse,
     UnsubscribeSubscriberRequest,
-    UpdateSubscriberRequest,
 )
 from api.services.subscriber_service import SubscriberService
 from api.utils.utils import get_token_generator, mask_email
@@ -24,7 +23,7 @@ def _create_subscriber_response(subscriber: Subscriber) -> SubscriberResponse:
     Cria uma instância de ``SubscriberResponse`` a partir de um objeto ``Subscriber``.
     """
     return SubscriberResponse.model_validate(
-        subscriber.model_dump(include={"name", "email", "unsubscribe_token"})
+        subscriber.model_dump(include={"email", "status"})
     )
 
 
@@ -37,7 +36,7 @@ def _create_subscriber_response(subscriber: Subscriber) -> SubscriberResponse:
     description="Cria um novo assinante com base nos dados fornecidos.",
     response_description="O assinante criado com sucesso.",
 )
-@limiter.limit("5/minute")
+@limiter.limit("3/minute;10/hour")
 async def create_subscriber(
     request: Request,
     response: Response,
@@ -70,7 +69,7 @@ async def create_subscriber(
     description="Desinscreve um assinante existente com base nos dados fornecidos.",
     response_description="O assinante desinscrito com sucesso.",
 )
-@limiter.limit("5/minute")
+@limiter.limit("10/minute")
 async def unsubscribe_subscriber(
     request: Request,
     response: Response,
@@ -97,35 +96,3 @@ async def unsubscribe_subscriber(
             "masked_email": mask_email(str(unsubscribed_subscriber.email)),
         }
     )
-
-
-@api_router.put(
-    path="/",
-    response_model=SubscriberResponse,
-    status_code=HTTPStatus.OK,
-    name="Atualizar Nome do Assinante",
-    summary="Atualiza o nome de um assinante existente",
-    description="Atualiza o nome de um assinante existente com base nos dados fornecidos.",
-    response_description="O nome do assinante atualizado com sucesso.",
-)
-@limiter.limit("5/minute")
-async def update_subscriber_name(
-    request: Request,
-    response: Response,
-    update_subscriber: UpdateSubscriberRequest,
-    subscriber_service: SubscriberService = Depends(SubscriberService),  # noqa: B008
-    subscriber_repository: SubscriberRepository = Depends(SubscriberRepository),  # noqa: B008
-) -> SubscriberResponse:
-    """
-    Endpoint para atualizar o nome de um assinante existente.
-
-    Este endpoint permite atualizar o nome de um assinante existente no sistema. O assinante será identificado pelo e-mail fornecido e seu nome será atualizado com o novo valor.
-
-    Returns:
-        JSONResponse: Retorna uma resposta JSON contendo os detalhes do assinante atualizado.
-    """
-    subscriber = await subscriber_service.update_subscriber_name(
-        update_subscriber, subscriber_repository
-    )
-
-    return _create_subscriber_response(subscriber)

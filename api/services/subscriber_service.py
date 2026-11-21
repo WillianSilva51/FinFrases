@@ -4,7 +4,6 @@ from api.core.exceptions.custom_exceptions import (
     SubscriberAlreadyExistsException,
     SubscriberNotFoundException,
     UnsubscriberAlreadyUnsubscribedException,
-    UnsubscribeTokenInvalidException,
 )
 from api.models.enums import SubscriberStatus
 from api.models.subscriber import Subscriber
@@ -12,7 +11,6 @@ from api.repositories.subscriber_repository import SubscriberRepository
 from api.schemas.subscriber_schema import (
     CreateSubscriberRequest,
     UnsubscribeSubscriberRequest,
-    UpdateSubscriberRequest,
 )
 
 
@@ -74,7 +72,9 @@ class SubscriberService:
         )
 
         if not subscriber:
-            raise UnsubscribeTokenInvalidException("Token de desinscrição inválido.")
+            raise SubscriberNotFoundException(
+                "Assinante com este token de desinscrição não foi encontrado."
+            )
 
         if subscriber.status == SubscriberStatus.UNSUBSCRIBED:
             raise UnsubscriberAlreadyUnsubscribedException(
@@ -84,34 +84,6 @@ class SubscriberService:
         unsubscribed_subscriber = await repo.unsubscribe_subscriber(subscriber)
 
         return unsubscribed_subscriber
-
-    async def update_subscriber_name(
-        self,
-        update_subscriber: UpdateSubscriberRequest,
-        repo: SubscriberRepository,
-    ) -> Subscriber:
-        """
-        Atualiza o nome de um assinante existente.
-
-        Args:
-            repo: Instância do repositório de assinantes.
-            update_subscriber: Um objeto ``UpdateSubscriberRequest`` contendo o e-mail e o novo nome do assinante.
-
-        Returns:
-            Uma instância de ``SubscriberResponse`` com os dados atualizados.
-        """
-        subscriber = await repo.get_subscriber_by_email(update_subscriber.email)
-
-        if not subscriber:
-            raise SubscriberNotFoundException(
-                "Assinante com este e-mail não foi encontrado."
-            )
-
-        updated_subscriber = await repo.update_subscriber(
-            update_subscriber.email, {"name": update_subscriber.name}
-        )
-
-        return updated_subscriber
 
     async def get_subscribers(
         self,

@@ -6,15 +6,6 @@ from api.models.enums import SubscriberStatus
 
 
 class CreateSubscriberRequest(BaseModel):
-    name: Annotated[
-        str,
-        Field(
-            title="Nome",
-            description="O nome do assinante",
-            examples=["João da Silva"],
-            max_length=50,
-        ),
-    ]
     email: Annotated[
         EmailStr,
         Field(
@@ -23,10 +14,6 @@ class CreateSubscriberRequest(BaseModel):
             examples=["joao@example.com"],
         ),
     ]
-
-
-class UpdateSubscriberRequest(CreateSubscriberRequest):
-    pass
 
 
 class UnsubscribeSubscriberRequest(BaseModel):
@@ -43,15 +30,6 @@ class UnsubscribeSubscriberRequest(BaseModel):
 
 
 class SubscriberResponse(BaseModel):
-    name: Annotated[
-        str,
-        Field(
-            title="Nome",
-            description="O nome do assinante",
-            examples=["João da Silva"],
-            max_length=50,
-        ),
-    ]
     email: Annotated[
         EmailStr,
         Field(
@@ -60,16 +38,14 @@ class SubscriberResponse(BaseModel):
             examples=["joao@example.com"],
         ),
     ]
-    unsubscribe_token: Annotated[
-        str,
+    status: Annotated[
+        SubscriberStatus,
         Field(
-            title="Token de cancelamento de inscrição",
-            description="O token de cancelamento de inscrição do assinante",
-            min_length=16,
-            max_length=128,
-            examples=["1234567890abcdef"],
+            title="Status do assinante",
+            description="O status atual do assinante",
+            examples=[SubscriberStatus.ACTIVE.value],
         ),
-    ]
+    ] = SubscriberStatus.ACTIVE
 
 
 class UnsubscribeResponse(BaseModel):

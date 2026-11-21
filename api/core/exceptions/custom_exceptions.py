@@ -16,10 +16,6 @@ class DomainValidationException(Exception):
         self.message = message
 
 
-class UnsubscribeTokenInvalidException(DomainValidationException):
-    pass
-
-
 class UnsubscriberAlreadyUnsubscribedException(DomainValidationException):
     pass
 
