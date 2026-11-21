@@ -4,7 +4,6 @@ from api.models.enums import SubscriberStatus
 from api.models.subscriber import Subscriber
 from api.schemas.subscriber_schema import (
     CreateSubscriberRequest,
-    UnsubscribeSubscriberRequest,
 )
 
 
@@ -31,7 +30,7 @@ class SubscriberRepository:
 
         return await new_subscriber.insert()
 
-    async def reativate_subscriber(
+    async def reactivate_subscriber(
         self, subscriber: Subscriber, new_unsubscribe_token: str
     ) -> Subscriber:
         """
@@ -121,22 +120,16 @@ class SubscriberRepository:
             > 0
         )
 
-    async def unsubscribe_subscriber(
-        self, unsubscriber: UnsubscribeSubscriberRequest
-    ) -> Subscriber:
+    async def unsubscribe_subscriber(self, subscriber: Subscriber) -> Subscriber:
         """
         Realiza a exclusão suave (soft delete) de um assinante, atualizando seu status para "unsubscribed" e registrando a data de desinscrição.
 
         Args:
-            unsubscriber: Um objeto ``UnsubscribeSubscriberRequest`` contendo o e-mail do assinante a ser desinscrito.
+            subscriber: Um objeto ``Subscriber`` contendo o e-mail do assinante a ser desinscrito.
 
         Returns:
             A instância de ``Subscriber`` atualizada com o status "unsubscribed" e a data de desinscrição.
         """
-
-        subscriber = await self.get_subscriber_by_unsubscribe_token(
-            unsubscriber.unsubscribe_token
-        )
 
         date = datetime.now(UTC)
 

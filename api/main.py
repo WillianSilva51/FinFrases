@@ -24,6 +24,7 @@ from api.core.handlers.exception_handlers import (
     resource_not_found_handler,
 )
 from api.core.limiter import limiter
+from api.core.rabbitmq import close_rabbitmq, init_rabbitmq
 from api.routers.main_router import main_router
 
 tags_metadata = [
@@ -32,12 +33,16 @@ tags_metadata = [
         "description": "Operações relacionadas a frases financeiras.",
     },
     {
-        "name": "Health",
+        "name": "Saúde",
         "description": "Endpoint para verificar a saúde da API.",
     },
     {
-        "name": "Auth",
+        "name": "Autenticação",
         "description": "Endpoint para verificar a validade da chave de API.",
+    },
+    {
+        "name": "Assinantes",
+        "description": "Operações relacionadas a assinantes.",
     },
 ]
 
@@ -47,7 +52,9 @@ PREFIX = settings.API_PREFIX
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     await init_db()
+    await init_rabbitmq()
     yield
+    await close_rabbitmq()
 
 
 app = FastAPI(
@@ -101,8 +108,9 @@ app.add_exception_handler(HTTPException, http_handler)  # type: ignore
 app.add_exception_handler(DomainValidationException, domain_validation_handler)  # type: ignore
 app.add_exception_handler(ResourceNotFoundException, resource_not_found_handler)  # type: ignore
 app.add_exception_handler(
-    ResourceAlreadyExistsException, resource_already_exists_handler
-)  # type: ignore
+    ResourceAlreadyExistsException,
+    resource_already_exists_handler,  # type: ignore
+)
 app.add_exception_handler(RequestValidationError, request_validation_handler)  # type: ignore
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)  # type: ignore
 app.add_exception_handler(Exception, global_exception_handler)

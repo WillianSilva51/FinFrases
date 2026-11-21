@@ -1,18 +1,31 @@
+from collections.abc import Callable
 from http import HTTPStatus
 
 from fastapi import APIRouter, Depends, Request, Response
 
 from api.core.limiter import limiter
+from api.models.subscriber import Subscriber
 from api.repositories.subscriber_repository import SubscriberRepository
 from api.schemas.subscriber_schema import (
     CreateSubscriberRequest,
     SubscriberResponse,
+    UnsubscribeResponse,
     UnsubscribeSubscriberRequest,
     UpdateSubscriberRequest,
 )
 from api.services.subscriber_service import SubscriberService
+from api.utils.utils import get_token_generator, mask_email
 
 api_router = APIRouter(prefix="/v1/subscribers")
+
+
+def _create_subscriber_response(subscriber: Subscriber) -> SubscriberResponse:
+    """
+    Cria uma instância de ``SubscriberResponse`` a partir de um objeto ``Subscriber``.
+    """
+    return SubscriberResponse.model_validate(
+        subscriber.model_dump(include={"name", "email", "unsubscribe_token"})
+    )
 
 
 @api_router.post(
@@ -29,6 +42,7 @@ async def create_subscriber(
     request: Request,
     response: Response,
     new_subscriber: CreateSubscriberRequest,
+    token_generator: Callable[[int], str] = Depends(get_token_generator),  # noqa: B008
     subscriber_service: SubscriberService = Depends(SubscriberService),  # noqa: B008
     subscriber_repository: SubscriberRepository = Depends(SubscriberRepository),  # noqa: B008
 ) -> SubscriberResponse:
@@ -41,15 +55,15 @@ async def create_subscriber(
         JSONResponse: Retorna uma resposta JSON contendo os detalhes do assinante criado.
     """
     subscriber = await subscriber_service.create_subscriber(
-        new_subscriber, subscriber_repository
+        new_subscriber, token_generator, subscriber_repository
     )
 
-    return SubscriberResponse.model_validate(subscriber.model_dump())
+    return _create_subscriber_response(subscriber)
 
 
 @api_router.post(
     path="/unsubscribe",
-    response_model=SubscriberResponse,
+    response_model=UnsubscribeResponse,
     status_code=HTTPStatus.OK,
     name="Desinscrever Assinante",
     summary="Desinscreve um assinante existente",
@@ -63,7 +77,7 @@ async def unsubscribe_subscriber(
     unsubscriber: UnsubscribeSubscriberRequest,
     subscriber_service: SubscriberService = Depends(SubscriberService),  # noqa: B008
     subscriber_repository: SubscriberRepository = Depends(SubscriberRepository),  # noqa: B008
-) -> SubscriberResponse:
+) -> UnsubscribeResponse:
     """
     Endpoint para desinscrever um assinante existente.
 
@@ -72,11 +86,17 @@ async def unsubscribe_subscriber(
     Returns:
         JSONResponse: Retorna uma resposta JSON contendo os detalhes do assinante desinscrito.
     """
-    subscriber = await subscriber_service.unsubscribe_subscriber(
+    unsubscribed_subscriber = await subscriber_service.unsubscribe_subscriber(
         unsubscriber, subscriber_repository
     )
 
-    return SubscriberResponse.model_validate(subscriber.model_dump())
+    return UnsubscribeResponse.model_validate(
+        {
+            "message": "Sua inscrição foi cancelada com sucesso. Você não receberá mais e-mails diários.",
+            "status": unsubscribed_subscriber.status,
+            "masked_email": mask_email(str(unsubscribed_subscriber.email)),
+        }
+    )
 
 
 @api_router.put(
@@ -108,4 +128,4 @@ async def update_subscriber_name(
         update_subscriber, subscriber_repository
     )
 
-    return SubscriberResponse.model_validate(subscriber.model_dump())
+    return _create_subscriber_response(subscriber)

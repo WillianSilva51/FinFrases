@@ -1,4 +1,6 @@
+from collections.abc import Callable
 from datetime import UTC, datetime, timedelta
+from secrets import token_urlsafe
 
 
 def expiration_midnight() -> int:
@@ -29,3 +31,13 @@ def mask_email(email: str) -> str:
     if len(local) <= 2:
         return f"{local[0]}***@{domain}"
     return f"{local[:2]}***@{domain}"
+
+
+def get_token_generator() -> Callable[[int], str]:
+    """
+    Retorna uma função que gera tokens seguros de URL com base no tamanho especificado.
+
+    Returns:
+        Callable[[int], str]: Uma função que aceita um tamanho inteiro e retorna um token seguro de URL.
+    """
+    return token_urlsafe

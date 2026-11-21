@@ -4,7 +4,7 @@ from api.core.config import settings
 from api.routers.auth import api_router as auth_router
 from api.routers.health import api_router as health_router
 from api.routers.quotes import api_router as quotes_router
-from api.routers.subscriber import api_router as subscriber_router
+from api.routers.subscribers import api_router as subscriber_router
 
 main_router = APIRouter(prefix=settings.API_PREFIX)
 

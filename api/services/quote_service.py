@@ -5,7 +5,6 @@ from loguru import logger
 
 from api.core.cache import get_redis
 from api.core.exceptions.custom_exceptions import (
-    DomainValidationException,
     QuoteAlreadyExistsException,
     QuoteNotFoundException,
 )

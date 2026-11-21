@@ -20,7 +20,7 @@ class UnsubscribeTokenInvalidException(DomainValidationException):
     pass
 
 
-class UnsubcriberAlreadyUnsubscribedException(DomainValidationException):
+class UnsubscriberAlreadyUnsubscribedException(DomainValidationException):
     pass
 
 
