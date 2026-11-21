@@ -24,7 +24,6 @@ from api.core.handlers.exception_handlers import (
     resource_not_found_handler,
 )
 from api.core.limiter import limiter
-from api.core.rabbitmq import close_rabbitmq, init_rabbitmq
 from api.routers.main_router import main_router
 
 tags_metadata = [
