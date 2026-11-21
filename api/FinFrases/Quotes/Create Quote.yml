@@ -28,8 +28,8 @@ runtime:
   scripts:
     - type: before-request
       code: |-
-        let random = Math.floor(Math.random() * 1000)
-        let categories = [
+        const random = Math.floor(Math.random() * 1000)
+        const categories = [
             "GERAL", "INVESTIMENTOS", "POUPANCA", "PSICOLOGIA", "DIVIDENDOS", "EDUCACAO", "EMPREENDEDORISMO", "ACAO", "FIIS"
           ]
 
@@ -50,3 +50,4 @@ settings:
   timeout: 0
   followRedirects: true
   maxRedirects: 5
+  forwardAuthorizationHeader: true
