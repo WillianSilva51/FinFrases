@@ -3,8 +3,9 @@
 [![Python](https://img.shields.io/badge/Python-3.13-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-Enabled-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-Database-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
-![Redis](https://img.shields.io/badge/Redis-Cache-DC382D?style=for-the-badge&logo=redis&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+[![Redis](https://img.shields.io/badge/Redis-Cache-DC382D?style=for-the-badge&logo=redis&logoColor=white)](https://redis.io/)
+[![RabbitMQ](https://img.shields.io/badge/RabbitMQ-Queue-FF6600?style=for-the-badge&logo=rabbitmq&logoColor=white)](https://www.rabbitmq.com/)
+[![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 [![License](https://img.shields.io/github/license/WillianSilva51/FinFrases?color=blue&style=for-the-badge)](https://github.com/WillianSilva51/FinFrases/blob/main/LICENSE)
 
 [![Logo](./assets/images/logo.png)](https://github.com/WillianSilva51/FinFrases)
@@ -15,9 +16,17 @@ Este projeto foi criado para preencher a lacuna de ecossistemas brasileiros volt
 
 *Inicialmente construído em Java/Spring Boot, o sistema foi totalmente refatorado para Python visando uma arquitetura assíncrona, maior agilidade no desenvolvimento e integração facilitada com pipelines de dados.*
 
+## 📑 Sumário
+
+- [📁 Estrutura do Repositório](#-estrutura-do-repositório)
+- [🏗️ Arquitetura do Sistema](#️-arquitetura-do-sistema)
+- [🚀 Quick Start (Instalação via Docker)](#-quick-start-instalação-via-docker)
+- [🤝 Como Contribuir](#-como-contribuir)
+- [📄 Licença](#-licença)
+
 ---
 
-## 🗂️ Estrutura do Repositório
+## 📁 Estrutura do Repositório
 
 Este é um *monorepo* que reúne os serviços necessários para executar o FinFrases.
 
@@ -54,6 +63,9 @@ architecture-beta
         service mongodb(database)[MongoDB] in data
         service redis(database)[Redis] in data
 
+    group messaging(server)[Messaging]
+        service rabbitmq(disk)[RabbitMQ] in messaging
+
 
     user:T --> L:client
     user:R --> L:proxy
@@ -64,13 +76,14 @@ architecture-beta
 
     api:B --> T:mongodb
     api:R --> L:redis
+    api:B --> T:rabbitmq
 ```
 
 ---
 
 ## 🚀 Quick Start (Instalação via Docker)
 
-A forma mais rápida de rodar o projeto localmente é utilizando o Docker Compose, que orquestra e sobe automaticamente a API, o Frontend, o banco de dados (MongoDB) e o cache (Redis).
+A forma mais rápida de rodar o projeto localmente é utilizando o Docker Compose, que orquestra e sobe automaticamente a API, o Frontend, o banco de dados (MongoDB) e o cache (Redis) e o serviço de mensagens (RabbitMQ).
 
 **1. Clone o repositório:**
 
@@ -83,7 +96,7 @@ cd finfrases
 Faça uma cópia do arquivo de configuração na pasta da API e preencha com as credenciais necessárias (para desenvolvimento local, os valores padrão são suficientes).
 
 ```bash
-cp api/.env-example api/.env
+cp api/.env.example api/.env
 
 ```
 

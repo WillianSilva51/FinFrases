@@ -4,22 +4,43 @@
 
 A **FinFrases API** fornece um banco de dados curado e de alta performance de citações sobre investimentos, educação financeira, poupança e psicologia do dinheiro.
 
+## 📑 Sumário
+
+- [✨ Funcionalidades](#-funcionalidades)
+- [🚀 Tecnologias e Infraestrutura](#-tecnologias-e-infraestrutura)
+- [⚙️ Configuração do Ambiente](#️-configuração-do-ambiente)
+- [🔧 Como Executar (Podman / Docker)](#-como-executar-podman--docker)
+- [🕒 Uso (Endpoints)](#-uso-endpoints)
+  - [Endpoints Públicos](#endpoints-públicos)
+  - [Endpoints Administrativos](#endpoints-administrativos-requerem-api-key)
+  - [Listar frases](#listar-frases-com-suporte-a-filtros-e-paginação)
+  - [Frases Aleatórias](#frases-aleatórias)
+  - [Frase do Dia](#frase-do-dia-com-cache)
+- [📨 Newsletter da Frase Diária](#-newsletter-da-frase-diária)
+- [🔐 Administração](#-administração)
+  - [Como criar uma API Key](#como-criar-uma-api-key)
+
+---
+
 ## ✨ Funcionalidades
 
-* **Banco de Dados Curado**: Frases verificadas de grandes nomes do mercado financeiro e literatura.
-* **Filtros Avançados**: Busca flexível por autor, categoria (tags), fonte ou status de verificação.
-* **Resultados Aleatórios**: Endpoint dedicado para obter inspiração randômica com agregação nativa.
-* **Frase do Dia**: Endpoint com performance otimizada utilizando padrão *Cache-Aside*, fornecendo a frase diária em milissegundos sem sobrecarregar o banco.
-* **Documentação Automática**: Interface interativa completa via **Scalar / Swagger UI**.
+- **Banco de Dados Curado**: Frases verificadas de grandes nomes do mercado financeiro e literatura.
+- **Filtros Avançados**: Busca flexível por autor, categoria (tags), fonte ou status de verificação.
+- **Resultados Aleatórios**: Endpoint dedicado para obter inspiração randômica com agregação nativa.
+- **Frase do Dia**: Endpoint com performance otimizada utilizando padrão *Cache-Aside*, fornecendo a frase diária em milissegundos sem sobrecarregar o banco.
+- **Documentação Automática**: Interface interativa completa via **Scalar / Swagger UI**.
+- **Segurança e Autenticação**: Endpoints administrativos protegidos por chave secreta (`X-API-KEY`) e validação rigorosa de dados via **Pydantic**.
+- **Newsletter e Assinaturas**: Sistema de inscrição e desinscrição de usuários para receber frases diárias por e-mail, com validação de token e feedback visual.
 
 ## 🚀 Tecnologias e Infraestrutura
 
-* **Linguagem & Framework**: Python 3.13+ e FastAPI (100% assíncrono).
-* **Bancos de Dados**:
-  * MongoDB (via Beanie ODM) para armazenamento persistente.
-  * Redis para sistema de cache em memória e rate limiting.
-* **Gerenciamento**: `uv` para resolução de dependências ultra-rápida e Pydantic para validação rigorosa de dados.
-* **Deploy & Segurança**: Orquestração via `docker-compose` operando em modo rootless e proxy reverso automático com Caddy (HTTPS nativo).
+- **Linguagem & Framework**: Python 3.13+ e FastAPI (100% assíncrono).
+- **Bancos de Dados**:
+  - MongoDB (via Beanie ODM) para armazenamento persistente.
+  - Redis para sistema de cache em memória e rate limiting.
+- **Mensageria**: RabbitMQ para filas de mensagens assíncronas.
+- **Gerenciamento**: `uv` para resolução de dependências ultra-rápida e Pydantic para validação rigorosa de dados.
+- **Deploy & Segurança**: Orquestração via `docker-compose` operando em modo rootless e proxy reverso automático com Caddy (HTTPS nativo).
 
 ---
 
@@ -28,10 +49,10 @@ A **FinFrases API** fornece um banco de dados curado e de alta performance de ci
 Antes de iniciar a aplicação, crie um arquivo `.env` na raiz do projeto baseado no `.env-example` fornecido:
 
 ```bash
-cp .env-example .env
+cp .env.example .env
 ```
 
-## 🛠️ Como Executar (Podman / Docker)
+## 🔧 Como Executar (Podman / Docker)
 
 A infraestrutura foi projetada para rodar de forma isolada e segura. Os volumes já estão configurados com o sufixo `:Z` no `compose.yml` para garantir compatibilidade nativa com as políticas do SELinux.
 
@@ -49,7 +70,7 @@ Local: <https://localhost:443/api/docs>
 
 Produção: <https://seu-dominio.com/api/docs>
 
-## 🛠️ Uso (Endpoints)
+## 🕒 Uso (Endpoints)
 
 ### Endpoints Públicos
 
@@ -60,6 +81,8 @@ Produção: <https://seu-dominio.com/api/docs>
 | `GET` | `/api/v1/quotes/random` | Retorna frases aleatórias |
 | `GET` | `/api/v1/quotes/today` | Retorna a frase do dia |
 | `GET` | `/api/v1/health` | Verifica o status da API |
+| `POST` | `/api/v1/subscribers` | Inscreve um novo assinante para a frase do dia |
+| `POST` | `/api/v1/subscribers/unsubscribe` | Desinscreve um assinante usando o token de validação |
 
 ### Endpoints Administrativos (Requerem API Key)
 
@@ -74,7 +97,7 @@ Produção: <https://seu-dominio.com/api/docs>
 Retorna uma lista de frases. Você pode filtrar via *Query Parameters*.
 `GET /api/v1/quotes?limit=10&skip=0`
 
-**Filtros disponíveis:** 
+**Filtros disponíveis:**
 
 | Parâmetro | Tipo | Descrição |
 | --- | --- | --- |
@@ -116,6 +139,12 @@ Retorna a frase oficial do dia. O resultado é cacheado no Redis e atualizado au
 ```
 
 **Categorias (Tags) disponíveis:** `GERAL`, `INVESTIMENTOS`, `POUPANCA`, `PSICOLOGIA`, `DIVIDENDOS`, `EDUCACAO`, `EMPREENDEDORISMO`, `ACAO`, `FIIS`.
+
+## 📨 Newsletter da Frase Diária
+
+A newsletter da frase do dia permite que os usuários se inscrevam para receber a frase oficial do dia diretamente no e-mail. A inscrição é feita através do endpoint `/api/v1/subscribers` e a desinscrição via `/api/v1/subscribers/unsubscribe` com validação de token.
+
+Com o sistema de mensageria RabbitMQ, o envio de e-mails é processado de forma assíncrona, garantindo que a API permaneça responsiva mesmo durante picos de envio.
 
 ## 🔐 Administração
 

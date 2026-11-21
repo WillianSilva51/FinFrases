@@ -37,7 +37,7 @@ services:
     networks:
       - finfrases-network
 
-    rabbitmq:
+  rabbitmq:
       image: docker.io/library/rabbitmq:4-management-alpine
       container_name: finfrases-rabbitmq
       restart: always
