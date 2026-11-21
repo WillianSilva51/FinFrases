@@ -1,23 +1,28 @@
 [project]
 name = "finfrases"
-version = "1.1.6"
+version = "1.2.0"
 description = "Uma API aberta e gratuita para frases de mentalidade financeira, investimentos e educação financeira, totalmente em português (PT-BR)."
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "aio-pika>=10.2.3",
     "beanie>=2.2.0",
-    "fastapi[standard]>=0.162.0",
-    "loguru>=0.7.3",
-    "pymongo>=4.19.0",
+    "fastapi[standard]>=0.165.0",
+    "loguru>=0.8.0",
+    "pymongo>=4.20.1",
     "python-dotenv>=1.2.4",
     "redis[hiredis]>=8.1.0",
-    "scalar-fastapi>=1.9.1",
+    "scalar-fastapi>=1.10.1",
     "slowapi>=0.1.10",
     "uvicorn[standard]>=0.54.0",
 ]
 [project.optional-dependencies]
 dev = [
     "pytest>=9.2.0",
-    "pytest-asyncio>=1.4.1",
-    "ruff>=0.17.3",
+    "pytest-asyncio>=1.5.0",
+    "ruff>=0.17.6",
 ]
+[tool.pytest.ini_options]
+asyncio_mode = "strict"
+asyncio_default_fixture_loop_scope = "function"
+asyncio_default_test_loop_scope = "function"

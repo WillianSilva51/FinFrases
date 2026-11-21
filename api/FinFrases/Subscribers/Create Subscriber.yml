@@ -1,0 +1,39 @@
+info:
+  name: Create Subscriber
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{baseUrl}}{{versionApi}}/subscribers"
+  body:
+    type: json
+    data: |-
+      {
+        "email": "joao@example.com"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        const value = Math.floor(Math.random() * 1000);
+        const name = `Usuario ${value}`;
+        const email = `user${value}@gmail.com`;
+
+        req.setBody({
+          "name": name,
+          "email": email
+        });
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "201"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

@@ -1,0 +1,28 @@
+info:
+  name: Unsubscribe Subscriber
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{baseUrl}}{{versionApi}}/subscribers/unsubscribe"
+  body:
+    type: json
+    data: |-
+      {
+        "unsubscribe_token": "1234567890abcdef"
+      }
+  auth: inherit
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "200"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

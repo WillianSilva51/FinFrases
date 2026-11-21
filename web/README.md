@@ -1,6 +1,29 @@
 # 💡 FinFrases - Frontend
 
-O **FinFrases** é uma aplicação web moderna, modular e responsiva voltada para a exibição, busca e gerenciamento de frases motivacionais e educacionais sobre finanças, investimentos, empreendedorismo e mindset. O projeto consome a API REST do **FinFrases**, oferecendo suporte a cache local, filtros avançados, tema claro/escuro e área de autenticação administrativa.
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![Google Fonts](https://img.shields.io/badge/Google_Fonts-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://fonts.google.com/)
+[![Material Symbols](https://img.shields.io/badge/Material_Symbols-000000?style=for-the-badge&logo=material-design&logoColor=white)](https://fonts.google.com/icons)
+
+O **FinFrases** é uma aplicação web moderna, modular e responsiva voltada para a exibição, busca e gerenciamento de frases motivacionais e educacionais sobre finanças, investimentos, empreendedorismo e mindset. O projeto consome a API REST do **FinFrases**, oferecendo suporte a cache local, filtros avançados, tema claro/escuro e área de autenticação administrativa
+
+## 📑 Sumário
+
+- [🚀 Funcionalidades](#-funcionalidades)
+- [🔧 Tecnologias Utilizadas](#-tecnologias-utilizadas)
+- [📁 Estrutura do Projeto](#-estrutura-do-projeto)
+- [✅ Checklist de Desenvolvimento](#-checklist-de-desenvolvimento)
+- [🔧 Configuração e Execução](#-configuração-e-execução)
+  - [Pré-requisitos](#1-pré-requisitos)
+  - [Rodando o Projeto](#2-rodando-o-projeto)
+    - [Servidor HTTP Simples](#opção-a-servidor-http-simples)
+    - [Compilando o Tailwind CSS v4](#opção-b-compilando-o-tailwind-css-v4)
+- [🌐 Integração com a API](#-integração-com-a-api)
+  - [Principais Endpoints Consumidos](#principais-endpoints-consumidos)
+- [📄 Licença](#-licença)
 
 ---
 
@@ -23,8 +46,9 @@ O **FinFrases** é uma aplicação web moderna, modular e responsiva voltada par
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## 🔧 Tecnologias Utilizadas
 
+- **Node.js**: Runtime JavaScript para execução do servidor e manipulação de dados.
 - **HTML5**: Estruturação semântica da página com atributos acessíveis (`aria-*`, `data-page`).
 - **Tailwind CSS (v4)**: Estilização utilitária de última geração, com suporte nativo a variantes de temas e otimização.
 - **JavaScript ES Modules (ESM)**: Arquitetura modularizada baseada em camadas (API Services, Domain Models, Page Controllers, Componentes de UI e Utilitários).
@@ -80,6 +104,8 @@ O **FinFrases** é uma aplicação web moderna, modular e responsiva voltada par
 - [x] Implementar sistema de login e validação da chave secreta via API (`X-API-KEY`).
 - [x] Desenvolver o painel administrativo (`admin.html`).
 - [x] Implementar operações de criação, edição e exclusão de frases (CRUD) no painel de administração.
+- [] Implementar modal para assinatura de newsletter e envio de e-mails via API (RabbitMQ).
+- [] Desenvolver página de desinscrição da newsletter com validação de token e feedback visual.
 
 ---
 

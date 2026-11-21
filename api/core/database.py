@@ -10,6 +10,7 @@ from pymongo.asynchronous.database import AsyncDatabase
 
 from api.core.config import settings
 from api.models.quote import Quote
+from api.models.subscriber import Subscriber
 
 client: AsyncMongoClient | None = None
 
@@ -50,4 +51,4 @@ async def init_db() -> None:
         OperationalError: Se houver erros durante a inicialização do Beanie.
     """
     db = get_db()
-    await init_beanie(database=db, document_models=[Quote])
+    await init_beanie(database=db, document_models=[Quote, Subscriber])

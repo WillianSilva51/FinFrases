@@ -9,7 +9,7 @@ from unittest.mock import AsyncMock
 import pytest
 
 from api.core.exceptions.custom_exceptions import (
-    DomainValidationException,
+    QuoteAlreadyExistsException,
     QuoteNotFoundException,
 )
 from api.models.enums import CategoryQuote
@@ -83,7 +83,11 @@ class TestCreateQuote:
 
     @pytest.mark.asyncio
     async def test_create_quote_success(
-        self, service, mock_repo, valid_request_data, quote
+        self,
+        service: QuoteService,
+        mock_repo: AsyncMock,
+        valid_request_data: CreateQuoteRequest,
+        quote: Quote,
     ):
         """Verifica a criação de citação quando não há conflito."""
 
@@ -104,7 +108,12 @@ class TestCreateQuote:
         mock_repo.create.assert_awaited_once_with(valid_request_data)
 
     @pytest.mark.asyncio
-    async def test_create_quote_failure(self, service, mock_repo, valid_request_data):
+    async def test_create_quote_failure(
+        self,
+        service: QuoteService,
+        mock_repo: AsyncMock,
+        valid_request_data: CreateQuoteRequest,
+    ):
         """Verifica a validação quando a citação já existe."""
         expected_message = f"A frase '{valid_request_data.content}' do autor '{valid_request_data.author}' já existe"
 
@@ -116,7 +125,7 @@ class TestCreateQuote:
             verified=valid_request_data.verified,
         )
 
-        with pytest.raises(DomainValidationException) as exc_info:
+        with pytest.raises(QuoteAlreadyExistsException) as exc_info:
             await service.create_quote(quote=valid_request_data, repo=mock_repo)
 
         assert str(exc_info.value) == expected_message
@@ -132,7 +141,12 @@ class TestGetAllQuotes:
 
     @pytest.mark.asyncio
     async def test_get_all_success(
-        self, service, mock_repo, quote_filters, quote_sort, quote
+        self,
+        service: QuoteService,
+        mock_repo: AsyncMock,
+        quote_filters: QuoteFilters,
+        quote_sort: QuoteSort,
+        quote: Quote,
     ):
         """Verifica a listagem com filtro e paginação."""
         other_quote = Quote.model_construct(
@@ -164,7 +178,9 @@ class TestGetTodayQuote:
     """Testes do método de citação do dia."""
 
     @pytest.mark.asyncio
-    async def test_get_today_quote_success(self, service, mock_repo, quote):
+    async def test_get_today_quote_success(
+        self, service: QuoteService, mock_repo: AsyncMock, quote: Quote
+    ):
         """Verifica o retorno de uma citação verificada."""
         mock_repo.get_random_quote.return_value = [quote]
 
@@ -175,7 +191,9 @@ class TestGetTodayQuote:
         mock_repo.get_random_quote.assert_awaited_once_with(size=1)
 
     @pytest.mark.asyncio
-    async def test_get_today_quote_empty(self, service, mock_repo):
+    async def test_get_today_quote_empty(
+        self, service: QuoteService, mock_repo: AsyncMock
+    ):
         """Verifica a exceção quando não existe citação verificada."""
         mock_repo.get_random_quote.return_value = []
 
@@ -193,7 +211,9 @@ class TestGetRandomQuote:
     """Testes do método de busca aleatória de citações."""
 
     @pytest.mark.asyncio
-    async def test_get_random_quote_success(self, service, mock_repo, quote):
+    async def test_get_random_quote_success(
+        self, service: QuoteService, mock_repo: AsyncMock, quote: Quote
+    ):
         """Verifica o retorno de citações aleatórias."""
         mock_repo.get_random_quote.return_value = [quote]
 
@@ -204,7 +224,9 @@ class TestGetRandomQuote:
         mock_repo.get_random_quote.assert_awaited_once_with(size=1)
 
     @pytest.mark.asyncio
-    async def test_get_random_quote_empty(self, service, mock_repo):
+    async def test_get_random_quote_empty(
+        self, service: QuoteService, mock_repo: AsyncMock
+    ):
         """Verifica o retorno vazio quando não há resultados."""
         mock_repo.get_random_quote.return_value = []
 
@@ -219,7 +241,9 @@ class TestDeleteQuoteById:
     """Testes do método de exclusão de citações por ID."""
 
     @pytest.mark.asyncio
-    async def test_delete_quote_by_id_success(self, service, mock_repo, quote):
+    async def test_delete_quote_by_id_success(
+        self, service: QuoteService, mock_repo: AsyncMock, quote: Quote
+    ):
         """Verifica a exclusão quando a citação existe."""
         quote_id = "64b8f0c2e1d2f5a1b2c3d4e"
         mock_repo.delete_quote_by_id.return_value = True
@@ -229,7 +253,9 @@ class TestDeleteQuoteById:
         mock_repo.delete_quote_by_id.assert_awaited_once_with(quote_id)
 
     @pytest.mark.asyncio
-    async def test_delete_quote_by_id_not_found(self, service, mock_repo):
+    async def test_delete_quote_by_id_not_found(
+        self, service: QuoteService, mock_repo: AsyncMock
+    ):
         """Verifica a exceção quando a citação não é encontrada."""
         quote_id = "64b8f0c2e1d2f5a1b2c3d4e"
         expected_message = f"Citação com id '{quote_id}' não encontrada"
@@ -248,7 +274,9 @@ class TestGetQuoteById:
     """Testes do método de consulta de citação por ID."""
 
     @pytest.mark.asyncio
-    async def test_get_quote_by_id_success(self, service, mock_repo, quote):
+    async def test_get_quote_by_id_success(
+        self, service: QuoteService, mock_repo: AsyncMock, quote: Quote
+    ):
         """Verifica o retorno de uma citação existente."""
         quote_id = "64b8f0c2e1d2f5a1b2c3d4e"
         mock_repo.get_quote_by_id.return_value = quote
@@ -260,7 +288,9 @@ class TestGetQuoteById:
         mock_repo.get_quote_by_id.assert_awaited_once_with(quote_id)
 
     @pytest.mark.asyncio
-    async def test_get_quote_by_id_not_found(self, service, mock_repo):
+    async def test_get_quote_by_id_not_found(
+        self, service: QuoteService, mock_repo: AsyncMock
+    ):
         """Verifica a exceção quando o ID não existe."""
         quote_id = "64b8f0c2e1d2f5a1b2c3d4e"
         expected_message = f"Citação com id '{quote_id}' não encontrada"
@@ -289,7 +319,11 @@ class TestUpdateQuoteById:
 
     @pytest.mark.asyncio
     async def test_update_quote_by_id_success(
-        self, service, mock_repo, quote, update_request_data
+        self,
+        service: QuoteService,
+        mock_repo: AsyncMock,
+        quote: Quote,
+        update_request_data: UpdateQuoteRequest,
     ):
         """Verifica a atualização quando não há conflito de dados."""
         quote_id = "64b8f0c2e1d2f5a1b2c3d4e"
@@ -332,7 +366,10 @@ class TestUpdateQuoteById:
 
     @pytest.mark.asyncio
     async def test_update_quote_by_id_not_found(
-        self, service, mock_repo, update_request_data
+        self,
+        service: QuoteService,
+        mock_repo: AsyncMock,
+        update_request_data: UpdateQuoteRequest,
     ):
         """Verifica a exceção quando a citação não existe."""
         quote_id = "invalid_id_123"
@@ -353,7 +390,11 @@ class TestUpdateQuoteById:
 
     @pytest.mark.asyncio
     async def test_update_quote_by_id_conflict_with_another_quote(
-        self, service, mock_repo, quote, update_request_data
+        self,
+        service: QuoteService,
+        mock_repo: AsyncMock,
+        quote: Quote,
+        update_request_data: UpdateQuoteRequest,
     ):
         """Verifica o conflito com outra citação já existente."""
         quote_id = "64b8f0c2e1d2f5a1b2c3d4e"
@@ -371,7 +412,7 @@ class TestUpdateQuoteById:
         )
         mock_repo.get_quote_by_content_and_author.return_value = conflicting_quote
 
-        with pytest.raises(DomainValidationException) as exc_info:
+        with pytest.raises(QuoteAlreadyExistsException) as exc_info:
             await service.update_quote_by_id(
                 id=quote_id, quote_data=update_request_data, repo=mock_repo
             )
@@ -386,7 +427,11 @@ class TestUpdateQuoteById:
 
     @pytest.mark.asyncio
     async def test_update_quote_by_id_conflict_with_same_quote(
-        self, service, mock_repo, quote, update_request_data
+        self,
+        service: QuoteService,
+        mock_repo: AsyncMock,
+        quote: Quote,
+        update_request_data: UpdateQuoteRequest,
     ):
         """Verifica a atualização quando a própria citação é retornada como conflito."""
         quote_id = "64b8f0c2e1d2f5a1b2c3d4e"
@@ -424,7 +469,11 @@ class TestUpdateQuoteById:
 
     @pytest.mark.asyncio
     async def test_update_quote_by_id_same_quote_identity(
-        self, service, mock_repo, quote, update_request_data
+        self,
+        service: QuoteService,
+        mock_repo: AsyncMock,
+        quote: Quote,
+        update_request_data: UpdateQuoteRequest,
     ):
         """Verifica a atualização quando a própria citação é retornada."""
         quote_id = "64b8f0c2e1d2f5a1b2c3d4e"
