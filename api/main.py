@@ -52,9 +52,7 @@ PREFIX = settings.API_PREFIX
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     await init_db()
-    await init_rabbitmq()
     yield
-    await close_rabbitmq()
 
 
 app = FastAPI(
