@@ -9,7 +9,7 @@ from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 
 from api.core.config import settings
-from api.core.database import init_db
+from api.core.database import close_db, init_db
 from api.core.exceptions.custom_exceptions import (
     DomainValidationException,
     ResourceAlreadyExistsException,
@@ -25,8 +25,8 @@ from api.core.handlers.exception_handlers import (
 )
 from api.core.limiter import limiter
 from api.core.rabbitmq import close_rabbitmq, init_rabbitmq
+from api.dependencies.email_dependencies import declare_rabbitmq_topology
 from api.routers.main_router import main_router
-from api.services.rabbitmq_service import declare_rabbitmq_topology
 
 tags_metadata = [
     {
@@ -52,11 +52,16 @@ PREFIX = settings.API_PREFIX
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    await init_db()
-    await init_rabbitmq()
-    await declare_rabbitmq_topology()
-    yield
-    await close_rabbitmq()
+    try:
+        await init_db()
+        await init_rabbitmq()
+        await declare_rabbitmq_topology()
+
+        yield
+
+    finally:
+        await close_db()
+        await close_rabbitmq()
 
 
 app = FastAPI(

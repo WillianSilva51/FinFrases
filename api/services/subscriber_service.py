@@ -1,4 +1,7 @@
 from collections.abc import Callable
+from datetime import UTC, datetime, timedelta
+
+from loguru import logger
 
 from api.core.exceptions.custom_exceptions import (
     SubscriberAlreadyExistsException,
@@ -12,14 +15,20 @@ from api.schemas.subscriber_schema import (
     CreateSubscriberRequest,
     UnsubscribeSubscriberRequest,
 )
+from api.services.sender_service import SenderService
 
 
 class SubscriberService:
+    def __init__(
+        self, repo: SubscriberRepository, sender_service: SenderService
+    ) -> None:
+        self.subscriber_repository = repo
+        self.sender_service = sender_service
+
     async def create_subscriber(
         self,
         subscriber: CreateSubscriberRequest,
         token_generator: Callable[[int], str],
-        repo: SubscriberRepository,
     ) -> Subscriber:
         """
         Cria um novo assinante.
@@ -32,15 +41,30 @@ class SubscriberService:
         Returns:
             Uma instância de ``SubscriberResponse`` com os dados do novo assinante.
         """
-        subscriber_exists = await repo.get_subscriber_by_email(subscriber.email)
+        subscriber_exists = await self.subscriber_repository.get_subscriber_by_email(
+            subscriber.email
+        )
 
         if subscriber_exists:
             if subscriber_exists.status == SubscriberStatus.UNSUBSCRIBED:
                 new_unsubscribe_token = token_generator(32)
 
-                subscriber_exists = await repo.reactivate_subscriber(
-                    subscriber_exists, new_unsubscribe_token
+                subscriber_exists = (
+                    await self.subscriber_repository.reactivate_subscriber(
+                        subscriber_exists, new_unsubscribe_token
+                    )
                 )
+
+                reference_date = (
+                    subscriber_exists.updated_at or subscriber_exists.created_at
+                )
+
+                if datetime.now(UTC) - reference_date < timedelta(days=1):
+                    logger.info(
+                        f"Assinante com e-mail {subscriber.email} reativado recentemente. E-mail de boas-vindas não será enviado novamente."
+                    )
+                # else:
+                #    await self._send_welcome_email(subscriber_exists, rabbitmq_service)
 
                 return subscriber_exists
             else:
@@ -48,14 +72,15 @@ class SubscriberService:
                     "Assinante com este e-mail já existe."
                 )
 
-        new_subscriber = await repo.create_subscriber(subscriber)
+        new_subscriber = await self.subscriber_repository.create_subscriber(subscriber)
+
+        #   await self._send_welcome_email(new_subscriber, rabbitmq_service)
 
         return new_subscriber
 
     async def unsubscribe_subscriber(
         self,
         unsubscriber: UnsubscribeSubscriberRequest,
-        repo: SubscriberRepository,
     ) -> Subscriber:
         """
         Desinscreve um assinante existente.
@@ -67,8 +92,10 @@ class SubscriberService:
         Returns:
             Uma instância de ``UnsubscribeResponse`` indicando o sucesso da operação.
         """
-        subscriber = await repo.get_subscriber_by_unsubscribe_token(
-            unsubscriber.unsubscribe_token
+        subscriber = (
+            await self.subscriber_repository.get_subscriber_by_unsubscribe_token(
+                unsubscriber.unsubscribe_token
+            )
         )
 
         if not subscriber:
@@ -81,7 +108,9 @@ class SubscriberService:
                 "Assinante com este token de desinscrição já está desinscrito."
             )
 
-        unsubscribed_subscriber = await repo.unsubscribe_subscriber(subscriber)
+        unsubscribed_subscriber = (
+            await self.subscriber_repository.unsubscribe_subscriber(subscriber)
+        )
 
         return unsubscribed_subscriber
 
@@ -90,7 +119,6 @@ class SubscriberService:
         status: SubscriberStatus,
         skip: int,
         limit: int,
-        repo: SubscriberRepository,
     ) -> tuple[list[Subscriber], int, int]:
         """
         Obtém uma lista de assinantes com base no status fornecido.
@@ -104,7 +132,10 @@ class SubscriberService:
         Returns:
             Uma tupla contendo a lista de assinantes e o total de assinantes encontrados.
         """
-        subscribers, total_count = await repo.get_subscribers_by_status(
+        (
+            subscribers,
+            total_count,
+        ) = await self.subscriber_repository.get_subscribers_by_status(
             status=status, skip=skip, limit=limit
         )
 

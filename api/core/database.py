@@ -52,3 +52,19 @@ async def init_db() -> None:
     """
     db = get_db()
     await init_beanie(database=db, document_models=[Quote, Subscriber])
+
+
+async def close_db() -> None:
+    """Fecha a conexão com o banco de dados MongoDB.
+
+    Se a conexão estiver aberta, este método fecha a conexão de forma assíncrona,
+    liberando os recursos associados.
+
+    Returns:
+        None
+    """
+    global client
+
+    if client is not None:
+        await client.close()
+        client = None

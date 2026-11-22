@@ -4,8 +4,8 @@ from http import HTTPStatus
 from fastapi import APIRouter, Depends, Request, Response
 
 from api.core.limiter import limiter
+from api.dependencies.subscriber_dependencies import get_subscriber_service
 from api.models.subscriber import Subscriber
-from api.repositories.subscriber_repository import SubscriberRepository
 from api.schemas.subscriber_schema import (
     CreateSubscriberRequest,
     SubscriberResponse,
@@ -42,8 +42,7 @@ async def create_subscriber(
     response: Response,
     new_subscriber: CreateSubscriberRequest,
     token_generator: Callable[[int], str] = Depends(get_token_generator),  # noqa: B008
-    subscriber_service: SubscriberService = Depends(SubscriberService),  # noqa: B008
-    subscriber_repository: SubscriberRepository = Depends(SubscriberRepository),  # noqa: B008
+    subscriber_service: SubscriberService = Depends(get_subscriber_service),  # noqa: B008
 ) -> SubscriberResponse:
     """
     Endpoint para criar um novo assinante.
@@ -54,7 +53,8 @@ async def create_subscriber(
         JSONResponse: Retorna uma resposta JSON contendo os detalhes do assinante criado.
     """
     subscriber = await subscriber_service.create_subscriber(
-        new_subscriber, token_generator, subscriber_repository
+        new_subscriber,
+        token_generator,
     )
 
     return _create_subscriber_response(subscriber)
@@ -74,8 +74,7 @@ async def unsubscribe_subscriber(
     request: Request,
     response: Response,
     unsubscriber: UnsubscribeSubscriberRequest,
-    subscriber_service: SubscriberService = Depends(SubscriberService),  # noqa: B008
-    subscriber_repository: SubscriberRepository = Depends(SubscriberRepository),  # noqa: B008
+    subscriber_service: SubscriberService = Depends(get_subscriber_service),  # noqa: B008
 ) -> UnsubscribeResponse:
     """
     Endpoint para desinscrever um assinante existente.
@@ -86,7 +85,7 @@ async def unsubscribe_subscriber(
         JSONResponse: Retorna uma resposta JSON contendo os detalhes do assinante desinscrito.
     """
     unsubscribed_subscriber = await subscriber_service.unsubscribe_subscriber(
-        unsubscriber, subscriber_repository
+        unsubscriber
     )
 
     return UnsubscribeResponse.model_validate(

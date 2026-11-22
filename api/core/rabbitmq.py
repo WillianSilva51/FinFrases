@@ -59,6 +59,15 @@ class RabbitMQConnection:
 rabbitmq_connection = RabbitMQConnection()
 
 
+def get_rabbitmq_connection() -> RabbitMQConnection:
+    """Retorna a instância do gerenciador de conexão com RabbitMQ.
+
+    Returns:
+        RabbitMQConnection: A instância do gerenciador de conexão.
+    """
+    return rabbitmq_connection
+
+
 async def init_rabbitmq() -> None:
     """Inicializa a conexão com o RabbitMQ."""
     await rabbitmq_connection.connect()

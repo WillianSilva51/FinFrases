@@ -4,11 +4,14 @@ from uuid import uuid4
 from aio_pika import DeliveryMode, ExchangeType, Message
 from aio_pika.abc import AbstractRobustChannel, AbstractRobustExchange
 
-from api.core.rabbitmq import rabbitmq_connection
+from api.core.rabbitmq import RabbitMQConnection
 from api.schemas.email_event_schema import EmailEventSchema
 
 
 class RabbitMQService:
+    def __init__(self, rabbitmq_connection: RabbitMQConnection) -> None:
+        self.rabbitmq_connection = rabbitmq_connection
+
     MAIN_EXCHANGE = "finfrases.email.exchange"
     DLX_EXCHANGE = "finfrases.dlx.exchange"
 
@@ -22,7 +25,7 @@ class RabbitMQService:
     DEAD_LETTER_ROUTING_KEY = "email.dead_letter"
 
     async def declare_topology(self) -> None:
-        async with rabbitmq_connection.connection.channel() as channel:
+        async with self.rabbitmq_connection.connection.channel() as channel:
             main_exchange, dlx_exchage = await self._declare_exchanges(channel)
 
             await self._declare_dead_letter_queue(channel, dlx_exchage)
@@ -37,7 +40,7 @@ class RabbitMQService:
         payload: EmailEventSchema,
         idempotency_key: str | None = None,
     ) -> None:
-        async with rabbitmq_connection.connection.channel() as channel:
+        async with self.rabbitmq_connection.connection.channel() as channel:
             exchange = await channel.get_exchange(self.MAIN_EXCHANGE)
 
             message = Message(
@@ -107,14 +110,3 @@ class RabbitMQService:
         )
 
         return main_exchange, dlx_exchange
-
-
-rabbitmq_service = RabbitMQService()
-
-
-def get_rabbitmq_service() -> RabbitMQService:
-    return rabbitmq_service
-
-
-async def declare_rabbitmq_topology() -> None:
-    await rabbitmq_service.declare_topology()
