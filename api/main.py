@@ -25,7 +25,7 @@ from api.core.handlers.exception_handlers import (
 )
 from api.core.limiter import limiter
 from api.core.rabbitmq import close_rabbitmq, init_rabbitmq
-from api.dependencies.email_dependencies import declare_rabbitmq_topology
+from api.dependencies.rabbitmq_dependencies import declare_rabbitmq_topology
 from api.routers.main_router import main_router
 
 tags_metadata = [

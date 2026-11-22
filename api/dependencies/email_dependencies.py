@@ -1,12 +1,30 @@
-from api.core.rabbitmq import get_rabbitmq_connection
-from api.services.rabbitmq_service import RabbitMQService
+from fastapi import Depends
 
-rabbitmq_service: RabbitMQService = RabbitMQService(get_rabbitmq_connection())
+from api.dependencies.quote_dependencies import get_quote_service
+from api.dependencies.sender_dependencies import get_sender_service
+from api.dependencies.subscriber_dependencies import get_subscriber_repository
+from api.repositories.subscriber_repository import SubscriberRepository
+from api.services.email.send_daily_emails import SendDailyQuoteEmails
+from api.services.email.send_welcome_email import SendWelcomeEmail
+from api.services.quote_service import QuoteService
+from api.services.sender_service import SenderService
 
 
-def get_rabbitmq_service() -> RabbitMQService:
-    return rabbitmq_service
+def get_send_welcome_email_service(
+    sender_service: SenderService = Depends(get_sender_service),  # noqa: B008
+) -> SendWelcomeEmail:
+    return SendWelcomeEmail(
+        sender_service=sender_service,
+    )
 
 
-async def declare_rabbitmq_topology() -> None:
-    await rabbitmq_service.declare_topology()
+def get_daily_quote_email_service(
+    sender_service: SenderService = Depends(get_sender_service),  # noqa: B008
+    quote_service: QuoteService = Depends(get_quote_service),  # noqa: B008
+    subscriber_repository: SubscriberRepository = Depends(get_subscriber_repository),  # noqa: B008
+) -> SendDailyQuoteEmails:
+    return SendDailyQuoteEmails(
+        sender_service=sender_service,
+        quote_service=quote_service,
+        subscriber_repository=subscriber_repository,
+    )

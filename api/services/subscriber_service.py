@@ -15,15 +15,17 @@ from api.schemas.subscriber_schema import (
     CreateSubscriberRequest,
     UnsubscribeSubscriberRequest,
 )
-from api.services.sender_service import SenderService
+from api.services.email.send_welcome_email import SendWelcomeEmail
 
 
 class SubscriberService:
     def __init__(
         self,
         repo: SubscriberRepository,
+        send_welcome_email: SendWelcomeEmail,
     ) -> None:
         self.subscriber_repository = repo
+        self.send_welcome_email = send_welcome_email
 
     async def create_subscriber(
         self,
@@ -63,8 +65,8 @@ class SubscriberService:
                     logger.info(
                         f"Assinante com e-mail {subscriber.email} reativado recentemente. E-mail de boas-vindas não será enviado novamente."
                     )
-                # else:
-                #    await self._send_welcome_email(subscriber_exists, rabbitmq_service)
+                else:
+                    await self.send_welcome_email.execute(subscriber_exists)
 
                 return subscriber_exists
             else:
@@ -74,7 +76,7 @@ class SubscriberService:
 
         new_subscriber = await self.subscriber_repository.create_subscriber(subscriber)
 
-        #   await self._send_welcome_email(new_subscriber, rabbitmq_service)
+        await self.send_welcome_email.execute(new_subscriber)
 
         return new_subscriber
 
