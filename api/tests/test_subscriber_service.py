@@ -20,8 +20,10 @@ from api.services.subscriber_service import SubscriberService
 
 
 @pytest.fixture
-def service() -> SubscriberService:
-    return SubscriberService()
+def service(
+    mock_repo: AsyncMock,
+) -> SubscriberService:
+    return SubscriberService(mock_repo)
 
 
 @pytest.fixture
@@ -64,7 +66,7 @@ class TestCreateSubscriber:
         mock_repo.create_subscriber.return_value = subscriber
 
         response = await service.create_subscriber(
-            valid_subscriber_request, mock_token_generator, mock_repo
+            valid_subscriber_request, mock_token_generator
         )
 
         mock_repo.get_subscriber_by_email.assert_called_once_with(
@@ -89,7 +91,8 @@ class TestCreateSubscriber:
 
         with pytest.raises(SubscriberAlreadyExistsException) as exc_info:
             await service.create_subscriber(
-                valid_subscriber_request, mock_token_generator, mock_repo
+                valid_subscriber_request,
+                mock_token_generator,
             )
 
         assert str(exc_info.value) == "Assinante com este e-mail já existe."
@@ -123,7 +126,8 @@ class TestCreateSubscriber:
         )
 
         response = await service.create_subscriber(
-            valid_subscriber_request, mock_token_generator, mock_repo
+            valid_subscriber_request,
+            mock_token_generator,
         )
 
         mock_token_generator.assert_called_once_with(32)
@@ -171,7 +175,6 @@ class TestUnsubscribeSubscriber:
 
         response = await service.unsubscribe_subscriber(
             unsubscriber,
-            mock_repo,
         )
 
         mock_repo.get_subscriber_by_unsubscribe_token.assert_called_once_with(
@@ -197,7 +200,6 @@ class TestUnsubscribeSubscriber:
         with pytest.raises(SubscriberNotFoundException) as exc_info:
             await service.unsubscribe_subscriber(
                 unsubscriber,
-                mock_repo,
             )
 
         assert (
@@ -226,7 +228,6 @@ class TestUnsubscribeSubscriber:
         with pytest.raises(UnsubscriberAlreadyUnsubscribedException) as exc_info:
             await service.unsubscribe_subscriber(
                 unsubscriber,
-                mock_repo,
             )
 
         assert (
@@ -264,7 +265,9 @@ class TestGetSubscribers:
         mock_repo.get_subscribers_by_status.return_value = list_subscribers
 
         response, total_count, pages = await service.get_subscribers(
-            status, skip, limit, mock_repo
+            status,
+            skip,
+            limit,
         )
 
         mock_repo.get_subscribers_by_status.assert_called_once_with(
@@ -294,7 +297,9 @@ class TestGetSubscribers:
         mock_repo.get_subscribers_by_status.return_value = ([], 0)
 
         response, total_count, pages = await service.get_subscribers(
-            status, skip, limit, mock_repo
+            status,
+            skip,
+            limit,
         )
 
         mock_repo.get_subscribers_by_status.assert_called_once_with(
@@ -319,7 +324,9 @@ class TestGetSubscribers:
         mock_repo.get_subscribers_by_status.return_value = list_subscribers
 
         response, total_count, pages = await service.get_subscribers(
-            status, skip, limit, mock_repo
+            status,
+            skip,
+            limit,
         )
 
         mock_repo.get_subscribers_by_status.assert_called_once_with(

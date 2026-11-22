@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, Query, Request, Response
 
 from api.core.limiter import limiter
 from api.core.security import verify_api_key
-from api.repositories.quote_repository import QuoteRepository
+from api.dependencies.quote_dependencies import get_quote_service
 from api.schemas.pagination import PaginatedResponse, Params
 from api.schemas.quote_filters import QuoteFilters, QuoteSort
 from api.schemas.quote_schema import (
@@ -31,11 +31,12 @@ async def post_quote(
     request: Request,
     response: Response,
     new_quote: CreateQuoteRequest,
-    service: QuoteService = Depends(QuoteService),  # noqa: B008
-    repo: QuoteRepository = Depends(QuoteRepository),  # noqa: B008
+    service: QuoteService = Depends(get_quote_service),  # noqa: B008
     _: str = Depends(verify_api_key),
 ) -> QuoteResponse:
-    quote = await service.create_quote(quote=new_quote, repo=repo)
+    quote = await service.create_quote(
+        quote=new_quote,
+    )
 
     return QuoteResponse.model_validate(quote.model_dump())
 
@@ -56,15 +57,13 @@ async def get_all_quotes(
     quote_filters: QuoteFilters = Depends(QuoteFilters),  # noqa: B008
     quote_sort: QuoteSort = Depends(QuoteSort),  # noqa: B008
     params: Params = Depends(Params),  # noqa: B008
-    service: QuoteService = Depends(QuoteService),  # noqa: B008
-    repo: QuoteRepository = Depends(QuoteRepository),  # noqa: B008
+    service: QuoteService = Depends(get_quote_service),  # noqa: B008
 ) -> PaginatedResponse[QuoteResponse]:
     quotes, total_counts, pages = await service.get_all(
         quote_filters=quote_filters,
         quote_sort=quote_sort,
         limit=params.limit,
         skip=params.offset,
-        repo=repo,
     )
 
     quotes = [QuoteResponse.model_validate(quote.model_dump()) for quote in quotes]
@@ -97,10 +96,11 @@ async def get_random_quote(
         le=100,
         description="Número de citações aleatórias a serem retornadas.",
     ),
-    service: QuoteService = Depends(QuoteService),  # noqa: B008
-    repo: QuoteRepository = Depends(QuoteRepository),  # noqa: B008
+    service: QuoteService = Depends(get_quote_service),  # noqa: B008
 ) -> list[QuoteResponse]:
-    quotes = await service.get_random_quote(size=size, repo=repo)
+    quotes = await service.get_random_quote(
+        size=size,
+    )
 
     return [QuoteResponse.model_validate(quote.model_dump()) for quote in quotes]
 
@@ -118,10 +118,9 @@ async def get_random_quote(
 async def get_today_quote(
     request: Request,
     response: Response,
-    service: QuoteService = Depends(QuoteService),  # noqa: B008
-    repo: QuoteRepository = Depends(QuoteRepository),  # noqa: B008
+    service: QuoteService = Depends(get_quote_service),  # noqa: B008
 ) -> list[QuoteResponse]:
-    quotes = await service.get_today_quote(repo=repo)
+    quotes = await service.get_today_quote()
 
     return [QuoteResponse.model_validate(quote.model_dump()) for quote in quotes]
 
@@ -140,10 +139,11 @@ async def get_quote_by_id(
     id: str,
     request: Request,
     response: Response,
-    service: QuoteService = Depends(QuoteService),  # noqa: B008
-    repo: QuoteRepository = Depends(QuoteRepository),  # noqa: B008
+    service: QuoteService = Depends(get_quote_service),  # noqa: B008
 ) -> QuoteResponse:
-    quote = await service.get_quote_by_id(id=id, repo=repo)
+    quote = await service.get_quote_by_id(
+        id=id,
+    )
     return QuoteResponse.model_validate(quote.model_dump())
 
 
@@ -162,11 +162,13 @@ async def update_quote(
     quote_data: UpdateQuoteRequest,
     request: Request,
     response: Response,
-    service: QuoteService = Depends(QuoteService),  # noqa: B008
-    repo: QuoteRepository = Depends(QuoteRepository),  # noqa: B008
+    service: QuoteService = Depends(get_quote_service),  # noqa: B008
     _: str = Depends(verify_api_key),
 ) -> QuoteResponse:
-    quote = await service.update_quote_by_id(id=id, quote_data=quote_data, repo=repo)
+    quote = await service.update_quote_by_id(
+        id=id,
+        quote_data=quote_data,
+    )
 
     return QuoteResponse.model_validate(quote.model_dump())
 
@@ -184,8 +186,9 @@ async def delete_quote(
     id: str,
     request: Request,
     response: Response,
-    service: QuoteService = Depends(QuoteService),  # noqa: B008
-    repo: QuoteRepository = Depends(QuoteRepository),  # noqa: B008
+    service: QuoteService = Depends(get_quote_service),  # noqa: B008
     _: str = Depends(verify_api_key),
 ) -> None:
-    await service.delete_quote_by_id(id=id, repo=repo)
+    await service.delete_quote_by_id(
+        id=id,
+    )

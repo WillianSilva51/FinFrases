@@ -20,10 +20,10 @@ from api.services.sender_service import SenderService
 
 class SubscriberService:
     def __init__(
-        self, repo: SubscriberRepository, sender_service: SenderService
+        self,
+        repo: SubscriberRepository,
     ) -> None:
         self.subscriber_repository = repo
-        self.sender_service = sender_service
 
     async def create_subscriber(
         self,

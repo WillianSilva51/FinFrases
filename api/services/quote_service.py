@@ -18,6 +18,9 @@ cache = get_redis()
 
 
 class QuoteService:
+    def __init__(self, repo: QuoteRepository) -> None:
+        self.repo = repo
+
     """Serviço responsável pelas regras de negócio relacionadas às citações.
 
     Centraliza operações de criação, consulta, atualização e remoção de
@@ -25,9 +28,7 @@ class QuoteService:
     ao repositório.
     """
 
-    async def create_quote(
-        self, quote: CreateQuoteRequest, repo: QuoteRepository
-    ) -> Quote:
+    async def create_quote(self, quote: CreateQuoteRequest) -> Quote:
         """Cria uma nova citação após validar duplicidade.
 
         Args:
@@ -44,14 +45,14 @@ class QuoteService:
         logger.info(f"Criando nova citação: {quote}")
 
         if (
-            await repo.get_quote_by_content_and_author(quote.content, quote.author)
+            await self.repo.get_quote_by_content_and_author(quote.content, quote.author)
             is not None
         ):
             raise QuoteAlreadyExistsException(
                 f"A frase '{quote.content}' do autor '{quote.author}' já existe"
             )
 
-        new_quote = await repo.create(quote)
+        new_quote = await self.repo.create(quote)
 
         return new_quote
 
@@ -61,7 +62,6 @@ class QuoteService:
         quote_sort: QuoteSort,
         limit: int,
         skip: int,
-        repo: QuoteRepository,
     ) -> tuple[list[Quote], int, int]:
         """Retorna citações paginadas com base nos filtros informados.
 
@@ -84,14 +84,14 @@ class QuoteService:
             f"Obtendo citações com filtros: {quote_filters_dict}, ordenação: {sort_params}, limit: {limit}, skip: {skip}"
         )
 
-        quotes = await repo.get_all(quote_filters_dict, sort_params, limit, skip)
+        quotes = await self.repo.get_all(quote_filters_dict, sort_params, limit, skip)
 
         quotes, total_counts = quotes
 
         return quotes, total_counts, (total_counts + limit - 1) // limit
 
     @cache.cacheable(expire=3600, model=Quote)
-    async def get_quote_by_id(self, id: str, repo: QuoteRepository) -> Quote:
+    async def get_quote_by_id(self, id: str) -> Quote:
         """Busca uma citação pelo identificador.
 
         Args:
@@ -106,13 +106,13 @@ class QuoteService:
         """
         logger.info(f"Obtendo citação com id: {id}")
 
-        quote = await repo.get_quote_by_id(id)
+        quote = await self.repo.get_quote_by_id(id)
 
         if quote is None:
             raise QuoteNotFoundException(f"Citação com id '{id}' não encontrada")
         return quote
 
-    async def get_random_quote(self, size: int, repo: QuoteRepository) -> list[Quote]:
+    async def get_random_quote(self, size: int) -> list[Quote]:
         """Retorna uma lista de citações aleatórias.
 
         Args:
@@ -124,10 +124,10 @@ class QuoteService:
         """
         logger.info(f"Obtendo {size} citações aleatórias.")
 
-        return await repo.get_random_quote(size=size)
+        return await self.repo.get_random_quote(size=size)
 
     @cache.cacheable(expire=expiration_midnight, model=Quote)
-    async def get_today_quote(self, repo: QuoteRepository) -> list[Quote]:
+    async def get_today_quote(self) -> list[Quote]:
         """Retorna a citação do dia.
 
         A implementação atual obtém uma citação aleatória com tamanho 1 e
@@ -143,7 +143,7 @@ class QuoteService:
             QuoteNotFoundException: Se nenhuma citação for encontrada.
         """
         logger.info("Obtendo a citação do dia.")
-        quote = await self.get_random_quote(size=1, repo=repo)
+        quote = await self.repo.get_random_quote(size=1)
 
         if not quote:
             raise QuoteNotFoundException("Nenhuma citação verificada encontrada")
@@ -151,7 +151,7 @@ class QuoteService:
         return quote
 
     async def update_quote_by_id(
-        self, id: str, quote_data: UpdateQuoteRequest, repo: QuoteRepository
+        self, id: str, quote_data: UpdateQuoteRequest
     ) -> Quote:
         """Atualiza uma citação existente pelo identificador.
 
@@ -173,10 +173,10 @@ class QuoteService:
         """
         logger.info(f"Atualizando citação com id: {id}, dados: {quote_data}")
 
-        await self.get_quote_by_id(id, repo)
+        await self.get_quote_by_id(id)
 
         if quote_data.author and quote_data.content:
-            existing_quote = await repo.get_quote_by_content_and_author(
+            existing_quote = await self.repo.get_quote_by_content_and_author(
                 quote_data.content, quote_data.author
             )
             if existing_quote and str(existing_quote.id) != str(id):
@@ -187,13 +187,13 @@ class QuoteService:
         quote_data_dict = quote_data.model_dump(exclude_unset=True)
         quote_data_dict["updated_at"] = datetime.now(UTC)
 
-        updated_quote = await repo.update_quote(id, quote_data_dict)
+        updated_quote = await self.repo.update_quote(id, quote_data_dict)
 
         await self._remove_quote_from_cache(id)
 
         return updated_quote
 
-    async def delete_quote_by_id(self, id: str, repo: QuoteRepository) -> None:
+    async def delete_quote_by_id(self, id: str) -> None:
         """Remove uma citação existente pelo identificador.
 
         Antes da remoção, valida se a citação existe.
@@ -207,7 +207,7 @@ class QuoteService:
         """
         logger.info(f"Deletando citação com id: {id}")
 
-        result = await repo.delete_quote_by_id(id)
+        result = await self.repo.delete_quote_by_id(id)
 
         if not result:
             raise QuoteNotFoundException(f"Citação com id '{id}' não encontrada")

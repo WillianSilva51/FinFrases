@@ -7,6 +7,7 @@ remoção e consulta aleatória de citações.
 from unittest.mock import AsyncMock
 
 import pytest
+from beanie import PydanticObjectId
 
 from api.core.exceptions.custom_exceptions import (
     QuoteAlreadyExistsException,
@@ -21,9 +22,9 @@ from api.services.quote_service import QuoteService
 
 
 @pytest.fixture
-def service() -> QuoteService:
+def service(mock_repo: AsyncMock) -> QuoteService:
     """Cria uma instância do serviço de citações para os testes."""
-    return QuoteService()
+    return QuoteService(repo=mock_repo)
 
 
 @pytest.fixture
@@ -94,7 +95,7 @@ class TestCreateQuote:
         mock_repo.get_quote_by_content_and_author.return_value = None
         mock_repo.create.return_value = quote
 
-        result = await service.create_quote(quote=valid_request_data, repo=mock_repo)
+        result = await service.create_quote(quote=valid_request_data)
 
         assert result.content == valid_request_data.content
         assert result.author == valid_request_data.author
@@ -126,7 +127,7 @@ class TestCreateQuote:
         )
 
         with pytest.raises(QuoteAlreadyExistsException) as exc_info:
-            await service.create_quote(quote=valid_request_data, repo=mock_repo)
+            await service.create_quote(quote=valid_request_data)
 
         assert str(exc_info.value) == expected_message
 
@@ -164,7 +165,6 @@ class TestGetAllQuotes:
             quote_sort=quote_sort,
             limit=10,
             skip=0,
-            repo=mock_repo,
         )
 
         assert result == [quote, other_quote]
@@ -184,7 +184,7 @@ class TestGetTodayQuote:
         """Verifica o retorno de uma citação verificada."""
         mock_repo.get_random_quote.return_value = [quote]
 
-        result = await service.get_today_quote(repo=mock_repo)
+        result = await service.get_today_quote()
 
         assert result == [quote]
 
@@ -200,7 +200,7 @@ class TestGetTodayQuote:
         expected_message = "Nenhuma citação verificada encontrada"
 
         with pytest.raises(QuoteNotFoundException) as exc_info:
-            await service.get_today_quote(repo=mock_repo)
+            await service.get_today_quote()
 
         assert str(exc_info.value) == expected_message
 
@@ -217,7 +217,7 @@ class TestGetRandomQuote:
         """Verifica o retorno de citações aleatórias."""
         mock_repo.get_random_quote.return_value = [quote]
 
-        result = await service.get_random_quote(size=1, repo=mock_repo)
+        result = await service.get_random_quote(size=1)
 
         assert result == [quote]
 
@@ -230,7 +230,7 @@ class TestGetRandomQuote:
         """Verifica o retorno vazio quando não há resultados."""
         mock_repo.get_random_quote.return_value = []
 
-        result = await service.get_random_quote(size=1, repo=mock_repo)
+        result = await service.get_random_quote(size=1)
 
         assert result == []
 
@@ -248,7 +248,7 @@ class TestDeleteQuoteById:
         quote_id = "64b8f0c2e1d2f5a1b2c3d4e"
         mock_repo.delete_quote_by_id.return_value = True
 
-        await service.delete_quote_by_id(id=quote_id, repo=mock_repo)
+        await service.delete_quote_by_id(id=quote_id)
 
         mock_repo.delete_quote_by_id.assert_awaited_once_with(quote_id)
 
@@ -263,7 +263,7 @@ class TestDeleteQuoteById:
         mock_repo.delete_quote_by_id.return_value = False
 
         with pytest.raises(QuoteNotFoundException) as exc_info:
-            await service.delete_quote_by_id(id=quote_id, repo=mock_repo)
+            await service.delete_quote_by_id(id=quote_id)
 
         assert str(exc_info.value) == expected_message
 
@@ -281,7 +281,7 @@ class TestGetQuoteById:
         quote_id = "64b8f0c2e1d2f5a1b2c3d4e"
         mock_repo.get_quote_by_id.return_value = quote
 
-        result = await service.get_quote_by_id(id=quote_id, repo=mock_repo)
+        result = await service.get_quote_by_id(id=quote_id)
 
         assert result == quote
 
@@ -298,7 +298,7 @@ class TestGetQuoteById:
         mock_repo.get_quote_by_id.return_value = None
 
         with pytest.raises(QuoteNotFoundException) as exc_info:
-            await service.get_quote_by_id(id=quote_id, repo=mock_repo)
+            await service.get_quote_by_id(id=quote_id)
 
         assert str(exc_info.value) == expected_message
 
@@ -326,9 +326,9 @@ class TestUpdateQuoteById:
         update_request_data: UpdateQuoteRequest,
     ):
         """Verifica a atualização quando não há conflito de dados."""
-        quote_id = "64b8f0c2e1d2f5a1b2c3d4e"
+        quote_id = "64b8f0c2e1d2f5a1b2c3d4e1"
 
-        quote.id = quote_id
+        quote.id = PydanticObjectId(quote_id)
 
         mock_repo.get_quote_by_id.return_value = quote
 
@@ -345,7 +345,7 @@ class TestUpdateQuoteById:
         mock_repo.update_quote.return_value = updated_quote
 
         result = await service.update_quote_by_id(
-            id=quote_id, quote_data=update_request_data, repo=mock_repo
+            id=quote_id, quote_data=update_request_data
         )
 
         assert result.id == quote_id
@@ -379,7 +379,7 @@ class TestUpdateQuoteById:
 
         with pytest.raises(QuoteNotFoundException) as exc_info:
             await service.update_quote_by_id(
-                id=quote_id, quote_data=update_request_data, repo=mock_repo
+                id=quote_id, quote_data=update_request_data
             )
 
         assert str(exc_info.value) == expected_message
@@ -397,10 +397,10 @@ class TestUpdateQuoteById:
         update_request_data: UpdateQuoteRequest,
     ):
         """Verifica o conflito com outra citação já existente."""
-        quote_id = "64b8f0c2e1d2f5a1b2c3d4e"
-        another_quote_id = "9999f0c2e1d2f5a1b2c3d4e"
+        quote_id = "64b8f0c2e1d2f5a1b2c3d4e1"
+        another_quote_id = "9999f0c2e1d2f5a1b2c3d4e1"
 
-        quote.id = quote_id
+        quote.id = PydanticObjectId(quote_id)
         expected_message = f"A frase '{update_request_data.content}' do autor '{update_request_data.author}' já existe"
 
         mock_repo.get_quote_by_id.return_value = quote
@@ -414,7 +414,7 @@ class TestUpdateQuoteById:
 
         with pytest.raises(QuoteAlreadyExistsException) as exc_info:
             await service.update_quote_by_id(
-                id=quote_id, quote_data=update_request_data, repo=mock_repo
+                id=quote_id, quote_data=update_request_data
             )
 
         assert str(exc_info.value) == expected_message
@@ -434,9 +434,9 @@ class TestUpdateQuoteById:
         update_request_data: UpdateQuoteRequest,
     ):
         """Verifica a atualização quando a própria citação é retornada como conflito."""
-        quote_id = "64b8f0c2e1d2f5a1b2c3d4e"
+        quote_id = "64b8f0c2e1d2f5a1b2c3d4e1"
 
-        quote.id = quote_id
+        quote.id = PydanticObjectId(quote_id)
 
         mock_repo.get_quote_by_id.return_value = quote
 
@@ -454,7 +454,7 @@ class TestUpdateQuoteById:
         mock_repo.update_quote.return_value = updated_quote
 
         result = await service.update_quote_by_id(
-            id=quote_id, quote_data=update_request_data, repo=mock_repo
+            id=quote_id, quote_data=update_request_data
         )
 
         assert result.id == quote_id
@@ -476,8 +476,8 @@ class TestUpdateQuoteById:
         update_request_data: UpdateQuoteRequest,
     ):
         """Verifica a atualização quando a própria citação é retornada."""
-        quote_id = "64b8f0c2e1d2f5a1b2c3d4e"
-        quote.id = quote_id
+        quote_id = "64b8f0c2e1d2f5a1b2c3d4e1"
+        quote.id = PydanticObjectId(quote_id)
 
         mock_repo.get_quote_by_id.return_value = quote
 
@@ -485,8 +485,6 @@ class TestUpdateQuoteById:
 
         mock_repo.update_quote.return_value = quote
 
-        await service.update_quote_by_id(
-            id=quote_id, quote_data=update_request_data, repo=mock_repo
-        )
+        await service.update_quote_by_id(id=quote_id, quote_data=update_request_data)
 
         mock_repo.update_quote.assert_awaited_once()
