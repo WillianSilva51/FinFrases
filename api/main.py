@@ -24,7 +24,9 @@ from api.core.handlers.exception_handlers import (
     resource_not_found_handler,
 )
 from api.core.limiter import limiter
+from api.core.rabbitmq import close_rabbitmq, init_rabbitmq
 from api.routers.main_router import main_router
+from api.services.rabbitmq_service import declare_rabbitmq_topology
 
 tags_metadata = [
     {
@@ -51,7 +53,10 @@ PREFIX = settings.API_PREFIX
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     await init_db()
+    await init_rabbitmq()
+    await declare_rabbitmq_topology()
     yield
+    await close_rabbitmq()
 
 
 app = FastAPI(

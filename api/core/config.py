@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     MONGO_URI: str
     API_KEY: str
     REDIS_URI: str
-    RABBITMQ_URI: str = "amqp://guest:guest@localhost:5672/"
+    RABBITMQ_URI: str
 
     model_config = SettingsConfigDict(
         env_file="api/.env", env_file_encoding="utf-8", extra="ignore"
