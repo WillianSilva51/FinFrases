@@ -74,12 +74,13 @@ class SubscriberService:
     async def _check_and_send_welcome_email(
         self, subscriber_exists: Subscriber
     ) -> None:
-        reference_date = subscriber_exists.created_at
+        created_at = subscriber_exists.created_at
 
-        if datetime.now(UTC) - reference_date < timedelta(days=1):
+        if datetime.now(UTC) - created_at < timedelta(days=1):
             logger.info(
                 f"Assinante com e-mail {subscriber_exists.email} reativado recentemente. E-mail de boas-vindas não será enviado novamente."
             )
+            return
         else:
             await self.send_welcome_email.execute(subscriber_exists)
 

@@ -164,6 +164,51 @@ class TestCreateSubscriber:
         assert response.unsubscribe_token == new_unsubscribe_token
         assert response.unsubscribed_at is None
 
+    @pytest.mark.asyncio
+    async def test_create_subscriber_reactivate_without_welcome_email(
+        self,
+        service: SubscriberService,
+        mock_send_welcome_email: AsyncMock,
+        mock_repo: AsyncMock,
+        mock_token_generator: Mock,
+        subscriber: Subscriber,
+        valid_subscriber_request: CreateSubscriberRequest,
+    ):
+        subscriber.status = SubscriberStatus.UNSUBSCRIBED
+        subscriber.created_at = datetime.now(UTC) - timedelta(hours=12)
+
+        mock_repo.get_subscriber_by_email.return_value = subscriber
+
+        new_unsubscribe_token = "new_token_with_32_characters_length"
+        mock_token_generator.return_value = new_unsubscribe_token
+
+        reactivated_subscriber = Subscriber.model_construct(
+            name=subscriber.name,
+            email=subscriber.email,
+            status=SubscriberStatus.ACTIVE,
+            unsubscribe_token=new_unsubscribe_token,
+            created_at=subscriber.created_at,
+        )
+
+        mock_repo.reactivate_subscriber.return_value = reactivated_subscriber
+
+        # Simulate that the welcome email is not sent
+        mock_send_welcome_email.execute.return_value = None
+
+        await service.create_subscriber(
+            valid_subscriber_request,
+            mock_token_generator,
+        )
+
+        mock_token_generator.assert_called_once_with(32)
+        mock_repo.get_subscriber_by_email.assert_called_once_with(
+            valid_subscriber_request.email
+        )
+        mock_repo.reactivate_subscriber.assert_called_once_with(
+            subscriber, new_unsubscribe_token
+        )
+        mock_send_welcome_email.execute.assert_not_called()
+
 
 class TestUnsubscribeSubscriber:
     @pytest.fixture
