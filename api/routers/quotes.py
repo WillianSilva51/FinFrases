@@ -62,8 +62,8 @@ async def get_all_quotes(
     quotes, total_counts, pages = await service.get_all(
         quote_filters=quote_filters,
         quote_sort=quote_sort,
-        limit=params.get_limit(),
-        skip=params.get_offset(),
+        limit=params.limit,
+        skip=params.offset,
         repo=repo,
     )
 

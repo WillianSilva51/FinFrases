@@ -11,10 +11,12 @@ class Params(BaseModel):
     page: int = Query(default=1, ge=1, description="Page number")
     size: int = Query(default=50, ge=1, le=100, description="Page size")
 
-    def get_limit(self) -> int:
+    @property
+    def limit(self) -> int:
         return self.size
 
-    def get_offset(self) -> int:
+    @property
+    def offset(self) -> int:
         return self.size * (self.page - 1)
 
 
