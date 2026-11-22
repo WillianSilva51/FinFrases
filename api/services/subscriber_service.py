@@ -57,16 +57,7 @@ class SubscriberService:
                     )
                 )
 
-                reference_date = (
-                    subscriber_exists.updated_at or subscriber_exists.created_at
-                )
-
-                if datetime.now(UTC) - reference_date < timedelta(days=1):
-                    logger.info(
-                        f"Assinante com e-mail {subscriber.email} reativado recentemente. E-mail de boas-vindas não será enviado novamente."
-                    )
-                else:
-                    await self.send_welcome_email.execute(subscriber_exists)
+                await self._check_and_send_welcome_email(subscriber_exists)
 
                 return subscriber_exists
             else:
@@ -79,6 +70,18 @@ class SubscriberService:
         await self.send_welcome_email.execute(new_subscriber)
 
         return new_subscriber
+
+    async def _check_and_send_welcome_email(
+        self, subscriber_exists: Subscriber
+    ) -> None:
+        reference_date = subscriber_exists.created_at
+
+        if datetime.now(UTC) - reference_date < timedelta(days=1):
+            logger.info(
+                f"Assinante com e-mail {subscriber_exists.email} reativado recentemente. E-mail de boas-vindas não será enviado novamente."
+            )
+        else:
+            await self.send_welcome_email.execute(subscriber_exists)
 
     async def unsubscribe_subscriber(
         self,

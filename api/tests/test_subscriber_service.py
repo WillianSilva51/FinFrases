@@ -1,5 +1,5 @@
 from collections.abc import Callable
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from unittest.mock import AsyncMock, Mock
 
 import pytest
@@ -16,14 +16,21 @@ from api.schemas.subscriber_schema import (
     CreateSubscriberRequest,
     UnsubscribeSubscriberRequest,
 )
+from api.services.email.send_welcome_email import SendWelcomeEmail
 from api.services.subscriber_service import SubscriberService
 
 
 @pytest.fixture
 def service(
     mock_repo: AsyncMock,
+    mock_send_welcome_email: AsyncMock,
 ) -> SubscriberService:
-    return SubscriberService(mock_repo)
+    return SubscriberService(mock_repo, mock_send_welcome_email)
+
+
+@pytest.fixture
+def mock_send_welcome_email() -> AsyncMock:
+    return AsyncMock(spec=SendWelcomeEmail)
 
 
 @pytest.fixture
@@ -57,6 +64,7 @@ class TestCreateSubscriber:
         self,
         service: SubscriberService,
         mock_repo: AsyncMock,
+        mock_send_welcome_email: AsyncMock,
         mock_token_generator: Mock,
         subscriber: Subscriber,
         valid_subscriber_request: CreateSubscriberRequest,
@@ -64,6 +72,8 @@ class TestCreateSubscriber:
         mock_repo.get_subscriber_by_email.return_value = None
 
         mock_repo.create_subscriber.return_value = subscriber
+
+        mock_send_welcome_email.execute.return_value = None
 
         response = await service.create_subscriber(
             valid_subscriber_request, mock_token_generator
@@ -73,6 +83,7 @@ class TestCreateSubscriber:
             valid_subscriber_request.email
         )
         mock_repo.create_subscriber.assert_called_once_with(valid_subscriber_request)
+        mock_send_welcome_email.execute.assert_called_once_with(subscriber)
 
         assert response.email == subscriber.email
         assert response.status == subscriber.status
@@ -107,23 +118,31 @@ class TestCreateSubscriber:
     async def test_create_subscriber_reactivate(
         self,
         service: SubscriberService,
+        mock_send_welcome_email: AsyncMock,
         mock_repo: AsyncMock,
         mock_token_generator: Mock,
         subscriber: Subscriber,
         valid_subscriber_request: CreateSubscriberRequest,
     ):
         subscriber.status = SubscriberStatus.UNSUBSCRIBED
+        subscriber.created_at = datetime.now(UTC) - timedelta(days=2)
+
         mock_repo.get_subscriber_by_email.return_value = subscriber
 
         new_unsubscribe_token = "new_token_with_32_characters_length"
         mock_token_generator.return_value = new_unsubscribe_token
 
-        mock_repo.reactivate_subscriber.return_value = Subscriber.model_construct(
+        reactivated_subscriber = Subscriber.model_construct(
             name=subscriber.name,
             email=subscriber.email,
             status=SubscriberStatus.ACTIVE,
             unsubscribe_token=new_unsubscribe_token,
+            created_at=subscriber.created_at,
         )
+
+        mock_repo.reactivate_subscriber.return_value = reactivated_subscriber
+
+        mock_send_welcome_email.execute.return_value = None
 
         response = await service.create_subscriber(
             valid_subscriber_request,
@@ -137,6 +156,7 @@ class TestCreateSubscriber:
         mock_repo.reactivate_subscriber.assert_called_once_with(
             subscriber, new_unsubscribe_token
         )
+        mock_send_welcome_email.execute.assert_called_once_with(reactivated_subscriber)
         mock_repo.create_subscriber.assert_not_awaited()
 
         assert response.email == subscriber.email

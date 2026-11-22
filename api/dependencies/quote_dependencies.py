@@ -1,17 +1,8 @@
 from fastapi import Depends
 
+from api.dependencies.repositories.repositories_dependencies import get_quote_repository
 from api.repositories.quote_repository import QuoteRepository
 from api.services.quote_service import QuoteService
-
-
-def get_quote_repository() -> QuoteRepository:
-    """
-    Retorna uma instância do repositório de citações.
-
-    Returns:
-        QuoteRepository: Instância do repositório de citações.
-    """
-    return QuoteRepository()
 
 
 def get_quote_service(
