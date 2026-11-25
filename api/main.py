@@ -1,5 +1,7 @@
 from contextlib import asynccontextmanager
+from zoneinfo import ZoneInfo
 
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from fastapi import FastAPI
 from fastapi.exceptions import HTTPException, RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
@@ -25,8 +27,10 @@ from api.core.handlers.exception_handlers import (
 )
 from api.core.limiter import limiter
 from api.core.rabbitmq import close_rabbitmq, init_rabbitmq
+from api.dependencies.email_dependencies import create_daily_quote_email
 from api.dependencies.rabbitmq_dependencies import declare_rabbitmq_topology
 from api.routers.main_router import main_router
+from api.scheduler.daily_email_scheduler import EmailScheduler
 
 tags_metadata = [
     {
@@ -51,17 +55,27 @@ PREFIX = settings.API_PREFIX
 
 
 @asynccontextmanager
-async def lifespan(_: FastAPI):
+async def lifespan(app: FastAPI):
     try:
         await init_db()
         await init_rabbitmq()
         await declare_rabbitmq_topology()
+
+        email_scheduler = EmailScheduler(
+            AsyncIOScheduler(timezone=ZoneInfo("America/Sao_Paulo")),
+            create_daily_quote_email(),
+        )
+
+        await email_scheduler.start()
+
+        app.state.email_scheduler = email_scheduler
 
         yield
 
     finally:
         await close_db()
         await close_rabbitmq()
+        await email_scheduler.shutdown()
 
 
 app = FastAPI(

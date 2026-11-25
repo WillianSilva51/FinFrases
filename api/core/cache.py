@@ -45,7 +45,7 @@ class RedisCache:
         """
         return await self.client.ping()
 
-    async def set(self, key: str, value, expire: int):
+    async def set(self, key: str, value, expire: int, nx: bool = False):
         """Armazena um valor no Redis com tempo de expiração.
 
         Args:
@@ -57,7 +57,9 @@ class RedisCache:
             Resultado da operação de gravação no Redis.
         """
         try:
-            return await self.client.set(name=key, value=value, ex=expire, get=True)
+            return await self.client.set(
+                name=key, value=value, ex=expire, get=True, nx=nx
+            )
         except ConnectionError as e:
             logger.error(e)
 
